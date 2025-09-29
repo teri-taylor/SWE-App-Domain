@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Administration</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="admin-header">
+    <div class="user-title">
+
+      <img src="./images/user-profile.png" alt="User Profile Logo">
+      
+      <div class="name-role">
+        <p>Jane Doe</p>
+        <p>Administrator</p>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="email-logo">
+      <img src="./images/email-logo.png" alt="email logo">
+    </section>
+    
+
+    <!-- Users section -->
+    <section class="card">
+      <div class="card-title">
+        <h2>Employees</h2>
+        <div class="hint">Click to expand user details</div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="users-table" aria-label="Users">
+          <thead>
+            <tr>
+              <th style="width:40px;"></th>
+              <th>Name</th>
+              <th style="width:220px;">Role</th>
+              <th style="width:120px;">Alerts</th>
+              <th style="width:120px;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+      <div id="users-empty" class="empty">No users yet.</div>
+    </section>
+  </main>
+
+  <template id="pending-item-tpl">
+    <li class="pending-item">
+      <div class="who">
+        <div class="name"></div>
+        <div class="meta"></div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-success">Approve</button>
+        <button class="btn btn-danger btn-ghost">Reject</button>
+      </div>
+    </li>
+  </template>
+
+  <template id="user-row-tpl">
+    <!-- main row -->
+    <tr class="user-row">
+      <td class="expander-td">
+        <button class="expander" aria-label="Expand row" aria-expanded="false">▸</button>
+      </td>
+      <td class="cell-name"></td>
+      <td class="cell-role"></td>
+      <td class="cell-alerts"></td>
+      <td class="cell-status"></td>
+    </tr>
+    <!-- details row -->
+    <tr class="details-row" hidden>
+      <td></td>
+      <td colspan="4">
+        <div class="details">
+          <div class="detail-grid">
+            <div><span class="label">Date of Birth:</span> <span class="val dob"></span></div>
+            <div><span class="label">Password:</span> <span class="val password"></span></div>
+            <div><span class="label">Last Updated:</span> <span class="val pwd-updated"></span></div>
+            <div class="spacer"></div>
+            <div class="full">
+              <span class="label">Time Off:</span>
+              <ul class="timeoff-list"></ul>
+            </div>
+          </div>
+
+          <form class="timeoff-form">
+            <div class="form-row">
+              <label>Start</label>
+              <input type="date" name="start" required />
+            </div>
+            <div class="form-row">
+              <label>End</label>
+              <input type="date" name="end" required />
+            </div>
+            <button class="btn btn-secondary" type="submit">Add Time Off</button>
+          </form>
+
+          <div class="detail-actions">
+            <button class="btn btn-warning deactivate"></button>
+            <button class="btn btn-secondary resetpwd">Set Random Password</button>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>

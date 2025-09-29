@@ -1,0 +1,505 @@
+*{
+  margin: 0;
+  font-family: Raleway;
+}
+
+html{
+  width: 100%;
+  height: 100%;
+}
+
+
+.header{
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  text-align: center;
+  position: relative;
+  top: 50px;
+}
+
+.main-content{
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+}
+
+a{
+  text-decoration: none;
+  color: black;
+}
+
+/*Home Page (Index)*/
+
+
+
+.user-boxes{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  
+}
+
+.login-area{
+  display: center;
+  justify-self: center;
+  position: relative;
+  top: 150px;
+}
+
+.ret-user, .new-user{
+  border-style: solid; border-width: 2px; border-color: black;
+  position: relative;
+  justify-self: center;
+  top: 180px;
+  padding-left: 30px; padding-right: 30px; padding-top: 15px; padding-bottom: 15px;
+  font-size: 30px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+/*Login Page*/
+.back-btn{
+  position: relative;
+  top: 50px;
+  left: 500px;
+  background-color: transparent;
+  border: none;
+}
+
+.back-btn:hover{
+  cursor: pointer;
+  background-color: rgb(218, 218, 218);
+  border-radius: 5px;
+}
+
+.login-boxes{
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  position: relative;
+  top: 150px;
+  gap: 20px;
+}
+
+.username, .password{
+  padding-left: 10px; padding-right: 10px;
+  height: 30px;
+  width: 230px;
+}
+
+.forgot-btn{
+  position: relative;
+  top: 155px;
+  text-align: center;
+  font-size: 13px;
+  color: black;
+}
+
+.login-btn{
+  text-align: center;
+  position: relative;
+  top: 300px;
+  
+}
+
+#login-submit:hover{
+  cursor: pointer;
+}
+
+.login-btn button{
+  border-radius: 10px;
+  width: 100px;
+  height: 25px;
+  border-width: thin;
+}
+
+.reset-password{
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  position: relative;
+  top: 100px;
+}
+
+/*Forgot Password*/
+.new-pass, #confirm-pass{
+  padding-left: 10px; padding-right: 10px;
+  height: 30px;
+  width: 230px;
+}
+
+.ans-security{
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  position: relative;
+  top: 165px;
+  gap: 15px;
+  height: fit-content;
+}
+
+.security-questions{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  
+}
+#answer-box-1, #answer-box-2, #answer-box-3{
+  height: 30px;
+  width: 230px;
+  padding-left: 10px; padding-right: 10px;
+}
+
+.submit-btn{
+  margin: 0 auto;
+  position: relative;
+  top: 70px;
+  padding-left: 30px; padding-right: 30px;
+  border-radius: 10px;
+}
+
+
+
+/* New User Page*/
+
+.user-info{
+  position: relative;
+  top: 50px;
+}
+
+.name-input{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  top: 75px;
+  gap: 5px;
+}
+
+.address{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  top: 100px;
+  width: fit-content;
+  gap: 5px
+  
+}
+
+#fname, #lname, #street, #city, #state, #zipcode, #birthdate{
+  height: 30px;
+  padding-left: 10px; padding-right: 10px;
+  border-radius: 5px;
+  border-width: thin;
+}
+
+
+
+.date-of-birth{
+  position: relative;
+  top: 125px;
+  justify-self: center;
+}
+
+#new-user-submit{
+  display: flex;
+  justify-self: center;
+  position: relative;
+  top: 200px;
+
+}
+
+.nxt-btn{
+  background-color: blue;
+  border-width: thin;
+
+  border-radius: 10px;
+  width: 100px;
+  height: 25px;
+}
+
+.nxt-btn:hover{
+  cursor: pointer;
+  background-color: rgb(65, 65, 253);
+}
+
+/* NEW USER SECURITY QUESTIONS*/
+
+/* Container styles (yours) */
+.questions{
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  top: 100px;
+  gap: 20px;
+  justify-self: center;
+}
+
+.question1, .question2, .question3{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Make input + select match exactly */
+#question1, #q1-answer, #question2,
+#q2-answer, #question3,
+#q3-answer{
+  box-sizing: border-box;
+  width: 500px;
+  height: 30px;
+  padding: 0 10px;          /* same inner space */
+  font-size: 14px;
+  display: block;
+  border: 1px solid #ccc;   /* optional: keep borders consistent */
+  border-radius: 4px;       /* optional */
+}
+
+/* Keep the native dropdown arrow */
+#question1, #question2, #question3{
+  appearance: auto;               /* keeps default arrow */
+  -webkit-appearance: menulist;   /* Safari/WebKit default */
+  -moz-appearance: menulist;      /* Firefox default */
+  padding-right: 10px;            /* match the input's right padding */
+  min-height: 30px;               /* safety for browsers that ignore height */
+}
+
+.submit{
+  display: flex;
+  justify-self: center;
+}
+
+.submit button{
+  border-radius: 10px;
+  width: 100px;
+  height: 25px;
+  border-width: thin;
+  position: relative;
+  top: 150px;
+}
+
+.submit button:hover{
+  cursor: pointer;
+}
+
+/* NEW USER PASSWORD CREATION PAGE*/
+.password-req {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  position: relative;
+  top: 150px;
+}
+
+.create-password{
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  position: relative;
+  top: 195px;
+  gap: 5px;
+}
+
+
+
+#new-password-submit{
+  display: flex;
+  justify-self: center;
+  top: 280px;
+}
+
+.submit-btn button{
+  border-radius: 10px;
+  width: 100px;
+  height: 25px;
+  border-width: thin;
+  position: relative;
+  top: 150px;
+  margin: 0 auto;
+}
+
+.submit-btn button:hover{
+  cursor: pointer;
+}
+
+/*Administator View Page*/
+.staff{
+  display: flex;
+  flex-direction: row;
+  justify-self: center;
+}
+
+.name{
+  border-style: solid;
+  width: 400px;
+  height: 30px;
+  padding: 10px;
+  border-width: thin;
+}
+
+.role{
+  border-style: solid;
+  width: 200px;
+  height: 30px;
+  padding: 10px;
+  border-width: thin;
+}
+
+.alerts{
+  border-style: solid;
+  width: 80px;
+  height: 30px;
+  padding: 10px;
+  border-width: thin;
+  text-align: center;
+}
+
+
+
+
+
+
+
+/* header */
+.admin-header{
+  display:flex; 
+  flex-direction: row;
+  padding:16px 24px; 
+  border-bottom:1px solid var(--line); 
+  background:#fff;
+  justify-self: right;
+  position: relative;
+  right: 30px;
+  
+}
+
+.user-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-title img{
+  width: 40px;
+}
+
+.name-role{
+  display: flex;
+  flex-direction: column;
+}
+
+.email-logo img{
+  width: 40px;
+  position: relative;
+  left: 10px;
+}
+
+
+.brand{ font-weight:700; letter-spacing:.3px; }
+.profile{ display:flex; align-items:center; gap:12px; }
+.avatar{ width:42px; height:42px; background:#e5e7eb; border-radius:50%; }
+.role-chip{ font-size:12px; color:#fff; background:var(--chip); padding:2px 8px; border-radius:9999px; width:max-content; }
+
+/* layout */
+.container{
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+/* cards */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 1px 2px rgba(0,0,0,.03);
+}
+.card-title{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  margin-bottom:12px;
+}
+.card h2{ font-size:18px; margin:0; }
+.hint{ color:var(--muted); font-size:12px; }
+
+/* buttons */
+.btn{
+  border:1px solid var(--line);
+  background:#fff;
+  padding:8px 12px;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+.btn:hover{ filter:brightness(.98); }
+.btn-secondary{ background:var(--accent); color:#fff; border-color:var(--accent); }
+.btn-secondary:hover{ background:var(--accent-2); }
+.btn-success{ background:var(--good); border-color:var(--good); color:#fff; }
+.btn-danger{ background:var(--bad); border-color:var(--bad); color:#fff; }
+.btn-ghost{ background:transparent; color:var(--bad); border-color:var(--bad); }
+.btn-warning{ background:var(--warn); border-color:var(--warn); color:#fff; }
+
+/* pending */
+.pending-list{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; }
+.pending-item{
+  display:flex; align-items:center; justify-content:space-between;
+  border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+}
+.pending-item .who .name{ font-weight:600; }
+.pending-item .meta{ color:var(--muted); font-size:12px; }
+.pending-item .actions{ display:flex; gap:8px; }
+
+.empty{ color:var(--muted); padding:8px 2px; }
+
+/* table */
+.table-wrap{ overflow:auto; border:1px solid var(--line); border-radius:10px; }
+.users-table{ width:100%; border-collapse:collapse; }
+.users-table th,
+.users-table td{ border-bottom:1px solid var(--line); padding:10px 12px; text-align:left; }
+.users-table thead th{ background:#f3f4f6; font-weight:700; }
+.cell-status .deactivated{ color:var(--bad); font-weight:600; }
+.cell-status .active{ color:var(--good); font-weight:600; }
+
+.expander-td{ text-align:center; }
+.expander{
+  width:28px; height:28px; border-radius:6px; border:1px solid var(--line); background:#fff; cursor:pointer;
+}
+
+/* details section */
+.details-row[hidden]{ display:none; }
+.details{ padding:12px; background:#fafafa; border:1px solid var(--line); border-radius:10px; }
+.detail-grid{
+  display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:8px 16px; align-items:center;
+}
+.detail-grid .full{ grid-column:1 / -1; }
+.detail-grid .spacer{ grid-column:1 / -1; height:8px; }
+.label{ color:var(--muted); font-size:12px; margin-right:6px; }
+.val{ font-weight:600; }
+
+.timeoff-list{ margin:6px 0 0 0; padding-left:18px; }
+
+.timeoff-form{
+  display:flex; gap:12px; align-items:end; margin-top:12px; flex-wrap:wrap;
+}
+.form-row{ display:flex; flex-direction:column; gap:4px; }
+.form-row input[type="date"]{ padding:6px 8px; border:1px solid var(--line); border-radius:8px; }
+
+.detail-actions{
+  margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;
+}
+
+
+
+
+
+
+
+
+
+
+
