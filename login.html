@@ -7,31 +7,33 @@
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=SUSE+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="login-body">
+  
   <div class="login-base">
-    <button class="back-btn"> &#60 </button>
 
     <div  class="header" id="title">
-      <h1>SyncFinance</h1>
+      <button type="button" id="login-header"><img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo"></button>
+      
       <p>Login</p>
     </div>
 
     <div class="main-content">
 
       <div class="login-boxes">
-        <input type="text" placeholder="USERNAME" class="username">
-        <input type="password" placeholder="PASSWORD" name="password" class="password">
+        <input type="text" placeholder="Enter your username" id="username">
+        <input type="password" placeholder="Enter your password" name="password" id="password">
       </div>
 
-      <div class="forgot-btn">
-        <a href="./forgot-password.html">Forgot Password</a>
-      </div>
-
-      <div class="login-btn">
-        <button id="login-submit" type="submit">LOGIN</button>
-      </div>
+      <section class="loginpg-btns">
+        <div class="forgot-btn">
+          <a href="./forgot-password.html">Forgot Password</a>
+        </div>
+        <div class="login-btn">
+          <button id="login-submit" type="submit">LOGIN</button>
+        </div>
+      </section>
     </div>
 
 
