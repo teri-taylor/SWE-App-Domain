@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="base">
+  <div class="newuser-base">
     <div class="header">
       <h1>New User</h1>
     </div>
@@ -19,32 +19,55 @@
 
       <div class="user-info">
 
-        <div class="name-input">
+        <div class="new-input" id="name-input">
           <input type="text" placeholder="First Name" name="fname-input" id="fname">
           <input type="text" placeholder="Last Name" name="lname-input" id="lname">
         </div>
 
-        <div class="address">
+        <div class="new-input" id="address">
 
           <input type="text" placeholder="123 Main Street" name="street-input" id="street">
           <input type="text" placeholder="City" name="city-input" id="city">
 
-          <div class="state-code">
+          <div class="new-input" id="state-code">
             <input type="text" placeholder="State" name="state-input" id="state">
             <input type="text" placeholder="Zipcode" name="zipcode-input" id="zipcode">
           </div>
 
         </div>
 
-        <div class="date-of-birth">
+        <div class="new-input" id="date-of-birth">
           <input type="date" name="birthdate-input" id="birthdate">
         </div>
 
       </div>
 
-      <div class="submit-btn" id="new-user-submit">
+      <div class="password-req">
+        <p>Minimum Requirements</p>
+        <p>Must contain a letter</p>
+        <p>Must contain a number</p>
+        <p>Must contain a special character</p>
+        <p>Must be at least 8 characters</p>
+      </div>
+
+      <form id="pw-form" action="" novalidate>
+        <div class="create-password">
+          <input type="password" placeholder="NEW PASSWORD" class="new-pass" id="new-pass">
+          <input type="password" placeholder="CONFIRM PASSWORD" id="confirm-pass">
+        </div>
+
+        <div class="submit-btn" id="new-password-submit">
+          <button class="nxt-btn" id="new-password-next" type="submit">NEXT</button>
+        </div>
+      </form>
+
+
+<!--
+    <div class="submit-btn" id="new-user-submit">
         <button class="nxt-btn" id="new-user-next" type="submit">NEXT</button>
       </div>
+-->
+      
       
     </div>
   </div>
