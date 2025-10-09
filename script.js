@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 })
 
+//New User Btn Navigation
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('newuserbtn');
   if (!btn) return;
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.assign('./new-user.html')
   })
 })
+//Returning User Btn Navigation
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('returningbtn');
   if (!btn) return;
