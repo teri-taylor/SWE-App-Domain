@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+
+</head>
+<body>
+     <header class="main-header">
+    <a href="./admin-COA.html"><img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo"></a>
+    <div class="user">
+      <img src="./images/user-profile.png" alt="User Profile Logo">
+      <div class="name-role">
+        <p>Jane Doe</p>
+        <p>Administrator</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    <!-- Page title centered -->
+    <section class="page-title">
+      <h1>Add Client Account</h1>
+      <p class="subtitle">Enter information to create a new client account.</p>
+    </section>
+
+   
+
+    <!-- Add Account panel -->
+    <section id="panel-add" class="panel is-active">
+      <form id="account-form" class="card-form" onsubmit="return false;">
+        <div class="form-grid">
+
+          <!-- a. Account name -->
+          <label>
+            <span>Account Name*</span>
+            <input required name="account_name" type="text" placeholder="Cash" />
+          </label>
+
+          <!-- b. Account number -->
+          <label>
+            <span>Account Number* <small id="acctnum-hint">(prefix depends on category)</small></span>
+            <input required name="account_number" id="account_number" type="text" placeholder="1001" inputmode="numeric" />
+          </label>
+
+          <!-- c. Description -->
+          <label class="grid-span-2">
+            <span>Account Description</span>
+            <textarea name="account_description" rows="2" placeholder="Cash on hand and in bank."></textarea>
+          </label>
+
+          <!-- d. Normal side -->
+          <label>
+            <span>Normal Side*</span>
+            <select required name="normal_side">
+              <option value="" disabled selected>Select…</option>
+              <option value="Debit">Debit</option>
+              <option value="Credit">Credit</option>
+            </select>
+          </label>
+
+          <!-- e. Category -->
+          <label>
+            <span>Account Category*</span>
+            <select required name="account_category" id="account_category">
+              <option value="" disabled selected>Select…</option>
+              <option value="Asset" data-prefix="1">Asset</option>
+              <option value="Liability" data-prefix="2">Liability</option>
+              <option value="Equity" data-prefix="3">Equity</option>
+              <option value="Revenue" data-prefix="4">Revenue</option>
+              <option value="Expense" data-prefix="6">Expense</option>
+              <!-- Adjust prefixes to match your class rules -->
+            </select>
+          </label>
+
+          <!-- f. Subcategory -->
+          <label>
+            <span>Subcategory</span>
+            <input name="account_subcategory" type="text" placeholder="Current Assets" />
+          </label>
+
+          <!-- g. Initial balance -->
+          <label>
+            <span>Initial Balance</span>
+            <input name="initial_balance" id="initial_balance" type="number" step="0.01" value="0.00" />
+          </label>
+
+          <!-- h. Debit -->
+          <label>
+            <span>Debit</span>
+            <input name="debit" id="debit" type="number" step="0.01" value="0.00" />
+          </label>
+
+          <!-- i. Credit -->
+          <label>
+            <span>Credit</span>
+            <input name="credit" id="credit" type="number" step="0.01" value="0.00" />
+          </label>
+
+          <!-- j. Balance (auto-calc demo; you can lock or compute server-side) -->
+          <label>
+            <span>Balance</span>
+            <input name="balance" id="balance" type="number" step="0.01" value="0.00" />
+          </label>
+
+          <!-- k. Date/time added -->
+          <label>
+            <span>Date/Time Added</span>
+            <input name="date_added" id="date_added" type="datetime-local" />
+          </label>
+
+          <!-- l. User id -->
+          <label>
+            <span>User ID</span>
+            <input name="user_id" type="text" placeholder="admin123" />
+          </label>
+
+          <!-- m. Order -->
+          <label>
+            <span>Order</span>
+            <input name="order" type="text" placeholder="01" />
+          </label>
+
+          <!-- n. Statement -->
+          <label>
+            <span>Statement</span>
+            <select name="statement">
+              <option value="" disabled selected>Select…</option>
+              <option value="BS">BS — Balance Sheet</option>
+              <option value="IS">IS — Income Statement</option>
+              <option value="RE">RE — Retained Earnings</option>
+            </select>
+          </label>
+
+          <!-- o. Comment -->
+          <label class="grid-span-2">
+            <span>Comment</span>
+            <textarea name="comment" rows="2" placeholder="Notes about this account…"></textarea>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="primary" id="saveBtn">Save Account</button>
+          <button class="ghost" type="reset">Clear</button>
+        </div>
+      </form>
+    </section>
+  </main>
+    <script src="script.js"></script>
+</body>
+</html>
