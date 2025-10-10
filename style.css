@@ -269,6 +269,7 @@ Admin Chart of Accounts Page
 .client-table th:last-child{
     color: white;
 }
+
 /* Mobile responsive */
 @media (max-width: 640px) {
   .table-wrap { width: 95%; }
@@ -276,10 +277,177 @@ Admin Chart of Accounts Page
   .client-table tbody td { padding: 12px; font-size: 15px; }
 }
 
+/**************************
+Admin Page
+**************************/
+.admin-container {
+  display: flex;
+  flex-direction: column;     /* Stack elements vertically */
+  align-items: center;        /* Center horizontally */
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 1000px;
+  margin: 40px auto;
+  text-align: center;
+  
+}
 
+.page-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
 
+.hub {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;    /* Center cards horizontally */
+  gap: 30px;
+  width: 100%;
+}
 
+.hub-card {
+  width: 300px;               /* Make each card a consistent size */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e6ecf5;
+  border-radius: 14px;
+  padding: 20px;
+  text-decoration: none;
+  color: #111;
+  box-shadow: rgba(0,0,0,.06) 0 4px 12px;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
 
+.hub-card:hover {
+  transform: translateY(-2px);
+  box-shadow: rgba(0,0,0,.12) 0 8px 20px;
+}
 
+.hub-card h2 {
+  font-family: 'SUSE Mono', Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  margin: 10px 0 8px;
+  color: #001f3f;
+}
 
+.hub-card p {
+  color: #555;
+  margin-bottom: 10px;
+}
 
+.hub-cta {
+  background: #001f3f;
+  color: #fff;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/**************************
+ACME (Admin) Page
+**************************/
+.subtitle { color:#555; margin-top:8px; }
+
+.service-chooser {
+  display:flex; gap:10px; justify-content:center; margin: 10px 0 20px;
+}
+
+.panel { display:none; width:100%; max-width:1000px; }
+.panel.is-active { display:block; }
+
+.card-form {
+  background:#fff; border:1px solid #e6ecf5; border-radius:14px;
+  padding:18px; box-shadow: rgba(0,0,0,.06) 0 4px 12px;
+}
+
+.form-grid {
+  display:grid; grid-template-columns: 1fr 1fr; gap:14px;
+}
+.form-grid label { display:flex; flex-direction:column; gap:6px; text-align:left; }
+.form-grid span { font-weight:600; }
+.form-grid input, .form-grid select, .form-grid textarea {
+  border:1px solid #dbe3f3; border-radius:10px; padding:10px 12px; font:inherit;
+}
+.form-grid textarea { resize:vertical; }
+.grid-span-2 { grid-column: 1 / span 2; }
+
+.form-actions {
+  display:flex; gap:10px; justify-content:flex-end; margin-top:12px;
+}
+.primary { background:#001f3f; color:#fff; border:none; border-radius:10px; padding:10px 14px; cursor:pointer; }
+.ghost { background:#f3f6ff; border:1px solid #e6ecf5; border-radius:10px; padding:10px 14px; cursor:pointer; }
+.mini { padding:6px 10px; border:1px solid #d1d9ee; background:#fff; border-radius:8px; cursor:pointer; }
+.mini.danger { border-color:#ffd2d2; color:#b02020; }
+.form-actions .spacer { flex:1; }
+
+/* Details/Edit status */
+.edit-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.badge { padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700; }
+.badge-green { background:#e8fff5; color:#0f766e; border:1px solid #b6f0dd; }
+.badge-gray  { background:#f3f4f6; color:#374151; border:1px solid #e5e7eb; }
+.banner { padding:10px 12px; border-radius:10px; margin:8px 0 14px; font-size:14px; }
+.banner-warning { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; }
+
+/* Read-only look */
+input[readonly], textarea[readonly] { background:#f9fafb; color:#374151; border-color:#e5e7eb; }
+
+/* Responsive */
+@media (max-width: 720px){
+  .form-grid { grid-template-columns: 1fr; }
+  .grid-span-2 { grid-column: auto; }
+}
+
+.page-actions { display:flex; gap:10px; justify-content:center; margin:10px 0 20px; }
+.client-link { color:#001f3f; text-decoration:none; } 
+.client-link:hover { text-decoration:underline; }
+
+.service-chooser { display:flex; gap:10px; justify-content:center; margin: 10px 0 20px; }
+.svc-btn { padding:10px 14px; border:1px solid #e6ecf5; border-radius:10px; background:#fff; cursor:pointer; font-weight:600; }
+.svc-btn.is-active { background:#001f3f; color:#fff; }
+
+.panel { display:none; width:100%; max-width:1000px; }
+.panel.is-active { display:block; }
+
+.card-form { background:#fff; border:1px solid #e6ecf5; border-radius:14px; padding:18px; box-shadow: rgba(0,0,0,.06) 0 4px 12px; }
+
+.form-grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+.form-grid label { display:flex; flex-direction:column; gap:6px; text-align:left; }
+.form-grid span { font-weight:600; }
+.form-grid input, .form-grid select, .form-grid textarea { border:1px solid #dbe3f3; border-radius:10px; padding:10px 12px; font:inherit; }
+.form-grid textarea { resize:vertical; }
+.grid-span-2 { grid-column: 1 / span 2; }
+
+.form-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
+.primary { background:#001f3f; color:#fff; border:none; border-radius:10px; padding:10px 14px; cursor:pointer; }
+.ghost { background:#f3f6ff; border:1px solid #e6ecf5; border-radius:10px; padding:10px 14px; cursor:pointer; }
+.mini { padding:6px 10px; border:1px solid #d1d9ee; background:#fff; border-radius:8px; cursor:pointer; }
+.mini.danger, .danger { border-color:#ffd2d2; color:#b02020; }
+
+.edit-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.badge { padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700; }
+.badge-green { background:#e8fff5; color:#0f766e; border:1px solid #b6f0dd; }
+.badge-gray  { background:#f3f4f6; color:#374151; border:1px solid #e5e7eb; }
+.banner { padding:10px 12px; border-radius:10px; margin:8px 0 14px; font-size:14px; }
+.banner-warning { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; }
+
+input[readonly], textarea[readonly] { background:#f9fafb; color:#374151; border-color:#e5e7eb; }
+
+@media (max-width: 720px){ .form-grid { grid-template-columns: 1fr; } .grid-span-2 { grid-column: auto; } }
+
+#addForm textarea,
+#editForm textarea,
+#detailForm textarea,
+.form-grid textarea {
+  resize: none;          /* prevent drag-resize */
+  height: 120px;         /* fixed, roomy height */
+  max-height: 120px;     /* don’t auto-expand */
+  overflow: auto;        /* show scrollbar if content exceeds */
+  line-height: 1.4;      /* good readability */
+  font: inherit;         /* match your site font */
+  white-space: pre-wrap; /* preserve newlines; wrap long lines */
+  word-wrap: break-word; /* wrap long words */
+  -webkit-user-modify: read-write-plaintext-only; /* keeps it stable on iOS */
+}
