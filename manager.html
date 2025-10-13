@@ -8,17 +8,84 @@
 </head>
 <body>
     <header class="main-header">
-        <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+    <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+    
+    <div class="user">
+        <img src="./images/user-profile.png" alt="User Profile Logo">
+        <div class="name-role">
+        <p>Mark Green</p>
+        <p>Manager</p>
+        </div>
+
         
-        <div class="user">
-                <img src="./images/user-profile.png" alt="User Profile Logo">
-                <div class="name-role">
-                    <p>Mark Green</p>
-                    <p>Manager</p>
-                </div>
-            </div>
+        <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
+        <button id="logout-btn" role="menuitem">Log out</button>
+        </div>
+        
+    </div>
     </header>
 
+<script>
+    
+(function () {
+  function wireProfileMenu() {
+    const user = document.querySelector(".user");
+    if (!user) return; 
 
+    const menu = user.querySelector("#user-menu");
+    const logoutBtn = user.querySelector("#logout-btn");
+
+    
+    user.addEventListener("click", () => {
+      user.classList.toggle("open");
+      if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+    });
+
+    
+    document.addEventListener("click", (e) => {
+      if (!user.contains(e.target)) {
+        user.classList.remove("open");
+        if (menu) menu.setAttribute("aria-hidden", "true");
+      }
+    });
+
+   
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        user.classList.remove("open");
+        if (menu) menu.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        localStorage.removeItem("sf_session");
+        window.location.href = "login.html";
+      });
+    }
+
+   
+    try {
+      const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+      if (session) {
+        const nameEl = user.querySelector(".name-role p:first-child");
+        const roleEl = user.querySelector(".name-role p:last-child");
+        if (nameEl && session.name) nameEl.textContent = session.name;
+        if (roleEl && session.role) {
+          roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+        }
+      }
+    } catch {}
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireProfileMenu);
+  } else {
+    wireProfileMenu();
+  }
+})();
+</script>
 </body>
 </html>
