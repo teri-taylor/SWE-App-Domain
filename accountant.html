@@ -3,22 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manager</title>
+    <title>Accountant</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="main-header">
-        <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
-        
-        <div class="user">
-                <img src="./images/user-profile.png" alt="User Profile Logo">
-                <div class="name-role">
-                    <p>Alex Taylor</p>
-                    <p>Accountant</p>
-                </div>
-            </div>
+    <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+
+    <div class="user">
+        <img src="./images/user-profile.png" alt="User Profile Logo">
+        <div class="name-role">
+        <p>Alex Taylor</p>
+        <p>Accountant</p>
+        </div>
+
+        <!-- ▼▼ Add this dropdown menu ▼▼ -->
+        <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
+        <button id="logout-btn" role="menuitem">Log out</button>
+        </div>
+        <!-- ▲▲ Add this dropdown menu ▲▲ -->
+    </div>
     </header>
 
 
+<script>
+    // ---- Profile dropdown + Logout wiring ----
+(function () {
+  function wireProfileMenu() {
+    const user = document.querySelector(".user");
+    if (!user) return; // not on a page with a profile area
+
+    const menu = user.querySelector("#user-menu");
+    const logoutBtn = user.querySelector("#logout-btn");
+
+    // Toggle menu when clicking the user area (name/avatar)
+    user.addEventListener("click", () => {
+      user.classList.toggle("open");
+      if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+    });
+
+    // Click outside to close
+    document.addEventListener("click", (e) => {
+      if (!user.contains(e.target)) {
+        user.classList.remove("open");
+        if (menu) menu.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    // ESC to close
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        user.classList.remove("open");
+        if (menu) menu.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    // Logout → clear session & go to login
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.stopPropagation(); // don't re-toggle menu
+        localStorage.removeItem("sf_session");
+        window.location.href = "login.html";
+      });
+    }
+
+    // Optional: personalize the name/role from session, if present
+    try {
+      const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+      if (session) {
+        const nameEl = user.querySelector(".name-role p:first-child");
+        const roleEl = user.querySelector(".name-role p:last-child");
+        if (nameEl && session.name) nameEl.textContent = session.name;
+        if (roleEl && session.role) {
+          roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+        }
+      }
+    } catch {}
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireProfileMenu);
+  } else {
+    wireProfileMenu();
+  }
+})();
+</script>
 </body>
 </html>
