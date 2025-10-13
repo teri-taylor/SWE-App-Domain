@@ -31,13 +31,77 @@
           <a href="./forgot-password.html">Forgot Password</a>
         </div>
         <div class="login-btn">
-          <button id="login-submit" type="submit">LOGIN</button>
+          <button id="login-submit" type="button">LOGIN</button>
         </div>
       </section>
     </div>
 
 
-  </div>
-<script src="script.js"></script>
+ <script>
+  /* LOGIN-ONLY (inline) — runs only on this page */
+  (function () {
+    console.log("[login-inline] loaded");
+
+    // Demo users (email OR username)
+    const USERS = [
+      u("Jane Doe","admin@syncfinance.com","Admin123!","admin","2025-10-01"),
+      u("Mark Green","manager@syncfinance.com","Manager123!","manager","2025-07-15"),
+      u("Alex Taylor","accountant@syncfinance.com","Account123!","accountant","2025-03-20"),
+    ];
+    function u(name,email,password,role,createdAt){
+      return { name,email,password,role,createdAt, username: uname(name,createdAt) };
+    }
+    function uname(full, createdAt){
+      const p=(full||"").trim().toLowerCase().split(/\s+/);
+      const fi=(p[0]||"")[0]||"", ln=p[p.length-1]||"";
+      const d=new Date(createdAt); const v=isNaN(d)? new Date(): d;
+      const mm=String(v.getMonth()+1).padStart(2,"0"), yy=String(v.getFullYear()).slice(-2);
+      return `${fi}${ln}${mm}${yy}`; // e.g., jdoe1025
+    }
+
+    const ROUTE = { admin: "admin.html", manager: "manager.html", accountant: "accountant.html" };
+
+    function attemptLogin() {
+      const idInput = document.getElementById("username");
+      const pwInput = document.getElementById("password");
+      if (!idInput || !pwInput) { alert("Missing #username or #password"); return; }
+
+      const id  = (idInput.value || "").trim().toLowerCase();
+      const pwd = pwInput.value || "";
+      if (!id)  return alert("Please enter your email or username.");
+      if (!pwd) return alert("Please enter your password.");
+
+      const isEmail = id.includes("@");
+      const user = USERS.find(u => isEmail ? u.email.toLowerCase() === id : u.username.toLowerCase() === id);
+      if (!user) return alert("No matching user (demo).");
+      if (user.password !== pwd) return alert(`Wrong password (demo expects: ${user.password})`);
+
+      localStorage.setItem("sf_session", JSON.stringify({
+        email:user.email, name:user.name, role:user.role, username:user.username, loggedInAt:new Date().toISOString()
+      }));
+      window.location.href = ROUTE[user.role] || "login.html";
+    }
+
+    function wire() {
+      const btn = document.getElementById("login-submit");
+      const idInput = document.getElementById("username");
+      const pwInput = document.getElementById("password");
+      console.log("[login-inline] wiring", { btn: !!btn, id: !!idInput, pw: !!pwInput });
+
+      if (!btn) return;             // only wire on this page
+      btn.type = "button";          // never submit the form
+      btn.addEventListener("click", (e)=>{ e.preventDefault(); attemptLogin(); });
+      [idInput, pwInput].forEach(el => el && el.addEventListener("keydown",(e)=>{
+        if (e.key === "Enter") { e.preventDefault(); attemptLogin(); }
+      }));
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", wire);
+    } else {
+      wire();
+    }
+  })();
+</script>
 </body>
 </html>
