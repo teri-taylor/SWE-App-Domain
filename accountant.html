@@ -17,32 +17,30 @@
         <p>Accountant</p>
         </div>
 
-        
+       
         <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
         <button id="logout-btn" role="menuitem">Log out</button>
         </div>
-        
+      
     </div>
     </header>
 
 
 <script>
-    // ---- Profile dropdown + Logout wiring ----
+   
 (function () {
   function wireProfileMenu() {
     const user = document.querySelector(".user");
-    if (!user) return; // not on a page with a profile area
+    if (!user) return; 
 
     const menu = user.querySelector("#user-menu");
     const logoutBtn = user.querySelector("#logout-btn");
 
-    // Toggle menu when clicking the user area (name/avatar)
     user.addEventListener("click", () => {
       user.classList.toggle("open");
       if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
     });
 
-    // Click outside to close
     document.addEventListener("click", (e) => {
       if (!user.contains(e.target)) {
         user.classList.remove("open");
@@ -50,7 +48,6 @@
       }
     });
 
-    // ESC to close
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         user.classList.remove("open");
@@ -58,16 +55,15 @@
       }
     });
 
-    // Logout → clear session & go to login
     if (logoutBtn) {
       logoutBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); // don't re-toggle menu
+        e.stopPropagation(); 
         localStorage.removeItem("sf_session");
         window.location.href = "login.html";
       });
     }
 
-    // Optional: personalize the name/role from session, if present
+    
     try {
       const session = JSON.parse(localStorage.getItem("sf_session") || "null");
       if (session) {
@@ -90,4 +86,5 @@
 </script>
 </body>
 </html>
+
 
