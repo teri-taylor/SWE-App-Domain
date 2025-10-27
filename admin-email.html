@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-role="admin">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Email — Admin</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="mail2-body">
+  <!-- App shell -->
+  <div class="mail2-shell">
+
+    <!-- Left rail: ONLY Inbox, Spam, Trash (no profile photo) -->
+    <aside class="mail2-rail" aria-label="Folders">
+    <!-- Top: Inbox -->
+    <button class="rail-btn is-active" data-folder="inbox" aria-label="Inbox">
+        <span class="label">Inbox</span>
+        <span class="count" id="countInbox">0</span>
+    </button>
+
+    <!-- Spacer pushes the rest to the bottom -->
+    <div class="rail-spacer" aria-hidden="true"></div>
+
+    <!-- Bottom: Spam, Trash -->
+    <button class="rail-btn" data-folder="spam" aria-label="Spam">
+        <span class="label">Spam</span>
+        <span class="count" id="countSpam">0</span>
+    </button>
+    <button class="rail-btn" data-folder="trash" aria-label="Trash">
+        <span class="label">Trash</span>
+        <span class="count" id="countTrash">0</span>
+    </button>
+    </aside>
+
+
+    <!-- Main column -->
+    <main class="mail2-main">
+      <!-- Top bar: search + Compose (no Ask AI) -->
+      <div class="mail2-topbar">
+        <div class="search-wrap">
+          <input id="searchInput" type="search" placeholder="Search emails, contacts or labels" />
+        </div>
+        <button id="composeBtn" class="compose-pill">
+          <span class="dot"></span> Compose
+        </button>
+      </div>
+
+      <!-- List + (optional) section headers (we removed Newsletters entirely) -->
+      <section class="mail2-list" id="mailList" aria-label="Inbox list"></section>
+    </main>
+
+    <!-- Right side read panel -->
+    <section class="mail2-read" id="mailView" aria-label="Message view">
+      <div class="empty-state">Select an email to read</div>
+    </section>
+  </div>
+
+  <!-- Compose drawer -->
+  <section class="compose-drawer" id="composeDrawer" aria-hidden="true">
+    <form id="composeForm" class="compose-form" autocomplete="off">
+      <div class="compose-row">
+        <label>To
+          <select id="toRole">
+            <option value="manager">Manager</option>
+            <option value="accountant">Accountant</option>
+          </select>
+        </label>
+        <label>Subject <input id="subject" type="text" /></label>
+      </div>
+      <label>Message
+        <textarea id="body" rows="8" placeholder="Write your message…"></textarea>
+      </label>
+      <div class="form-actions">
+        <button type="button" class="ghost" id="closeCompose">Close</button>
+        <button type="submit" class="primary">Send</button>
+      </div>
+    </form>
+  </section>
+
+  <script src="email.v2.js"></script>
+</body>
+</html>
