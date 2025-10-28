@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: websitedb
 -- ------------------------------------------------------
--- Server version	8.0.43
+-- Server version  8.0.43
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -40,11 +40,24 @@ CREATE TABLE `journalentries` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Indexes that enable fast filtering by status + date
+--   - status + date_created (filter by status within a date range)
+--   - status + date_approved (for “approved between …”)
+--   - date_created alone (general date range filter)
+--
+
+ALTER TABLE `journalentries`
+  ADD INDEX `ix_journalentries_status_date_created` (`status`, `date_created`),
+  ADD INDEX `ix_journalentries_status_date_approved` (`status`, `date_approved`),
+  ADD INDEX `ix_journalentries_date_created` (`date_created`);
+
+--
 -- Dumping data for table `journalentries`
 --
 
 LOCK TABLES `journalentries` WRITE;
 /*!40000 ALTER TABLE `journalentries` DISABLE KEYS */;
+-- (no seed rows)
 /*!40000 ALTER TABLE `journalentries` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

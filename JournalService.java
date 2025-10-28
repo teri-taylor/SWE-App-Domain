@@ -160,9 +160,6 @@ public class JournalService {
     }
 
     public List<JournalEntry> getEntriesByStatus(JournalStatus status) {
-        return journalRepo.findAll()
-                .stream()
-                .filter(e -> e.getStatus() == status)
-                .toList();
+        return journalRepo.findByStatusOrderByDateCreatedDesc(status);
     }
 }

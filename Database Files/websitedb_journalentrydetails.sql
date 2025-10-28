@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: websitedb
 -- ------------------------------------------------------
--- Server version	8.0.43
+-- Server version  8.0.43
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -27,6 +27,7 @@ CREATE TABLE `journalentrydetails` (
   `journal_id` int NOT NULL,
   `account_id` int NOT NULL,
   `debit` decimal(12,2) DEFAULT '0.00',
+  `debit` decimal(12,2) DEFAULT '0.00',
   `credit` decimal(12,2) DEFAULT '0.00',
   PRIMARY KEY (`detail_id`),
   KEY `journal_id` (`journal_id`),
@@ -37,11 +38,23 @@ CREATE TABLE `journalentrydetails` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Indexes that enable search by amount/account
+--   - debit, credit (amount lookups)
+--   - journal_id (already present; keeps join fast)
+--   - account_id (already present; for account name join)
+--
+
+ALTER TABLE `journalentrydetails`
+  ADD INDEX `ix_jed_debit` (`debit`),
+  ADD INDEX `ix_jed_credit` (`credit`);
+
+--
 -- Dumping data for table `journalentrydetails`
 --
 
 LOCK TABLES `journalentrydetails` WRITE;
 /*!40000 ALTER TABLE `journalentrydetails` DISABLE KEYS */;
+-- (no seed rows)
 /*!40000 ALTER TABLE `journalentrydetails` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

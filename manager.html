@@ -3,89 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manager</title>
+    <title>Manager | SyncFinance</title>
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            --green: #22EE77;
+            --gold: #D4AF37;
+            --blue: #002D62;
+            --offwhite: #F9F4EF;
+            --jet: #333333;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--offwhite);
+            color: var(--jet);
+            margin: 0;
+        }
+
+        .main-header {
+            background: var(--blue);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .full-logo {
+            height: 40px;
+        }
+
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .user img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        .name-role p {
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        main {
+            padding: 24px;
+        }
+
+        h2 {
+            color: var(--blue);
+            margin-bottom: 8px;
+        }
+
+        .bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 12px 0 20px;
+        }
+
+        .muted {
+            color: #666;
+        }
+
+        button {
+            background: var(--green);
+            color: var(--jet);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #1fd96a;
+            transform: scale(1.03);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: var(--blue);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background: #f5f7fa;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--jet);
+            opacity: 0.7;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 10px 12px;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+    </style>
 </head>
+
 <body>
-    <header class="main-header">
+<header class="main-header">
     <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
-    
     <div class="user">
         <img src="./images/user-profile.png" alt="User Profile Logo">
         <div class="name-role">
-        <p>Mark Green</p>
-        <p>Manager</p>
+            <p>Mark Green</p>
+            <p>Manager</p>
         </div>
 
-        
         <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
-        <button id="logout-btn" role="menuitem">Log out</button>
+            <button id="logout-btn" role="menuitem">Log out</button>
         </div>
-        
     </div>
-    </header>
+</header>
+
+<main>
+    <h2>Pending Journal Entries</h2>
+    <div id="error" class="error" style="display:none"></div>
+
+    <div class="bar">
+        <span class="muted">Viewing status: <strong>PENDING</strong></span>
+        <button id="refresh">Refresh</button>
+    </div>
+
+    <table id="tbl">
+        <thead>
+        <tr>
+            <th>PR</th>
+            <th>Date</th>
+            <th>Prepared By</th>
+            <th class="right">Debits</th>
+            <th class="right">Credits</th>
+            <th>Lines</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+        <tr><td colspan="7" class="empty">Loading…</td></tr>
+        </tbody>
+    </table>
+</main>
 
 <script>
-    
-(function () {
-  function wireProfileMenu() {
-    const user = document.querySelector(".user");
-    if (!user) return; 
+    (function () {
+        function wireProfileMenu() {
+            const user = document.querySelector(".user");
+            if (!user) return;
+            const menu = user.querySelector("#user-menu");
+            const logoutBtn = user.querySelector("#logout-btn");
 
-    const menu = user.querySelector("#user-menu");
-    const logoutBtn = user.querySelector("#logout-btn");
+            user.addEventListener("click", () => {
+                user.classList.toggle("open");
+                if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+            });
 
-    
-    user.addEventListener("click", () => {
-      user.classList.toggle("open");
-      if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
-    });
+            document.addEventListener("click", (e) => {
+                if (!user.contains(e.target)) {
+                    user.classList.remove("open");
+                    if (menu) menu.setAttribute("aria-hidden", "true");
+                }
+            });
 
-    
-    document.addEventListener("click", (e) => {
-      if (!user.contains(e.target)) {
-        user.classList.remove("open");
-        if (menu) menu.setAttribute("aria-hidden", "true");
-      }
-    });
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    user.classList.remove("open");
+                    if (menu) menu.setAttribute("aria-hidden", "true");
+                }
+            });
 
-   
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        user.classList.remove("open");
-        if (menu) menu.setAttribute("aria-hidden", "true");
-      }
-    });
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    localStorage.removeItem("sf_session");
+                    window.location.href = "login.html";
+                });
+            }
 
-    
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        localStorage.removeItem("sf_session");
-        window.location.href = "login.html";
-      });
+            try {
+                const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+                if (session) {
+                    const nameEl = user.querySelector(".name-role p:first-child");
+                    const roleEl = user.querySelector(".name-role p:last-child");
+                    if (nameEl && session.name) nameEl.textContent = session.name;
+                    if (roleEl && session.role) {
+                        roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+                    }
+                }
+            } catch {}
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", wireProfileMenu);
+        } else {
+            wireProfileMenu();
+        }
+    })();
+</script>
+
+<script>
+    async function fetchPending() {
+        const tbody = document.getElementById("tbody");
+        const error = document.getElementById("error");
+        error.style.display = "none";
+        tbody.innerHTML = `<tr><td colspan="7" class="empty">Loading…</td></tr>`;
+        try {
+            const res = await fetch("/journal/status/PENDING");
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const entries = await res.json();
+            renderRows(entries);
+        } catch (e) {
+            error.style.display = "block";
+            error.textContent = `Failed to load entries: ${e.message}`;
+            tbody.innerHTML = `<tr><td colspan="7" class="empty">Could not load data.</td></tr>`;
+        }
     }
 
-   
-    try {
-      const session = JSON.parse(localStorage.getItem("sf_session") || "null");
-      if (session) {
-        const nameEl = user.querySelector(".name-role p:first-child");
-        const roleEl = user.querySelector(".name-role p:last-child");
-        if (nameEl && session.name) nameEl.textContent = session.name;
-        if (roleEl && session.role) {
-          roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
-        }
-      }
-    } catch {}
-  }
+    function fmtMoney(n){return (+n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function fmtDate(d){return new Date(d).toLocaleString();}
+    function sum(list,type){return list.filter(x=>x.type===type).reduce((a,b)=>a+Number(b.amount||0),0);}
+    function renderRows(entries){
+        const tbody=document.getElementById("tbody");
+        if(!entries.length){tbody.innerHTML=`<tr><td colspan="7" class="empty">No pending entries.</td></tr>`;return;}
+        tbody.innerHTML=entries.map(e=>{
+            const deb=fmtMoney(sum(e.details||[],"DEBIT"));
+            const cred=fmtMoney(sum(e.details||[],"CREDIT"));
+            const who=(e.createdBy&&e.createdBy.username)||"—";
+            const pr=e.referenceNumber||`JE-${e.id}`;
+            return `<tr>
+              <td>${pr}</td><td>${fmtDate(e.dateCreated)}</td>
+              <td>${who}</td><td class="right">${deb}</td><td class="right">${cred}</td>
+              <td>${(e.details||[]).length}</td><td>${e.status}</td></tr>`;
+        }).join("");
+    }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", wireProfileMenu);
-  } else {
-    wireProfileMenu();
-  }
-})();
+    document.getElementById("refresh").addEventListener("click", fetchPending);
+    fetchPending();
 </script>
+
 </body>
 </html>
