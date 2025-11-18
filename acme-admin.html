@@ -126,10 +126,90 @@
       </div>
     </form>
   </div>
+
+  <!-- Event Log Section -->
+<section class="card-table">
+  <div class="card-table-header">
+    <h2>Event Log</h2>
+    <p class="subtitle">
+      Before and after images of all changes made to this account.
+    </p>
+  </div>
+
+  <div class="table-wrapper">
+    <table id="eventLogTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Change Type</th>
+          <th>Before</th>
+          <th>After</th>
+          <th>Changed By (User ID)</th>
+          <th>Date / Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- JS will inject rows here -->
+      </tbody>
+    </table>
+  </div>
+</section>
+
 </main>
 
-  
+  <script>
+  // TEMP: sample data so the UI is complete.
+  // Backend team can replace this with real data from the DB.
+  const sampleEventLog = [
+    {
+      id: 1,
+      type: "Created",
+      before: "— (new account)",
+      after: "Name: Acme Corporation\nCategory: Asset\nBalance: 25,000.00",
+      userId: "admin123",
+      dateTime: "2025-10-09 10:15"
+    },
+    {
+      id: 2,
+      type: "Updated Name",
+      before: "Name: Acme Corp\nCategory: Asset\nBalance: 25,950.00",
+      after: "Name: Acme Corporation\nCategory: Asset\nBalance: 25,950.00",
+      userId: "mgr001",
+      dateTime: "2025-10-12 14:03"
+    }
+  ];
+
+  function renderEventLog(events) {
+    const tbody = document.querySelector("#eventLogTable tbody");
+    if (!tbody) return;
+
+    if (!events.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="empty-cell">
+            No events recorded yet for this account.
+          </td>
+        </tr>`;
+      return;
+    }
+
+    tbody.innerHTML = events.map(ev => `
+      <tr>
+        <td>${ev.id}</td>
+        <td>${ev.type}</td>
+        <td><pre>${ev.before}</pre></td>
+        <td><pre>${ev.after}</pre></td>
+        <td>${ev.userId}</td>
+        <td>${ev.dateTime}</td>
+      </tr>
+    `).join("");
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderEventLog(sampleEventLog);
+  });
+</script>
+
 </body>
 
 </html>
-
