@@ -129,6 +129,18 @@ Login Page
 .forgot-btn{
     font-size: 15px;
 }
+.newuser-base input[type="text"],
+.newuser-base input[type="date"],
+.newuser-base input[type="password"],
+.newuser-base input[type="email"] {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
 #login-submit{
     height: 30px;
     width: 80px;
@@ -152,26 +164,223 @@ Login Page
 
 
 /**************************
-New User Page
+ New User Page
 **************************/
-.newuser-base{
-    background-color: aliceblue;
-    display:flex;
-    flex-direction: column;
-    margin: 0 auto;
-    width: 40%;
-    height: 500px;
-    border-radius: 20px;
-    text-align: center;
-    position: relative;
-    top: 100px;
-    box-shadow: rgba(205, 230, 255, 0.473) 0px 5px 15px;
+
+/* Background for this page */
+.newuser-body {
+  background-image: url(./images/background-3.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.new-input{
-    margin-bottom: 10px;
+/* Main card */
+.newuser-base {
+  background-color: aliceblue;
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto;
+  width: min(700px, 90%);
+  border-radius: 20px;
+  text-align: left;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 8px 20px;
+  padding: 24px 28px 28px;
+  box-sizing: border-box;
+  gap: 18px;
+}
+
+/* Reuse the same header style but a bit tighter here */
+.newuser-base .header {
+  margin: 0;
+  position: static;
+  text-align: center;
+}
+
+.newuser-base .header h1 {
+  margin: 0;
+}
+
+/* Layout for the form content */
+.newuser-base .main-content {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Grouped inputs */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Center each row of inputs and keep consistent width */
+.newuser-base .user-info > .new-input {
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+
+/* Name, address rows as grids */
+#name-input,
+#address {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* Make state + zip span the full row and match other box sizes */
+#state-code {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  grid-column: 1 / span 2;   /* <— this centers the State/Zip row */
+}
+
+/* Birthday row centered and same width */
+#date-of-birth {
+  display: flex;
+  flex-direction: column;
+  max-width: none;            /* override old 240px */
+}
+
+/* Basic input styling */
+.newuser-base input[type="text"],
+.newuser-base input[type="date"],
+.newuser-base input[type="password"] {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+.new-input {
+  margin-bottom: 0; /* handled by gap now */
+}
+
+.password-req {
+  background-color: #e7f2ff;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  max-width: 540px;
+  margin: 0 auto;        /* center the box */
+  text-align: center;    /* center the text */
+}
+
+.password-req p:first-child {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* Password section */
+.create-password {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 540px;   /* same width as other rows */
+  margin: 0 auto;     /* center the block */
+}
+
+/* Make password boxes same size as other inputs */
+.create-password input[type="password"] {
+  width: 80%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  margin: 0 auto;
+  
+}
+
+/* ====== Password Validation Errors ====== */
+.error-msg {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  margin-top: -6px;
+  margin-bottom: 6px;
+  display: none;
+}
+
+.input-error {
+  border: 1px solid #b91c1c !important;
+}
+
+
+/* Submit button */
+.submit-btn {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.nxt-btn {
+  padding: 8px 18px;
+  border-radius: 15px;
+  border: 1px solid #001f3f;
+  background-color: #001f3f;
+  color: aliceblue;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.nxt-btn:hover {
+  cursor: pointer;
+  background-color: #0d2b4a;
+}
+
+/* Mobile responsive tweaks */
+@media (max-width: 640px) {
+  .newuser-base {
+    padding: 20px 16px;
+    margin: 16px auto;
+  }
+
+  #name-input,
+  #address,
+  #state-code {
+    grid-template-columns: 1fr;
+  }
+}
+
+/**************************
+Security Questions
+**************************/
+/* Security Questions form inside the New User card */
+.sec-form {
+  max-width: 540px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sec-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Make selects look like the other inputs */
+.newuser-base select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  box-sizing: border-box;
 }
     
+
 /**************************
 Admin Chart of Accounts Page
 **************************/
@@ -494,6 +703,64 @@ input[readonly], textarea[readonly] { background:#f9fafb; color:#374151; border-
   background: #f3f4f6;
 }
 
+/* Event Log Card (Admin Account Detail) */
+.card-table {
+  margin-top: 24px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.card-table-header h2 {
+  margin: 0;
+}
+
+.card-table-header .subtitle {
+  margin: 4px 0 16px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#eventLogTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+#eventLogTable th,
+#eventLogTable td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+
+#eventLogTable thead th {
+  background: #001f3f;
+  color: #fff;
+  text-align: left;
+}
+
+#eventLogTable tr:nth-child(even) td {
+  background: #f5f7fa;
+}
+
+#eventLogTable pre {
+  margin: 0;
+  font-family: inherit;
+  white-space: pre-wrap;
+}
+
+.empty-cell {
+  text-align: center;
+  color: #666;
+  padding: 18px 10px;
+}
 
 
 /* ====== Email v2 Shell ====== */
