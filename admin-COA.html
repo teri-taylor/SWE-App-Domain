@@ -8,64 +8,392 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=SUSE+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #22EE77;
+            --gold: #D4AF37;
+            --blue: #002D62;
+            --offwhite: #F9F4EF;
+            --jet: #333333;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            color: var(--jet);
+            margin: 0;
+        }
+
+        /* Header */
+        .main-header {
+            background: #ffffff;        /* white header */
+            color: var(--jet);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .full-logo {
+            height: 40px;
+        }
+
+        /* Hamburger */
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: inline-flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 3px;
+            background: var(--blue);   /* dark blue lines */
+            border-radius: 999px;
+        }
+
+        /* User profile */
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        .name-role p {
+            margin: 0;
+            line-height: 1.2;
+            color: var(--jet);
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 52px;
+            right: 0;
+            background: #ffffff;
+            color: #000;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 8px;
+            min-width: 120px;
+            display: none;
+        }
+
+        .user.open .user-menu {
+            display: block;
+        }
+
+        .user-menu button {
+            width: 100%;
+            background: transparent;
+            color: #111827;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .user-menu button:hover {
+            background: #e5e7eb;
+        }
+
+        main.adminCOA-main {
+            padding: 24px;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: var(--blue);
+            margin-bottom: 16px;
+        }
+
+        /* Side navigation (hamburger menu) */
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: -240px;
+            width: 220px;
+            height: 100vh;
+            background: var(--blue);             /* lighter blue */
+            color: #ffffff;
+            padding: 20px 16px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.25);
+            transition: left 0.2s ease-out;
+            z-index: 1000;
+        }
+
+        .side-nav.open {
+            left: 0;
+        }
+
+        .side-nav h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .side-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 12px 0;
+        }
+
+        .side-nav li {
+            margin-bottom: 8px;
+        }
+
+        .side-nav a {
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            padding: 6px 4px;
+            border-radius: 4px;
+        }
+
+        .side-nav a:hover {
+            background: rgba(255,255,255,0.18);
+        }
+
+        .side-nav .add-link {
+            margin-top: 12px;
+            font-weight: 600;
+        }
+
+        /* Overlay */
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: none;
+            z-index: 900;
+        }
+
+        .nav-overlay.show {
+            display: block;
+        }
+
+        /* Client table */
+        .client-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+
+        .client-table th,
+        .client-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .client-table th {
+            background: var(--blue);
+            color: #ffffff;
+        }
+
+        .client-table tr:nth-child(even) {
+            background: #f5f7fa;
+        }
+
+        .client-link {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .client-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
+
 <body>
+    <!-- Side nav + overlay -->
+    <nav class="side-nav" id="side-nav" aria-hidden="true">
+        <h3>Admin Menu</h3>
+        <ul>
+            <li><a href="./admin.html">Dashboard</a></li>
+            <li><a href="./admin-COA.html">Client Management</a></li>
+        </ul>
+        <!-- Moved "Add Account" into the side nav -->
+        <a class="add-link" href="./add-account.html">+ Add Account</a>
+    </nav>
+    <div class="nav-overlay" id="nav-overlay"></div>
+
     <header class="main-header">
-        <a href="./admin.html"><img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo"></a>
-        
+        <div class="header-left">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <a href="./admin.html">
+                <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+            </a>
+        </div>
+
         <div class="user">
-                <img src="./images/user-profile.png" alt="User Profile Logo">
-                <div class="name-role">
-                    <p>Jane Doe</p>
-                    <p>Administrator</p>
-                </div>
+            <img src="./images/user-profile.png" alt="User Profile Logo">
+            <div class="name-role">
+                <p>Jane Doe</p>
+                <p>Administrator</p>
             </div>
+
+            <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
+                <button id="logout-btn" role="menuitem">Log out</button>
+            </div>
+        </div>
     </header>
 
     <main class="adminCOA-main">
-  <h1>Client Management</h1>
+        <h1>Client Management</h1>
 
-  <!-- Page actions -->
-  <div class="page-actions">
-    <!-- Optional: choose a client for add; default Acme in this demo -->
-    <a class="primary add-inline" href="./add-account.html">+ Add Account</a>
-  </div>
+        <section class="all-clients">
+            <table class="client-table">
+                <caption class="sr-only">Client Accounts</caption>
+                <thead>
+                <tr>
+                    <th scope="col">Company</th>
+                    <th scope="col">Account Manager</th>
+                </tr>
+                </thead>
+                <tbody id="clientListBody">
+                <tr>
+                    <td>
+                        <a class="client-link" href="./acme-admin.html">Acme Corporation</a>
+                    </td>
+                    <td>Jordan Lee</td>
+                </tr>
+                <!--
+                <tr>
+                  <td><a class="client-link" href="client.html?client=Brightstone%20Analytics">Brightstone Analytics</a></td>
+                  <td>Riley Morgan</td>
+                </tr>
+                <tr>
+                  <td><a class="client-link" href="client.html?client=Evergreen%20Solutions">Evergreen Solutions</a></td>
+                  <td>Taylor Nguyen</td>
+                </tr>
+                -->
+                </tbody>
+            </table>
+        </section>
+    </main>
 
-  <section class="all-clients">
-    <table class="client-table">
-      <caption class="sr-only">Client Accounts</caption>
-      <thead>
-        <tr>
-          <th scope="col">Company</th>
-          <th scope="col">Account Manager</th>
-        </tr>
-      </thead>
-      <tbody id="clientListBody">
-        <tr>
-          <td>
-            <a class="client-link" href="./acme-admin.html">Acme Corporation</a>
-          </td>
-          <td>Jordan Lee</td>
-        </tr>
-        <!--
-        <tr>
-          <td><a class="client-link" href="client.html?client=Brightstone%20Analytics">Brightstone Analytics</a></td>
-          <td>Riley Morgan</td>
-        </tr>
-        <tr>
-          <td><a class="client-link" href="client.html?client=Evergreen%20Solutions">Evergreen Solutions</a></td>
-          <td>Taylor Nguyen</td>
-        </tr>
-        -->
-      </tbody>
-    </table>
-  </section>
-</main>
+    <script>
+        // Profile menu + logout (optional, same pattern as other pages)
+        (function () {
+            const user = document.querySelector(".user");
+            if (!user) return;
+            const menu = user.querySelector("#user-menu");
+            const logoutBtn = user.querySelector("#logout-btn");
 
+            user.addEventListener("click", () => {
+                user.classList.toggle("open");
+                if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+            });
 
-<script src="script.js"></script>
+            document.addEventListener("click", (e) => {
+                if (!user.contains(e.target)) {
+                    user.classList.remove("open");
+                    if (menu) menu.setAttribute("aria-hidden", "true");
+                }
+            });
 
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    user.classList.remove("open");
+                    if (menu) menu.setAttribute("aria-hidden", "true");
+                }
+            });
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    localStorage.removeItem("sf_session");
+                    window.location.href = "login.html";
+                });
+            }
+
+            // Optional: fill name/role from sf_session
+            try {
+                const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+                if (session) {
+                    const nameEl = user.querySelector(".name-role p:first-child");
+                    const roleEl = user.querySelector(".name-role p:last-child");
+                    if (nameEl && session.name) nameEl.textContent = session.name;
+                    if (roleEl && session.role) {
+                        roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+                    }
+                }
+            } catch {}
+        })();
+    </script>
+
+    <script>
+        // Hamburger / side nav
+        (function () {
+            const toggle = document.getElementById("menu-toggle");
+            const sideNav = document.getElementById("side-nav");
+            const overlay = document.getElementById("nav-overlay");
+
+            function openNav() {
+                sideNav.classList.add("open");
+                overlay.classList.add("show");
+                sideNav.setAttribute("aria-hidden", "false");
+            }
+
+            function closeNav() {
+                sideNav.classList.remove("open");
+                overlay.classList.remove("show");
+                sideNav.setAttribute("aria-hidden", "true");
+            }
+
+            toggle.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (sideNav.classList.contains("open")) {
+                    closeNav();
+                } else {
+                    openNav();
+                }
+            });
+
+            overlay.addEventListener("click", closeNav);
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    closeNav();
+                }
+            });
+        })();
+    </script>
+
+    <script src="script.js"></script>
 </body>
-
 </html>
-
