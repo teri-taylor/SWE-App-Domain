@@ -8,77 +8,168 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
 </head>
-<body>
-  <div class="base">
+
+<body class="newuser-body"><!-- same background as New User -->
+  <div class="newuser-base"><!-- same card as New User -->
+
+    <!-- Logo header (clickable back to index/login if you want) -->
+    <button type="button" id="login-header">
+      <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+    </button>
 
     <div class="header">
       <h1>Security Questions</h1>
     </div>
 
-    <div class="questions">
+    <div class="main-content">
 
-      <div class="question1">
-        <select name="security-questions" id="question1">
-          <option value="">-- Select a question --</option>
-          <option value="pet">What was the name of your first pet?</option>
-          <option value="maiden">What is your mother's maiden name?</option>
-          <option value="city">In what city were you born?</option>
-          <option value="car">What was the make of your first car?</option>
-          <option value="food">What was your favorite food as a child?</option>
-          <option value="grad-year">What year did you graduate from high school?</option>
-          <option value="street">What was the name of the street you grew up on?</option>
-          <option value="school">What was the name of your elementary school?</option>
-          <option value="spouse">Where did you meet your spouse or partner?</option>
-          <option value="job">What was the name of your first job?</option>
-        </select>
-        <input type="text" name="q1-answer" id="q1-answer">
-      </div>
+      <p style="max-width:540px;margin:0 auto 8px;text-align:center;">
+        Choose three security questions and enter your answers.
+        You’ll be asked these if you ever need to reset your password.
+      </p>
 
-      <div class="question2">
-        <select name="security-questions" id="question2">
-          <option value="">-- Select a question --</option>
-          <option value="pet">What was the name of your first pet?</option>
-          <option value="maiden">What is your mother's maiden name?</option>
-          <option value="city">In what city were you born?</option>
-          <option value="car">What was the make of your first car?</option>
-          <option value="food">What was your favorite food as a child?</option>
-          <option value="grad-year">What year did you graduate from high school?</option>
-          <option value="street">What was the name of the street you grew up on?</option>
-          <option value="school">What was the name of your elementary school?</option>
-          <option value="spouse">Where did you meet your spouse or partner?</option>
-          <option value="job">What was the name of your first job?</option>
-        </select>
-        <input type="text" name="q2-answer" id="q2-answer">
-      </div>
+      <form id="security-form" class="sec-form">
+        <div class="sec-row">
+          <select name="security-questions-1" id="question1">
+            <option value="">-- Select a question --</option>
+            <option value="pet">What was the name of your first pet?</option>
+            <option value="maiden">What is your mother's maiden name?</option>
+            <option value="city">In what city were you born?</option>
+            <option value="car">What was the make of your first car?</option>
+            <option value="food">What was your favorite food as a child?</option>
+            <option value="grad-year">What year did you graduate from high school?</option>
+            <option value="street">What was the name of the street you grew up on?</option>
+            <option value="school">What was the name of your elementary school?</option>
+            <option value="spouse">Where did you meet your spouse or partner?</option>
+            <option value="job">What was the name of your first job?</option>
+          </select>
+          <input type="text" name="q1-answer" id="q1-answer" placeholder="Answer">
+        </div>
 
-      <div class="question3">
-        <select name="security-questions" id="question3">
-          <option value="">-- Select a question --</option>
-          <option value="pet">What was the name of your first pet?</option>
-          <option value="maiden">What is your mother's maiden name?</option>
-          <option value="city">In what city were you born?</option>
-          <option value="car">What was the make of your first car?</option>
-          <option value="food">What was your favorite food as a child?</option>
-          <option value="grad-year">What year did you graduate from high school?</option>
-          <option value="street">What was the name of the street you grew up on?</option>
-          <option value="school">What was the name of your elementary school?</option>
-          <option value="spouse">Where did you meet your spouse or partner?</option>
-          <option value="job">What was the name of your first job?</option>
-        </select>
-        <input type="text" name="q3-answer" id="q3-answer">
-      </div>
+        <div class="sec-row">
+          <select name="security-questions-2" id="question2">
+            <option value="">-- Select a question --</option>
+            <option value="pet">What was the name of your first pet?</option>
+            <option value="maiden">What is your mother's maiden name?</option>
+            <option value="city">In what city were you born?</option>
+            <option value="car">What was the make of your first car?</option>
+            <option value="food">What was your favorite food as a child?</option>
+            <option value="grad-year">What year did you graduate from high school?</option>
+            <option value="street">What was the name of the street you grew up on?</option>
+            <option value="school">What was the name of your elementary school?</option>
+            <option value="spouse">Where did you meet your spouse or partner?</option>
+            <option value="job">What was the name of your first job?</option>
+          </select>
+          <input type="text" name="q2-answer" id="q2-answer" placeholder="Answer">
+        </div>
+
+        <div class="sec-row">
+          <select name="security-questions-3" id="question3">
+            <option value="">-- Select a question --</option>
+            <option value="pet">What was the name of your first pet?</option>
+            <option value="maiden">What is your mother's maiden name?</option>
+            <option value="city">In what city were you born?</option>
+            <option value="car">What was the make of your first car?</option>
+            <option value="food">What was your favorite food as a child?</option>
+            <option value="grad-year">What year did you graduate from high school?</option>
+            <option value="street">What was the name of the street you grew up on?</option>
+            <option value="school">What was the name of your elementary school?</option>
+            <option value="spouse">Where did you meet your spouse or partner?</option>
+            <option value="job">What was the name of your first job?</option>
+          </select>
+          <input type="text" name="q3-answer" id="q3-answer" placeholder="Answer">
+        </div>
+
+        <div class="submit-btn">
+          <button type="submit" class="nxt-btn sec-submit">SUBMIT</button>
+        </div>
+      </form>
 
     </div>
-
-    <div class="submit">
-      <button class="sec-submit">SUBMIT</button>
-    </div>
-
   </div>
-  
-  <script src="script.js"></script>
 
+  <script src="script.js">
+    // select only one question
+    document.addEventListener('DOMContentLoaded', () => {
+      const selects = document.querySelectorAll('select');
+
+      function updateOptions() {
+        const selectedValues = Array.from(selects)
+          .map(select => select.value)
+          .filter(val => val !== "");
+
+        selects.forEach(select => {
+          const currentValue = select.value;
+
+          Array.from(select.options).forEach(option => {
+            if (option.value === "") {
+              option.disabled = false; // Always allow default/empty
+            } else {
+              // Disable if selected elsewhere, but not in current select
+              option.disabled = selectedValues.includes(option.value) && option.value !== currentValue;
+            }
+          });
+        });
+      }
+
+      selects.forEach(select => {
+        select.addEventListener('change', updateOptions);
+      });
+
+      updateOptions(); // Run once on page load
+    });
+
+
+
+    // answer all questions before submitting
+    document.addEventListener('DOMContentLoaded', () => {
+      const selects = document.querySelectorAll('select');
+      const submitButton = document.querySelector('.sec-submit');
+      const inputs = [
+        document.getElementById('q1-answer'),
+        document.getElementById('q2-answer'),
+        document.getElementById('q3-answer'),
+      ];
+
+      // Disable duplicate question selections
+      function updateOptions() {
+        const selectedValues = Array.from(selects)
+          .map(select => select.value)
+          .filter(val => val !== "");
+
+        selects.forEach(select => {
+          const currentValue = select.value;
+
+          Array.from(select.options).forEach(option => {
+            if (option.value === "") {
+              option.disabled = false;
+            } else {
+              option.disabled = selectedValues.includes(option.value) && option.value !== currentValue;
+            }
+          });
+        });
+      }
+
+      selects.forEach(select => {
+        select.addEventListener('change', updateOptions);
+      });
+
+      updateOptions();
+
+      // Validate answers on submit
+      submitButton.addEventListener('click', (e) => {
+        const allFilled = inputs.every(input => input.value.trim() !== "");
+
+        if (!allFilled) {
+          e.preventDefault(); // Stop any form submission or action
+          alert('Please answer all 3 questions before submitting.');
+        } else {
+          alert('Form submitted successfully!');
+          // If needed, do additional logic here (submit to server, etc.)
+        }
+      });
+    });
+  </script>
 </body>
 </html>
