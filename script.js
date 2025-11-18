@@ -7,22 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 })
 
-//New User Btn Navigation
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('newuserbtn');
-  if (!btn) return;
-  btn.addEventListener('click', () => {
-    window.location.assign('./new-user.html')
-  })
-})
-//Returning User Btn Navigation
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('returningbtn');
-  if (!btn) return;
-  btn.addEventListener('click', () => {
-    window.location.assign('./login.html')
-  })
-})
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('login-header');
