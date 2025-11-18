@@ -11,28 +11,54 @@
             --green: #22EE77;
             --gold: #D4AF37;
             --blue: #002D62;
-            --offwhite: #F9F4EF;
+            --offwhite: #f5f7fb;;
             --jet: #333333;
             font-family: "Segoe UI", Roboto, Arial, sans-serif;
         }
 
         body {
-            background: var(--offwhite);
+            background: white;
             color: var(--jet);
             margin: 0;
         }
 
+        /* Header */
         .main-header {
-            background: var(--blue);
-            color: white;
+            background: white;        /* changed */
+            color: var(--jet);          /* text now dark */
             padding: 16px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;  /* subtle divider */
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         .full-logo {
             height: 40px;
+        }
+
+        /* Hamburger */
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: inline-flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 3px;
+            background: var(--blue);   /* CHANGED to dark blue */
+            border-radius: 999px;
         }
 
         .user {
@@ -40,6 +66,7 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
+            position: relative;
         }
 
         .user img {
@@ -53,42 +80,114 @@
             line-height: 1.2;
         }
 
+        .user-menu {
+            position: absolute;
+            top: 52px;
+            right: 0;
+            background: #ffffff;
+            color: #000;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 8px;
+            min-width: 120px;
+            display: none;
+        }
+
+        .user.open .user-menu {
+            display: block;
+        }
+
+        .user-menu button {
+            width: 100%;
+            background: transparent;
+            color: #111827;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .user-menu button:hover {
+            background: #e5e7eb;
+        }
+
         main {
             padding: 24px;
         }
 
         h2 {
             color: var(--blue);
-            margin-bottom: 8px;
-        }
-
-        .bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 12px 0 20px;
+            margin-bottom: 4px;
         }
 
         .muted {
             color: #666;
+            margin-bottom: 16px;
         }
 
-        button {
-            background: var(--green);
-            color: var(--jet);
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
+        /* Side navigation (hamburger menu) */
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: -240px;
+            width: 220px;
+            height: 100vh;
+            background: #002D62;             /* LIGHTER BLUE */
+            color: #ffffff;
+            padding: 20px 16px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.25);
+            transition: left 0.2s ease-out;
+            z-index: 1000;
         }
 
-        button:hover {
-            background: #1fd96a;
-            transform: scale(1.03);
+        .side-nav.open {
+            left: 0;
         }
 
+        .side-nav h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .side-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .side-nav li {
+            margin-bottom: 8px;
+        }
+
+        .side-nav a {
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            padding: 6px 4px;
+            border-radius: 4px;
+        }
+
+        .side-nav a:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        /* Overlay darken when menu open (optional) */
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: none;
+            z-index: 900;
+        }
+
+        .nav-overlay.show {
+            display: block;
+        }
+
+        /* Accounts table */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -96,6 +195,7 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-size: 14px;
         }
 
         th {
@@ -114,31 +214,60 @@
             background: #f5f7fa;
         }
 
+        tr.account-row {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tr.account-row:hover {
+            background: #e0f2fe;
+        }
+
         .right {
             text-align: right;
         }
 
-        .empty {
-            text-align: center;
-            padding: 20px;
-            color: var(--jet);
-            opacity: 0.7;
+        .status-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
         }
 
-        .error {
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
             background: #fee2e2;
-            color: #991b1b;
-            padding: 10px 12px;
-            border: 1px solid #fecaca;
-            border-radius: 8px;
-            margin-bottom: 16px;
+            color: #b91c1c;
         }
     </style>
 </head>
 
 <body>
+<!-- Side nav + overlay -->
+<nav class="side-nav" id="side-nav" aria-hidden="true">
+    <h3>Manager Menu</h3>
+    <ul>
+        <li><a href="journal.html">Journal Entries</a></li>
+        <li><a href="financial-reports.html">Financial Reports</a></li>
+    </ul>
+</nav>
+<div class="nav-overlay" id="nav-overlay"></div>
+
 <header class="main-header">
-    <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+    <div class="header-left">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+    </div>
+
     <div class="user">
         <img src="./images/user-profile.png" alt="User Profile Logo">
         <div class="name-role">
@@ -153,33 +282,27 @@
 </header>
 
 <main>
-    <h2>Pending Journal Entries</h2>
-    <div id="error" class="error" style="display:none"></div>
+    <h2>Customer Accounts</h2>
+    <p class="muted">Select an account to view its ledger and activity.</p>
 
-    <div class="bar">
-        <span class="muted">Viewing status: <strong>PENDING</strong></span>
-        <button id="refresh">Refresh</button>
-    </div>
-
-    <table id="tbl">
+    <table>
         <thead>
         <tr>
-            <th>PR</th>
-            <th>Date</th>
-            <th>Prepared By</th>
-            <th class="right">Debits</th>
-            <th class="right">Credits</th>
-            <th>Lines</th>
+            <th>Account #</th>
+            <th>Customer Name</th>
+            <th>Type</th>
             <th>Status</th>
+            <th class="right">Current Balance</th>
         </tr>
         </thead>
-        <tbody id="tbody">
-        <tr><td colspan="7" class="empty">Loading…</td></tr>
+        <tbody id="accounts-body">
+        <!-- Filled by JavaScript -->
         </tbody>
     </table>
 </main>
 
 <script>
+    // ===== Profile menu & session (same pattern you already use) =====
     (function () {
         function wireProfileMenu() {
             const user = document.querySelector(".user");
@@ -214,6 +337,7 @@
                 });
             }
 
+            // Fill name + role from sf_session if present
             try {
                 const session = JSON.parse(localStorage.getItem("sf_session") || "null");
                 if (session) {
@@ -236,48 +360,94 @@
 </script>
 
 <script>
-    async function fetchPending() {
-        const tbody = document.getElementById("tbody");
-        const error = document.getElementById("error");
-        error.style.display = "none";
-        tbody.innerHTML = `<tr><td colspan="7" class="empty">Loading…</td></tr>`;
-        try {
-            const res = await fetch("/journal/status/PENDING");
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const entries = await res.json();
-            renderRows(entries);
-        } catch (e) {
-            error.style.display = "block";
-            error.textContent = `Failed to load entries: ${e.message}`;
-            tbody.innerHTML = `<tr><td colspan="7" class="empty">Could not load data.</td></tr>`;
+    // ===== Hamburger / side nav =====
+    (function () {
+        const toggle = document.getElementById("menu-toggle");
+        const sideNav = document.getElementById("side-nav");
+        const overlay = document.getElementById("nav-overlay");
+
+        function openNav() {
+            sideNav.classList.add("open");
+            overlay.classList.add("show");
+            sideNav.setAttribute("aria-hidden", "false");
         }
-    }
 
-    function fmtMoney(n){return (+n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
-    function fmtDate(d){return new Date(d).toLocaleString();}
-    function sum(list,type){return list.filter(x=>x.type===type).reduce((a,b)=>a+Number(b.amount||0),0);}
-    function renderRows(entries){
-        const tbody=document.getElementById("tbody");
-        if(!entries.length){tbody.innerHTML=`<tr><td colspan="7" class="empty">No pending entries.</td></tr>`;return;}
-        tbody.innerHTML=entries.map(e=>{
-            const deb=fmtMoney(sum(e.details||[],"DEBIT"));
-            const cred=fmtMoney(sum(e.details||[],"CREDIT"));
-            const who=(e.createdBy&&e.createdBy.username)||"—";
-            const pr=e.referenceNumber||`JE-${e.id}`;
-            return `<tr>
-              <td>${pr}</td><td>${fmtDate(e.dateCreated)}</td>
-              <td>${who}</td><td class="right">${deb}</td><td class="right">${cred}</td>
-              <td>${(e.details||[]).length}</td><td>${e.status}</td></tr>`;
-        }).join("");
-    }
+        function closeNav() {
+            sideNav.classList.remove("open");
+            overlay.classList.remove("show");
+            sideNav.setAttribute("aria-hidden", "true");
+        }
 
-    document.getElementById("refresh").addEventListener("click", fetchPending);
-    fetchPending();
+        toggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (sideNav.classList.contains("open")) {
+                closeNav();
+            } else {
+                openNav();
+            }
+        });
+
+        overlay.addEventListener("click", closeNav);
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                closeNav();
+            }
+        });
+    })();
 </script>
 
+<script>
+    // ===== Customer accounts list =====
+    // For now using sample data; later you can replace with fetch('/accounts') or whatever the admin page uses.
+    const sampleAccounts = [
+        { id: "C-1001", name: "Acme Corporation", type: "Business", status: "ACTIVE", balance: 12500.50 },
+        { id: "C-1002", name: "Brightside Retail", type: "Business", status: "ACTIVE", balance: 8420.00 },
+        { id: "C-1003", name: "Emma Johnson", type: "Individual", status: "INACTIVE", balance: 0.00 },
+        { id: "C-1004", name: "Greenfield Supplies", type: "Business", status: "ACTIVE", balance: 23150.75 }
+    ];
 
+    function fmtMoney(n) {
+        return (+n || 0).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function renderAccounts(accounts) {
+        const tbody = document.getElementById("accounts-body");
+        if (!accounts.length) {
+            tbody.innerHTML = `<tr><td colspan="5" class="empty">No customer accounts found.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = accounts.map(acc => `
+          <tr class="account-row" onclick="openAccount('${acc.id}')">
+            <td>${acc.id}</td>
+            <td>${acc.name}</td>
+            <td>${acc.type}</td>
+            <td>
+                <span class="status-pill ${acc.status === 'ACTIVE' ? 'status-active' : 'status-inactive'}">
+                    ${acc.status}
+                </span>
+            </td>
+            <td class="right">${fmtMoney(acc.balance)}</td>
+          </tr>
+        `).join("");
+    }
+
+    function openAccount(accountId) {
+        // Later this can go to your ledger page for that account
+        // e.g., ledger.html?account=C-1001
+        window.location.href = `ledger.html?account=${encodeURIComponent(accountId)}`;
+    }
+
+    // If you have a real API, you can swap this function to call fetch('/api/accounts') instead.
+    renderAccounts(sampleAccounts);
+</script>
 
 </body>
 </html>
+
 
 
