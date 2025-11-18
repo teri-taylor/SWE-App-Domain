@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manager – Financial Reports</title>
+  <link rel="stylesheet" href="manager-ui.css">
+</head>
+<body>
+  <main class="reports-page">
+    <section class="reports-card">
+      <h1>Financial Reports</h1>
+
+      <form id="report-filters" class="reports-form">
+        <!-- Row 1: Report type + date or date range -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reportType">Report Type</label>
+            <select id="reportType">
+              <option value="trialBalance">Trial Balance</option>
+              <option value="incomeStatement">Income Statement</option>
+              <option value="balanceSheet">Balance Sheet</option>
+              <option value="retainedEarnings">Retained Earnings</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="reportDateFrom">From</label>
+            <input type="date" id="reportDateFrom">
+          </div>
+
+          <div class="form-group">
+            <label for="reportDateTo">To</label>
+            <input type="date" id="reportDateTo">
+          </div>
+        </div>
+
+        <!-- Row 2: Buttons -->
+        <div class="button-row">
+          <button type="button" id="generateBtn">Generate</button>
+          <button type="button" id="saveBtn">Save</button>
+          <button type="button" id="emailBtn">Email</button>
+          <button type="button" id="printBtn">Print</button>
+        </div>
+      </form>
+
+      <!-- Where the report table will show up -->
+      <div id="report-output" class="report-output">
+        <p class="placeholder-text">
+          Select a report type and date range, then click <strong>Generate</strong>.
+        </p>
+      </div>
+    </section>
+
+
+
+  </main>
+
+  <script>
+    // --- Sample "fake" data for each report type ---
+const sampleReports = {
+  trialBalance: {
+    headers: ["Account", "Debit", "Credit"],
+    rows: [
+      ["Cash", "10,000", ""],
+      ["Accounts Receivable", "5,000", ""],
+      ["Revenue", "", "12,000"],
+      ["Utilities Expense", "2,000", ""]
+    ],
+    footer: ["Totals", "17,000", "12,000"]
+  },
+  incomeStatement: {
+    headers: ["Item", "Amount"],
+    rows: [
+      ["Sales Revenue", "50,000"],
+      ["Cost of Goods Sold", "(30,000)"],
+      ["Gross Profit", "20,000"],
+      ["Operating Expenses", "(8,000)"]
+    ],
+    footer: ["Net Income", "12,000"]
+  },
+  balanceSheet: {
+    headers: ["Item", "Amount"],
+    rows: [
+      ["Total Assets", "100,000"],
+      ["Total Liabilities", "40,000"],
+      ["Total Equity", "60,000"]
+    ],
+    footer: ["Assets = Liabilities + Equity", "100,000 = 40,000 + 60,000"]
+  },
+  retainedEarnings: {
+    headers: ["Item", "Amount"],
+    rows: [
+      ["Beginning Retained Earnings", "25,000"],
+      ["+ Net Income", "12,000"],
+      ["- Dividends", "(3,000)"]
+    ],
+    footer: ["Ending Retained Earnings", "34,000"]
+  }
+};
+
+// --- DOM elements ---
+const reportTypeSelect = document.getElementById("reportType");
+const dateFromInput = document.getElementById("reportDateFrom");
+const dateToInput = document.getElementById("reportDateTo");
+const generateBtn = document.getElementById("generateBtn");
+const saveBtn = document.getElementById("saveBtn");
+const emailBtn = document.getElementById("emailBtn");
+const printBtn = document.getElementById("printBtn");
+const reportOutput = document.getElementById("report-output");
+
+// --- Helper: Build HTML table for a report ---
+function buildReportTable(reportData) {
+  const { headers, rows, footer } = reportData;
+
+  // Start table
+  let html = '<table class="report-table"><thead><tr>';
+  headers.forEach(h => {
+    html += `<th>${h}</th>`;
+  });
+  html += "</tr></thead><tbody>";
+
+  // Rows
+  rows.forEach(row => {
+    html += "<tr>";
+    row.forEach(cell => {
+      html += `<td>${cell}</td>`;
+    });
+    html += "</tr>";
+  });
+
+  html += "</tbody>";
+
+  // Footer (totals, etc.)
+  if (footer && footer.length) {
+    html += "<tfoot><tr>";
+    footer.forEach(cell => {
+      html += `<td>${cell}</td>`;
+    });
+    html += "</tr></tfoot>";
+  }
+
+  html += "</table>";
+  return html;
+}
+
+// --- Generate button click ---
+generateBtn.addEventListener("click", () => {
+  const type = reportTypeSelect.value;
+  const from = dateFromInput.value;
+  const to = dateToInput.value;
+
+  const reportData = sampleReports[type];
+
+  if (!reportData) {
+    reportOutput.innerHTML =
+      '<p class="placeholder-text">No data found for this report type.</p>';
+    return;
+  }
+
+  let headingText = "";
+  switch (type) {
+    case "trialBalance":
+      headingText = "Trial Balance";
+      break;
+    case "incomeStatement":
+      headingText = "Income Statement";
+      break;
+    case "balanceSheet":
+      headingText = "Balance Sheet";
+      break;
+    case "retainedEarnings":
+      headingText = "Retained Earnings Statement";
+      break;
+  }
+
+  let dateText = "";
+  if (from || to) {
+    dateText = `<p><strong>Period:</strong> ${from || "N/A"} to ${to || "N/A"}</p>`;
+  }
+
+  const tableHtml = buildReportTable(reportData);
+
+  reportOutput.innerHTML = `
+    <h2>${headingText}</h2>
+    ${dateText}
+    ${tableHtml}
+  `;
+});
+
+// --- Save button (front-end only for now) ---
+saveBtn.addEventListener("click", () => {
+  alert("Save feature will be implemented with the backend.\nFor Sprint 4, this is just a placeholder.");
+});
+
+// --- Email button (front-end only for now) ---
+emailBtn.addEventListener("click", () => {
+  alert("Email feature will be implemented with the backend.\nFor Sprint 4, this is just a placeholder.");
+});
+
+// --- Print button: just print the page for now ---
+printBtn.addEventListener("click", () => {
+  window.print();
+});
+
+
+
+  </script>
+</body>
+</html>
