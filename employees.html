@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Employee Manager</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* --- scoped styles for this page --- */
+    .em-shell{max-width:1000px;margin:24px auto;padding:0 12px;display:flex;flex-direction:column;gap:14px}
+    .em-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .em-title{font-size:22px;margin:0}
+    .em-search{flex:1;display:flex;justify-content:flex-end}
+    .em-search input{width:360px;max-width:100%;border:1px solid #dbe3f3;border-radius:12px;padding:10px 12px;font:inherit}
+
+    .em-card{background:#fff;border:1px solid #e8ecf7;border-radius:14px;box-shadow:rgba(0,0,0,.06) 0 4px 12px}
+    .em-list{padding:6px}
+    .em-head,.em-row summary{
+      display:grid;grid-template-columns:1fr 170px;gap:12px;align-items:center
+    }
+    .em-head{padding:10px 12px;color:#667085;font-weight:700}
+    .em-row{border-radius:12px;overflow:hidden;margin:6px 4px}
+    .em-row summary{
+      list-style:none;cursor:pointer;padding:12px;border-radius:12px
+    }
+    .em-row[open] summary{background:#f4f7ff;border:1px solid #cfd9ff}
+    .em-row summary::-webkit-details-marker{display:none}
+
+    .em-name{font-weight:700}
+    .em-role{justify-self:end;font-weight:600;color:#3949ab}
+    .em-row:hover summary{background:#f7f9ff}
+
+    .em-body{padding:10px 12px 14px;border-top:1px solid #eef2ff;background:#fff}
+    .em-grid{display:grid;grid-template-columns:200px 1fr;gap:8px 14px}
+    .em-grid div:nth-child(odd){color:#667085}
+    .muted{color:#7a8599}
+
+    @media (max-width:720px){
+      .em-head,.em-row summary{grid-template-columns:1fr 120px}
+      .em-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="em-shell">
+    <header class="em-header">
+      <h1 class="em-title">Employee Manager</h1>
+      <div class="em-search">
+        <input id="empSearch" type="search" placeholder="Search name, username, or role…" />
+      </div>
+      <a class="mini" href="admin.html">Back</a>
+    </header>
+
+    <section class="em-card">
+      <div class="em-head">
+        <div>Name</div>
+        <div>Job Title</div>
+      </div>
+      <div id="empList" class="em-list" aria-live="polite"></div>
+      <div id="emptyState" class="muted" style="padding:12px;display:none;">No matching employees.</div>
+    </section>
+  </main>
+
+  <script src="./script.js">
+
+  </script>
+</body>
+</html>
