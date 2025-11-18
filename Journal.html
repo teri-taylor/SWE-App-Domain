@@ -1,0 +1,224 @@
+        <!-- Adjusting Journal Entries – Manager View -->
+    <section class="entries-card">
+      <h1>Adjusting Journal Entries</h1>
+
+      <!-- Filters -->
+      <div class="entries-filters">
+        <div class="status-filters">
+          <button type="button" class="status-btn active" data-status="all">All</button>
+          <button type="button" class="status-btn" data-status="pending">Pending</button>
+          <button type="button" class="status-btn" data-status="approved">Approved</button>
+          <button type="button" class="status-btn" data-status="rejected">Rejected</button>
+        </div>
+
+        <div class="date-search-filters">
+          <div class="filter-group">
+            <label for="entryDateFrom">From</label>
+            <input type="date" id="entryDateFrom">
+          </div>
+          <div class="filter-group">
+            <label for="entryDateTo">To</label>
+            <input type="date" id="entryDateTo">
+          </div>
+          <div class="filter-group">
+            <label for="entrySearch">Search</label>
+            <input
+              type="text"
+              id="entrySearch"
+              placeholder="Account, description, or amount"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="entries-table-wrapper">
+        <table class="entries-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Account(s)</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="entriesTableBody">
+            <!-- JS will insert rows here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+// ===============================
+// Adjusting Journal Entries – Sample Data
+// ===============================
+
+const adjustingEntries = [
+  {
+    id: 1,
+    date: "2025-11-01",
+    accounts: "Supplies Expense / Supplies",
+    description: "Adjust supplies on hand at month-end",
+    amount: 750,
+    status: "pending"
+  },
+  {
+    id: 2,
+    date: "2025-11-01",
+    accounts: "Salaries Expense / Salaries Payable",
+    description: "Accrue salaries for last 3 days of month",
+    amount: 3200,
+    status: "approved"
+  },
+  {
+    id: 3,
+    date: "2025-10-31",
+    accounts: "Depreciation Expense / Accumulated Depreciation",
+    description: "Monthly depreciation on equipment",
+    amount: 900,
+    status: "approved"
+  },
+  {
+    id: 4,
+    date: "2025-10-31",
+    accounts: "Unearned Revenue / Service Revenue",
+    description: "Recognize portion of previously unearned revenue",
+    amount: 1500,
+    status: "rejected"
+  },
+  {
+    id: 5,
+    date: "2025-11-02",
+    accounts: "Interest Expense / Interest Payable",
+    description: "Accrue monthly interest on note payable",
+    amount: 425,
+    status: "pending"
+  }
+];
+
+// ===============================
+// Adjusting Journal Entries – Logic
+// ===============================
+
+const entriesTableBody = document.getElementById("entriesTableBody");
+const statusButtons = document.querySelectorAll(".status-btn");
+const entryDateFrom = document.getElementById("entryDateFrom");
+const entryDateTo = document.getElementById("entryDateTo");
+const entrySearch = document.getElementById("entrySearch");
+
+let currentStatusFilter = "all";
+
+// Render table rows based on current filters
+function renderAdjustingEntries() {
+  // Clear current rows
+  entriesTableBody.innerHTML = "";
+
+  const fromVal = entryDateFrom.value || null;
+  const toVal = entryDateTo.value || null;
+  const searchVal = entrySearch.value.trim().toLowerCase();
+
+  // Filter the data
+  const filtered = adjustingEntries.filter(entry => {
+    // Status filter
+    if (currentStatusFilter !== "all" && entry.status !== currentStatusFilter) {
+      return false;
+    }
+
+    // Date filter
+    if (fromVal && entry.date < fromVal) {
+      return false;
+    }
+    if (toVal && entry.date > toVal) {
+      return false;
+    }
+
+    // Search filter (accounts, description, amount)
+    if (searchVal) {
+      const combinedText = `${entry.accounts} ${entry.description} ${entry.amount}`.toLowerCase();
+      if (!combinedText.includes(searchVal)) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  // If no results
+  if (filtered.length === 0) {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 5;
+    td.textContent = "No adjusting entries match your filters.";
+    td.style.textAlign = "center";
+    td.style.color = "#8890aa";
+    tr.appendChild(td);
+    entriesTableBody.appendChild(tr);
+    return;
+  }
+
+  // Build rows
+  filtered.forEach(entry => {
+    const tr = document.createElement("tr");
+
+    // Date
+    const dateTd = document.createElement("td");
+    dateTd.textContent = entry.date;
+    tr.appendChild(dateTd);
+
+    // Accounts
+    const accountsTd = document.createElement("td");
+    accountsTd.textContent = entry.accounts;
+    tr.appendChild(accountsTd);
+
+    // Description
+    const descTd = document.createElement("td");
+    descTd.textContent = entry.description;
+    tr.appendChild(descTd);
+
+    // Amount
+    const amountTd = document.createElement("td");
+    amountTd.textContent = entry.amount.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    tr.appendChild(amountTd);
+
+    // Status
+    const statusTd = document.createElement("td");
+    const span = document.createElement("span");
+    span.classList.add("status-pill");
+    if (entry.status === "pending") {
+      span.classList.add("status-pending");
+      span.textContent = "Pending";
+    } else if (entry.status === "approved") {
+      span.classList.add("status-approved");
+      span.textContent = "Approved";
+    } else if (entry.status === "rejected") {
+      span.classList.add("status-rejected");
+      span.textContent = "Rejected";
+    }
+    statusTd.appendChild(span);
+    tr.appendChild(statusTd);
+
+    entriesTableBody.appendChild(tr);
+  });
+}
+
+// Status button clicks
+statusButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    statusButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentStatusFilter = btn.getAttribute("data-status");
+    renderAdjustingEntries();
+  });
+});
+
+// Date & search filters
+entryDateFrom.addEventListener("change", renderAdjustingEntries);
+entryDateTo.addEventListener("change", renderAdjustingEntries);
+entrySearch.addEventListener("input", renderAdjustingEntries);
+
+// Initial render on page load
+renderAdjustingEntries();
