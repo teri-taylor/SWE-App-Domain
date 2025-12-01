@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Chart of Accounts Account | SyncFinance</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=SUSE+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    .form-page {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 24px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px 24px;
+      margin-top: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5f5;
+      font-size: 0.9rem;
+    }
+
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn.primary {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .error-text {
+      margin-top: 10px;
+      color: #dc2626;
+      font-size: 0.85rem;
+    }
+
+    .page-title h1 {
+      margin-bottom: 4px;
+    }
+
+    .page-title p {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- SIMPLE HEADER (matches your other admin pages) -->
+  <header class="main-header">
+    <a href="./admin-COA.html">
+      <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo" />
+    </a>
+
+    <div class="user">
+      <img src="./images/user-profile.png" alt="User profile" />
+      <div class="name-role">
+        <p>Jane Doe</p>
+        <p>Administrator</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="form-page">
+      <div class="page-title">
+        <h1>Add Account to Chart of Accounts</h1>
+        <p>All fields marked * are required. This will update the client chart of accounts.</p>
+      </div>
+
+      <form id="addCoaForm" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="accountNumber">Account Number *</label>
+            <input id="accountNumber" name="accountNumber" type="text" required />
+          </div>
+
+          <div class="form-group">
+            <label for="accountName">Account Name *</label>
+            <input id="accountName" name="accountName" type="text" required />
+          </div>
+
+          <div class="form-group">
+            <label for="accountCategory">Category *</label>
+            <select id="accountCategory" name="accountCategory" required>
+              <option value="">Select category</option>
+              <option>Asset</option>
+              <option>Liability</option>
+              <option>Equity</option>
+              <option>Revenue</option>
+              <option>Expense</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="accountSubcategory">Subcategory</label>
+            <input id="accountSubcategory" name="accountSubcategory" type="text" />
+          </div>
+
+          <div class="form-group">
+            <label for="normalSide">Normal Side *</label>
+            <select id="normalSide" name="normalSide" required>
+              <option value="">Select side</option>
+              <option>Debit</option>
+              <option>Credit</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="initialBalance">Initial Balance</label>
+            <input id="initialBalance" name="initialBalance" type="number" step="0.01" value="0" />
+          </div>
+
+          <div class="form-group">
+            <label for="statement">Statement *</label>
+            <select id="statement" name="statement" required>
+              <option value="">Select statement</option>
+              <option value="BS">Balance Sheet (BS)</option>
+              <option value="IS">Income Statement (IS)</option>
+              <option value="RE">Retained Earnings (RE)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="order">Order (e.g., 01 for Cash)</label>
+            <input id="order" name="order" type="text" />
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="accountDescription">Description</label>
+            <textarea id="accountDescription" name="accountDescription"></textarea>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="comments">Comments</label>
+            <textarea id="comments" name="comments"></textarea>
+          </div>
+        </div>
+
+        <div id="formError" class="error-text" aria-live="polite"></div>
+
+        <div class="form-actions">
+          <button type="button" class="btn secondary" onclick="window.location.href='admin-COA.html'">
+            Cancel
+          </button>
+          <button type="submit" class="btn primary">
+            Save Account
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const ACCOUNTS_KEY = "sf_demo_accounts";
+    const LOGS_KEY = "sf_account_logs";
+
+    function loadAccounts() {
+      try {
+        const raw = localStorage.getItem(ACCOUNTS_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+    }
+
+    function loadLogs() {
+      try {
+        const raw = localStorage.getItem(LOGS_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveLogs(logs) {
+      localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
+    }
+
+    function getSessionUserId() {
+      try {
+        const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+        if (!session) return "admin";
+        // You can change this to a specific ID field if you have one
+        return session.name || session.userId || "admin";
+      } catch {
+        return "admin";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("addCoaForm");
+      const errorBox = document.getElementById("formError");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        errorBox.textContent = "";
+
+        const formData = new FormData(form);
+
+        const account_number = formData.get("accountNumber").trim();
+        const account_name = formData.get("accountName").trim();
+        const account_category = formData.get("accountCategory").trim();
+        const account_subcategory = formData.get("accountSubcategory").trim();
+        const normal_side = formData.get("normalSide").trim();
+        const initial_balance_raw = formData.get("initialBalance");
+        const statement = formData.get("statement").trim();
+        const order = formData.get("order").trim();
+        const account_description = formData.get("accountDescription").trim();
+        const comment = formData.get("comments").trim();
+
+        // Basic validation
+        if (!account_number || !account_name || !account_category || !normal_side || !statement) {
+          errorBox.textContent = "Please fill out all required fields (marked with *).";
+          return;
+        }
+
+        const accounts = loadAccounts();
+
+        // Ensure unique account number
+        if (accounts.some(a => a.account_number === account_number)) {
+          errorBox.textContent = "An account with that number already exists.";
+          return;
+        }
+
+        const initial_balance = Number(initial_balance_raw || 0);
+        const now = new Date().toISOString();
+        const user_id = getSessionUserId();
+
+        const newAccount = {
+          account_name,
+          account_number,
+          account_description,
+          normal_side,
+          account_category,
+          account_subcategory,
+          initial_balance,
+          debit: 0,
+          credit: 0,
+          balance: initial_balance,
+          date_added: now,
+          user_id,
+          order,
+          statement,
+          comment,
+          status: "Active"
+        };
+
+        // Save account
+        accounts.push(newAccount);
+        saveAccounts(accounts);
+
+        // --- CREATE LOG ENTRY (FRONT-END ONLY) ---
+        const logs = loadLogs();
+        logs.push({
+          type: "create",
+          account_number: account_number,
+          account_name: account_name,
+          user_id,
+          timestamp: now,
+          before: null,
+          after: newAccount
+        });
+        saveLogs(logs);
+
+        alert("Account created and logged successfully.");
+        window.location.href = "admin-COA.html"; // or your COA page
+      });
+    });
+  </script>
+</body>
+</html>
