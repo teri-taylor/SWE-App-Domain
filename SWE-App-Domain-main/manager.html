@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager | SyncFinance</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            --green: #22EE77;
+            --gold: #D4AF37;
+            --blue: #002D62;
+            --offwhite: #f5f7fb;;
+            --jet: #333333;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: white;
+            color: var(--jet);
+            margin: 0;
+        }
+
+        /* Header */
+        .main-header {
+            background: white;        /* changed */
+            color: var(--jet);          /* text now dark */
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;  /* subtle divider */
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .full-logo {
+            height: 40px;
+        }
+
+        /* Hamburger */
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: inline-flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 3px;
+            background: var(--blue);   /* CHANGED to dark blue */
+            border-radius: 999px;
+        }
+
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        .name-role p {
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 52px;
+            right: 0;
+            background: #ffffff;
+            color: #000;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 8px;
+            min-width: 120px;
+            display: none;
+        }
+
+        .user.open .user-menu {
+            display: block;
+        }
+
+        .user-menu button {
+            width: 100%;
+            background: transparent;
+            color: #111827;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .user-menu button:hover {
+            background: #e5e7eb;
+        }
+
+        main {
+            padding: 24px;
+        }
+
+        h2 {
+            color: var(--blue);
+            margin-bottom: 4px;
+        }
+
+        .muted {
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        /* Side navigation (hamburger menu) */
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: -240px;
+            width: 220px;
+            height: 100vh;
+            background: #002D62;             /* LIGHTER BLUE */
+            color: #ffffff;
+            padding: 20px 16px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.25);
+            transition: left 0.2s ease-out;
+            z-index: 1000;
+        }
+
+        .side-nav.open {
+            left: 0;
+        }
+
+        .side-nav h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .side-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .side-nav li {
+            margin-bottom: 8px;
+        }
+
+        .side-nav a {
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            padding: 6px 4px;
+            border-radius: 4px;
+        }
+
+        .side-nav a:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        /* Overlay darken when menu open (optional) */
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: none;
+            z-index: 900;
+        }
+
+        .nav-overlay.show {
+            display: block;
+        }
+
+        /* Accounts table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+
+        th {
+            background: var(--blue);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background: #f5f7fa;
+        }
+
+        tr.account-row {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tr.account-row:hover {
+            background: #e0f2fe;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Side nav + overlay -->
+<nav class="side-nav" id="side-nav" aria-hidden="true">
+    <h3>Manager Menu</h3>
+    <ul>
+        <li><a href="journal.html">Journal Entries</a></li>
+        <li><a href="financial-reports.html">Financial Reports</a></li>
+        <li><a href="account-logs.html">Account Event Logs</a></li>
+
+    </ul>
+</nav>
+<div class="nav-overlay" id="nav-overlay"></div>
+
+<header class="main-header">
+    <div class="header-left">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+    </div>
+
+    <div class="user">
+        <img src="./images/user-profile.png" alt="User Profile Logo">
+        <div class="name-role">
+            <p>Mark Green</p>
+            <p>Manager</p>
+        </div>
+
+        <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
+            <button id="logout-btn" role="menuitem">Log out</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <h2>Customer Accounts</h2>
+    <p class="muted">Select an account to view its ledger and activity.</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Account #</th>
+            <th>Customer Name</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th class="right">Current Balance</th>
+        </tr>
+        </thead>
+        <tbody id="accounts-body">
+        <!-- Filled by JavaScript -->
+        </tbody>
+    </table>
+</main>
+
+<script>
+    // ===== Profile menu & session (same pattern you already use) =====
+    (function () {
+        function wireProfileMenu() {
+            const user = document.querySelector(".user");
+            if (!user) return;
+            const menu = user.querySelector("#user-menu");
+            const logoutBtn = user.querySelector("#logout-btn");
+
+            user.addEventListener("click", () => {
+                user.classList.toggle("open");
+                if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+            });
+
+            document.addEventListener("click", (e) => {
+                if (!user.contains(e.target)) {
+                    user.classList.remove("open");
+                    if (menu) menu.setAttribute("aria-hidden", "true");
+                }
+            });
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    user.classList.remove("open");
+                    if (menu) menu.setAttribute("aria-hidden", "true");
+                }
+            });
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    localStorage.removeItem("sf_session");
+                    window.location.href = "login.html";
+                });
+            }
+
+            // Fill name + role from sf_session if present
+            try {
+                const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+                if (session) {
+                    const nameEl = user.querySelector(".name-role p:first-child");
+                    const roleEl = user.querySelector(".name-role p:last-child");
+                    if (nameEl && session.name) nameEl.textContent = session.name;
+                    if (roleEl && session.role) {
+                        roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+                    }
+                }
+            } catch {}
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", wireProfileMenu);
+        } else {
+            wireProfileMenu();
+        }
+    })();
+</script>
+
+<script>
+    // ===== Hamburger / side nav =====
+    (function () {
+        const toggle = document.getElementById("menu-toggle");
+        const sideNav = document.getElementById("side-nav");
+        const overlay = document.getElementById("nav-overlay");
+
+        function openNav() {
+            sideNav.classList.add("open");
+            overlay.classList.add("show");
+            sideNav.setAttribute("aria-hidden", "false");
+        }
+
+        function closeNav() {
+            sideNav.classList.remove("open");
+            overlay.classList.remove("show");
+            sideNav.setAttribute("aria-hidden", "true");
+        }
+
+        toggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (sideNav.classList.contains("open")) {
+                closeNav();
+            } else {
+                openNav();
+            }
+        });
+
+        overlay.addEventListener("click", closeNav);
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                closeNav();
+            }
+        });
+    })();
+</script>
+
+<script>
+    // ===== Customer accounts list =====
+    // For now using sample data; later you can replace with fetch('/accounts') or whatever the admin page uses.
+    const sampleAccounts = [
+        { id: "C-1001", name: "Acme Corporation", type: "Business", status: "ACTIVE", balance: 12500.50 },
+        { id: "C-1002", name: "Brightside Retail", type: "Business", status: "ACTIVE", balance: 8420.00 },
+        { id: "C-1003", name: "Emma Johnson", type: "Individual", status: "INACTIVE", balance: 0.00 },
+        { id: "C-1004", name: "Greenfield Supplies", type: "Business", status: "ACTIVE", balance: 23150.75 }
+    ];
+
+    function fmtMoney(n) {
+        return (+n || 0).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function renderAccounts(accounts) {
+        const tbody = document.getElementById("accounts-body");
+        if (!accounts.length) {
+            tbody.innerHTML = `<tr><td colspan="5" class="empty">No customer accounts found.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = accounts.map(acc => `
+          <tr class="account-row" onclick="openAccount('${acc.id}')">
+            <td>${acc.id}</td>
+            <td>${acc.name}</td>
+            <td>${acc.type}</td>
+            <td>
+                <span class="status-pill ${acc.status === 'ACTIVE' ? 'status-active' : 'status-inactive'}">
+                    ${acc.status}
+                </span>
+            </td>
+            <td class="right">${fmtMoney(acc.balance)}</td>
+          </tr>
+        `).join("");
+    }
+
+    function openAccount(accountId) {
+        // Later this can go to your ledger page for that account
+        // e.g., ledger.html?account=C-1001
+        window.location.href = `ledger.html?account=${encodeURIComponent(accountId)}`;
+    }
+
+    // If you have a real API, you can swap this function to call fetch('/api/accounts') instead.
+    renderAccounts(sampleAccounts);
+
+    document.addEventListener("DOMContentLoaded", () => {
+  const link = document.getElementById("emailLink");
+  if (!link) return;
+
+  const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+  if (!session || !session.role) {
+    link.href = "admin-email.html"; // fallback
+    return;
+  }
+
+  // routing
+  if (session.role === "admin") link.href = "admin-email.html";
+  if (session.role === "manager") link.href = "manager-email.html";
+  if (session.role === "accountant") link.href = "accountant-email.html";
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Administration</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+  <header class="main-header">
+    <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+    
+    <div class="header-right">
+      <a class="email-icon" id="emailLink" href="./admin-email.html">
+        <img src="./images/email-icon.png" alt="Email">
+      </a>
+    
+    <div class="user">
+      <img src="./images/user-profile.png" alt="User Profile Logo">
+      <div class="name-role">
+        <p>Jane Doe</p>
+        <p>Administrator</p>
+      </div>
+      
+      <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
+        <button id="logout-btn" role="menuitem">Log out</button>
+      </div>
+      
+    </div>
+    </div>
+    
+  </header>
+
+  <main class="admin-container">
+    <section class="page-title">
+        <h1>Administrator Home</h1>
+      </section>
+
+    <section class="hub">
+
+      <a class="hub-card" href="./admin-COA.html">
+        <h2>Client Chart of Accounts</h2>
+        <p>View and manage client accounts.</p>
+        <span class="hub-cta">Open</span>
+      </a>
+
+      <a class="hub-card" href="./employees.html">
+        <h2>Employee Manager</h2>
+        <p>Browse employees, roles, and access permissions.</p>
+        <span class="hub-cta">Open</span>
+      </a>
+
+      <a class="hub-card" href="./password-report.html">
+        <h2>Expired Passwords</h2>
+        
+        <span class="hub-cta">Open</span>
+      </a>
+
+      <a class="hub-card" href="./account-logs.html">
+        <h2>Account Event Logs</h2>
+        <p>View account creation and edit history including before/after changes.</p>
+        <span class="hub-cta">Open</span>
+      </a>
+
+
+    </section>
+
+
+
+  </main>
+
+  <script src="script.js">
+    
+(function () {
+  function wireProfileMenu() {
+    const user = document.querySelector(".user");
+    if (!user) return;
+
+    const menu = user.querySelector("#user-menu");
+    const logoutBtn = user.querySelector("#logout-btn");
+
+
+    user.addEventListener("click", () => {
+      user.classList.toggle("open");
+      if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+    });
+
+  
+    document.addEventListener("click", (e) => {
+      if (!user.contains(e.target)) {
+        user.classList.remove("open");
+        if (menu) menu.setAttribute("aria-hidden", "true");
+      }
+    });
+
+   
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        user.classList.remove("open");
+        if (menu) menu.setAttribute("aria-hidden", "true");
+      }
+    });
+
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.stopPropagation(); 
+        localStorage.removeItem("sf_session");
+        window.location.href = "login.html";
+      });
+    }
+
+  
+    try {
+      const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+      if (session) {
+        const nameEl = user.querySelector(".name-role p:first-child");
+        const roleEl = user.querySelector(".name-role p:last-child");
+        if (nameEl && session.name) nameEl.textContent = session.name;
+        if (roleEl && session.role) {
+          roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+        }
+      }
+    } catch {}
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireProfileMenu);
+  } else {
+    wireProfileMenu();
+  }
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const link = document.getElementById("emailLink");
+  if (!link) return;
+
+  const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+  if (!session || !session.role) {
+    link.href = "admin-email.html"; // fallback
+    return;
+  }
+
+  // routing
+  if (session.role === "admin") link.href = "admin-email.html";
+  if (session.role === "manager") link.href = "manager-email.html";
+  if (session.role === "accountant") link.href = "accountant-email.html";
+});
+  </script>
+
+
+</body>
+</html>

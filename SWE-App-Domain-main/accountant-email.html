@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-role="accountant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Email — Accountant</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+
+<body class="mail2-body">
+
+  <!-- Header added -->
+  <header class="main-header">
+    <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+
+    <div class="header-right">
+      <!-- Route email icon to correct inbox -->
+      <a class="email-icon" id="emailLink">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="5" width="18" height="14" rx="2" ry="2"
+                stroke="#2b3a55" stroke-width="2" fill="white"/>
+          <path d="M4 6l8 7 8-7" stroke="#2b3a55" stroke-width="2" fill="none"/>
+        </svg>
+      </a>
+
+      <div class="user">
+        <img src="./images/user-profile.png" alt="User Profile Logo">
+        <div class="name-role">
+          <p>Alex Taylor</p>
+          <p>Accountant</p>
+        </div>
+
+        <div class="user-menu" id="user-menu">
+          <button id="logout-btn">Log out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Email App Shell -->
+  <div class="mail2-shell">
+
+    <!-- Rail -->
+    <aside class="mail2-rail">
+      <button class="rail-btn is-active" data-folder="inbox">
+        <span class="label">Inbox</span>
+        <span class="count" id="countInbox">0</span>
+      </button>
+
+      <div class="rail-spacer"></div>
+
+      <button class="rail-btn" data-folder="spam">
+        <span class="label">Spam</span>
+        <span class="count" id="countSpam">0</span>
+      </button>
+
+      <button class="rail-btn" data-folder="trash">
+        <span class="label">Trash</span>
+        <span class="count" id="countTrash">0</span>
+      </button>
+    </aside>
+
+    <!-- List -->
+    <main class="mail2-main">
+      <div class="mail2-topbar">
+        <div class="search-wrap">
+          <input id="searchInput" type="search" placeholder="Search emails…" />
+        </div>
+        <button id="composeBtn" class="compose-pill">
+          <span class="dot"></span> Compose
+        </button>
+      </div>
+
+      <section class="mail2-list" id="mailList"></section>
+    </main>
+
+    <!-- Read Panel (Initially Hidden) -->
+    <section class="mail2-read is-hidden" id="mailView">
+      <div class="empty-state">Select an email to read</div>
+    </section>
+
+  </div>
+
+  <!-- Compose Drawer -->
+  <section class="compose-drawer" id="composeDrawer" aria-hidden="true">
+    <form id="composeForm" class="compose-form" autocomplete="off">
+      <div class="compose-row">
+        <label>To
+          <select id="toRole">
+            <option value="admin">Jane Doe</option>
+            <option value="manager">Mark Green</option>
+            <option value="accountant">Alex Taylor</option>
+          </select>
+        </label>
+        <label>Subject <input id="subject" type="text" /></label>
+      </div>
+      <label>Message
+        <textarea id="body" rows="8" placeholder="Write your message…"></textarea>
+      </label>
+      <div class="form-actions">
+        <button type="button" class="ghost" id="closeCompose">Close</button>
+        <button type="submit" class="primary">Send</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Email Engine -->
+  <script src="email.v2.js"></script>
+
+  <!-- Header + Routing + Hide/Show Read Panel -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      /* EMAIL LINK ROUTING */
+      const link = document.getElementById("emailLink");
+      try {
+        const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+        if (session?.role === "admin") link.href = "admin-email.html";
+        else if (session?.role === "manager") link.href = "manager-email.html";
+        else if (session?.role === "accountant") link.href = "accountant-email.html";
+      } catch {}
+
+      /* HIDE READ PANE UNTIL CLICK */
+      const mailList = document.getElementById("mailList");
+      const mailView = document.getElementById("mailView");
+
+      if (mailList && mailView) {
+        mailList.addEventListener("click", () => {
+          mailView.classList.remove("is-hidden");
+        }, { once: true });
+      }
+    });
+  </script>
+
+</body>
+</html>

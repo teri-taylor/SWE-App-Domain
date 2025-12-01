@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New User</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="main-header">
+    <a href="./employees.html">
+      <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+    </a>
+    <div class="user">
+      <img src="./images/user-profile.png" alt="User Profile Logo">
+      <div class="name-role">
+        <p>Jane Doe</p>
+        <p>Administrator</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-container" style="max-width:900px;">
+    <section class="page-title">
+      <h1>Add New User</h1>
+      <p class="subtitle">Create an account and assign a system role.</p>
+    </section>
+
+    <section class="panel is-active">
+      <form id="user-form" class="card-form" onsubmit="return false;">
+        <div class="form-grid">
+
+          <!-- First Name -->
+          <label>
+            <span>First Name*</span>
+            <input required type="text" id="fname" placeholder="John">
+          </label>
+
+          <!-- Last Name -->
+          <label>
+            <span>Last Name*</span>
+            <input required type="text" id="lname" placeholder="Smith">
+          </label>
+
+          <!-- Email -->
+          <label class="grid-span-2">
+            <span>Email Address*</span>
+            <input required type="email" id="email" placeholder="john.smith@example.com">
+          </label>
+
+          <!-- Role -->
+          <label>
+            <span>Role*</span>
+            <select required id="role">
+              <option value="" disabled selected>Select role…</option>
+              <option value="admin">Administrator</option>
+              <option value="manager">Manager</option>
+              <option value="accountant">Accountant</option>
+            </select>
+          </label>
+
+          <!-- Temporary Password (UI only for Sprint 1, backend will handle later) -->
+          <label>
+            <span>Temporary Password*</span>
+            <input required type="text" id="tempPass" placeholder="TempPass123!">
+          </label>
+
+        </div>
+
+        <div class="form-actions">
+          <button class="primary" id="saveUser">Create User</button>
+          <a href="./employees.html" class="ghost">Cancel</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('saveUser').addEventListener('click', () => {
+      alert('User creation UI working. Backend will store user in database later.');
+    });
+  </script>
+</body>
+</html>

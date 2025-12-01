@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Account | SyncFinance</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=SUSE+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    .form-page {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 24px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px 24px;
+      margin-top: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5f5;
+      font-size: 0.9rem;
+    }
+
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn.primary {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .error-text {
+      margin-top: 10px;
+      color: #dc2626;
+      font-size: 0.85rem;
+    }
+
+    .page-title h1 {
+      margin-bottom: 4px;
+    }
+
+    .page-title p {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header (admin-ish; tweak if needed) -->
+  <header class="main-header">
+    <a href="./admin-client-list.html">
+      <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo" />
+    </a>
+
+    <div class="user">
+      <img src="./images/user-profile.png" alt="User profile" />
+      <div class="name-role">
+        <p>Jane Doe</p>
+        <p>Administrator</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="form-page">
+      <div class="page-title">
+        <h1>Edit Account</h1>
+        <p>Update details for this chart of accounts entry. Changes will be logged.</p>
+      </div>
+
+      <form id="editCoaForm" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="accountNumber">Account Number *</label>
+            <input id="accountNumber" name="accountNumber" type="text" required readonly />
+          </div>
+
+          <div class="form-group">
+            <label for="accountName">Account Name *</label>
+            <input id="accountName" name="accountName" type="text" required />
+          </div>
+
+          <div class="form-group">
+            <label for="accountCategory">Category *</label>
+            <select id="accountCategory" name="accountCategory" required>
+              <option value="">Select category</option>
+              <option>Asset</option>
+              <option>Liability</option>
+              <option>Equity</option>
+              <option>Revenue</option>
+              <option>Expense</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="accountSubcategory">Subcategory</label>
+            <input id="accountSubcategory" name="accountSubcategory" type="text" />
+          </div>
+
+          <div class="form-group">
+            <label for="normalSide">Normal Side *</label>
+            <select id="normalSide" name="normalSide" required>
+              <option value="">Select side</option>
+              <option>Debit</option>
+              <option>Credit</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="initialBalance">Initial Balance</label>
+            <input id="initialBalance" name="initialBalance" type="number" step="0.01" />
+          </div>
+
+          <div class="form-group">
+            <label for="statement">Statement *</label>
+            <select id="statement" name="statement" required>
+              <option value="">Select statement</option>
+              <option value="BS">Balance Sheet (BS)</option>
+              <option value="IS">Income Statement (IS)</option>
+              <option value="RE">Retained Earnings (RE)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="order">Order (e.g., 01 for Cash)</label>
+            <input id="order" name="order" type="text" />
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="accountDescription">Description</label>
+            <textarea id="accountDescription" name="accountDescription"></textarea>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="comments">Comments</label>
+            <textarea id="comments" name="comments"></textarea>
+          </div>
+        </div>
+
+        <div id="formError" class="error-text" aria-live="polite"></div>
+
+        <div class="form-actions">
+          <button type="button" class="btn secondary" onclick="window.location.href='admin-COA.html'">
+            Cancel
+          </button>
+          <button type="submit" class="btn primary">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const ACCOUNTS_KEY = "sf_demo_accounts";
+    const LOGS_KEY = "sf_account_logs";
+
+    function loadAccounts() {
+      try {
+        const raw = localStorage.getItem(ACCOUNTS_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+    }
+
+    function loadLogs() {
+      try {
+        const raw = localStorage.getItem(LOGS_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveLogs(logs) {
+      localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
+    }
+
+    function getSessionUserId() {
+      try {
+        const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+        if (!session) return "admin";
+        return session.name || session.userId || "admin";
+      } catch {
+        return "admin";
+      }
+    }
+
+    function getAccountNumberFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("acct");
+    }
+
+    function populateForm(account) {
+      document.getElementById("accountNumber").value = account.account_number || "";
+      document.getElementById("accountName").value = account.account_name || "";
+      document.getElementById("accountCategory").value = account.account_category || "";
+      document.getElementById("accountSubcategory").value = account.account_subcategory || "";
+      document.getElementById("normalSide").value = account.normal_side || "";
+      document.getElementById("initialBalance").value = account.initial_balance ?? account.balance ?? 0;
+      document.getElementById("statement").value = account.statement || "";
+      document.getElementById("order").value = account.order || "";
+      document.getElementById("accountDescription").value = account.account_description || "";
+      document.getElementById("comments").value = account.comment || "";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const acctNum = getAccountNumberFromQuery();
+      const errorBox = document.getElementById("formError");
+      const form = document.getElementById("editCoaForm");
+
+      if (!acctNum) {
+        errorBox.textContent = "No account number was provided in the link.";
+        form.querySelector("button[type='submit']").disabled = true;
+        return;
+      }
+
+      const accounts = loadAccounts();
+      const idx = accounts.findIndex(a => a.account_number === acctNum);
+
+      if (idx === -1) {
+        errorBox.textContent = "The requested account could not be found.";
+        form.querySelector("button[type='submit']").disabled = true;
+        return;
+      }
+
+      const account = accounts[idx];
+      // Deep copy for BEFORE image
+      const beforeSnapshot = JSON.parse(JSON.stringify(account));
+
+      populateForm(account);
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        errorBox.textContent = "";
+
+        const formData = new FormData(form);
+
+        const account_name = formData.get("accountName").trim();
+        const account_category = formData.get("accountCategory").trim();
+        const account_subcategory = formData.get("accountSubcategory").trim();
+        const normal_side = formData.get("normalSide").trim();
+        const initial_balance_raw = formData.get("initialBalance");
+        const statement = formData.get("statement").trim();
+        const order = formData.get("order").trim();
+        const account_description = formData.get("accountDescription").trim();
+        const comment = formData.get("comments").trim();
+
+        if (!account_name || !account_category || !normal_side || !statement) {
+          errorBox.textContent = "Please fill out all required fields (marked with *).";
+          return;
+        }
+
+        const initial_balance = Number(initial_balance_raw || 0);
+        const now = new Date().toISOString();
+        const user_id = getSessionUserId();
+
+        // Update account object
+        account.account_name = account_name;
+        account.account_category = account_category;
+        account.account_subcategory = account_subcategory;
+        account.normal_side = normal_side;
+        account.initial_balance = initial_balance;
+        account.statement = statement;
+        account.order = order;
+        account.account_description = account_description;
+        account.comment = comment;
+
+        // Keep balance logic simple (you can adjust if you want to separate balance vs initial)
+        if (typeof account.balance === "number") {
+          account.balance = initial_balance;
+        } else {
+          account.balance = initial_balance;
+        }
+
+        account.last_updated = now;
+        account.user_id = user_id;
+
+        // Save updated accounts list
+        accounts[idx] = account;
+        saveAccounts(accounts);
+
+        // --- CREATE EDIT LOG ENTRY ---
+        const logs = loadLogs();
+        logs.push({
+          type: "edit",
+          account_number: account.account_number,
+          account_name: account.account_name,
+          user_id,
+          timestamp: now,
+          before: beforeSnapshot,
+          after: account
+        });
+        saveLogs(logs);
+
+        alert("Account updated and change logged successfully.");
+        window.location.href = "admin-COA.html";
+      });
+    });
+
+    editBtn.addEventListener("click", () => {
+      if (selectedAccount) {
+        window.location.href = "edit-account.html?acct=" + encodeURIComponent(selectedAccount.account_number);
+      }
+    });
+
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Employee Manager</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* --- scoped styles for this page --- */
+    .em-shell{max-width:1000px;margin:24px auto;padding:0 12px;display:flex;flex-direction:column;gap:14px}
+    .em-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .em-title{font-size:22px;margin:0}
+    .em-search{flex:1;display:flex;justify-content:flex-end}
+    .em-search input{width:360px;max-width:100%;border:1px solid #dbe3f3;border-radius:12px;padding:10px 12px;font:inherit}
+
+    .em-card{background:#fff;border:1px solid #e8ecf7;border-radius:14px;box-shadow:rgba(0,0,0,.06) 0 4px 12px}
+    .em-list{padding:6px}
+    .em-head,.em-row summary{
+      display:grid;grid-template-columns:1fr 170px;gap:12px;align-items:center
+    }
+    .em-head{padding:10px 12px;color:#667085;font-weight:700}
+    .em-row{border-radius:12px;overflow:hidden;margin:6px 4px}
+    .em-row summary{
+      list-style:none;cursor:pointer;padding:12px;border-radius:12px
+    }
+    .em-row[open] summary{background:#f4f7ff;border:1px solid #cfd9ff}
+    .em-row summary::-webkit-details-marker{display:none}
+
+    .em-name{font-weight:700}
+    .em-role{justify-self:end;font-weight:600;color:#3949ab}
+    .em-row:hover summary{background:#f7f9ff}
+
+    .em-body{padding:10px 12px 14px;border-top:1px solid #eef2ff;background:#fff}
+    .em-grid{display:grid;grid-template-columns:200px 1fr;gap:8px 14px}
+    .em-grid div:nth-child(odd){color:#667085}
+    .muted{color:#7a8599}
+
+    .em-input {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #dbe3f3;
+      font: inherit;
+      box-sizing: border-box;
+    }
+    .em-input:disabled {
+      background: #f9fafb;
+      color: #6b7280;
+    }
+
+    .em-status-label {
+      font-weight: 600;
+    }
+
+
+    @media (max-width:720px){
+      .em-head,.em-row summary{grid-template-columns:1fr 120px}
+      .em-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="em-shell">
+    <header class="em-header">
+      <h1 class="em-title">Employee Manager</h1>
+      <a class="mini" href="add-user.html">+ Add User</a>
+
+      <div class="em-search">
+        <input id="empSearch" type="search" placeholder="Search name, username, or role…" />
+      </div>
+      <a class="mini" href="admin.html">Back</a>
+    </header>
+
+    <section class="em-card">
+      <div class="em-head">
+        <div>Name</div>
+        <div>Job Title</div>
+      </div>
+      <div id="empList" class="em-list" aria-live="polite"></div>
+      <div id="emptyState" class="muted" style="padding:12px;display:none;">No matching employees.</div>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+  <script>
+    // ========================
+// DEMO USERS (same as login)
+// Alphabetical by LAST name
+// ========================
+const demoEmployees = [
+  {
+    firstName: "Jane",
+    lastName: "Doe",
+    role: "Administrator",
+    username: "jdoe1025",
+    email: "admin@syncfinance.com",
+    createdAt: "2025-10-01",
+    status: "Active",
+    suspendStart: "",
+    suspendEnd: ""
+  },
+  {
+    firstName: "Mark",
+    lastName: "Green",
+    role: "Manager",
+    username: "mgreen0725",
+    email: "manager@syncfinance.com",
+    createdAt: "2025-07-15",
+    status: "Active",
+    suspendStart: "",
+    suspendEnd: ""
+  },
+  {
+    firstName: "Alex",
+    lastName: "Taylor",
+    role: "Accountant",
+    username: "ataylor0325",
+    email: "accountant@syncfinance.com",
+    createdAt: "2025-03-20",
+    status: "Active",
+    suspendStart: "",
+    suspendEnd: ""
+  }
+];
+
+let currentEmployeeFilter = "";
+
+// helper to get full name
+function fullName(emp) {
+  return `${emp.firstName} ${emp.lastName}`.trim();
+}
+
+// RENDER EMPLOYEES INTO employees.html
+function renderEmployees(filterText = "") {
+  const list = document.getElementById("empList");
+  const empty = document.getElementById("emptyState");
+  if (!list || !empty) return;
+
+  currentEmployeeFilter = filterText;
+  const q = filterText.trim().toLowerCase();
+
+  const filtered = demoEmployees.filter(emp => {
+    if (!q) return true;
+    return (
+      fullName(emp).toLowerCase().includes(q) ||
+      emp.username.toLowerCase().includes(q) ||
+      emp.role.toLowerCase().includes(q) ||
+      (emp.status || "").toLowerCase().includes(q)
+    );
+  });
+
+  list.innerHTML = "";
+
+  if (!filtered.length) {
+    empty.style.display = "block";
+    return;
+  }
+
+  empty.style.display = "none";
+
+  filtered.forEach((emp, index) => {
+    const item = document.createElement("details");
+    item.className = "em-row";
+    item.dataset.index = index;
+
+    item.innerHTML = `
+      <summary>
+        <div class="em-name">${fullName(emp)}</div>
+        <div class="em-role">
+          ${emp.role} · <span class="em-status-label">${emp.status}</span>
+        </div>
+      </summary>
+
+      <div class="em-body">
+        <div class="em-grid">
+          <div>First Name</div>
+          <div><input type="text" class="em-input fname" value="${emp.firstName}"></div>
+
+          <div>Last Name</div>
+          <div><input type="text" class="em-input lname" value="${emp.lastName}"></div>
+
+          <div>Email</div>
+          <div><input type="email" class="em-input email" value="${emp.email}"></div>
+
+          <div>Username</div>
+          <div><input type="text" class="em-input username" value="${emp.username}" disabled></div>
+
+          <div>Role</div>
+          <div>
+            <select class="em-input role">
+              <option value="Administrator" ${emp.role === "Administrator" ? "selected" : ""}>Administrator</option>
+              <option value="Manager" ${emp.role === "Manager" ? "selected" : ""}>Manager</option>
+              <option value="Accountant" ${emp.role === "Accountant" ? "selected" : ""}>Accountant</option>
+            </select>
+          </div>
+
+          <div>Status</div>
+          <div>
+            <select class="em-input status">
+              <option value="Active" ${emp.status === "Active" ? "selected" : ""}>Active</option>
+              <option value="Suspended" ${emp.status === "Suspended" ? "selected" : ""}>Suspended</option>
+              <option value="Deactivated" ${emp.status === "Deactivated" ? "selected" : ""}>Deactivated</option>
+            </select>
+          </div>
+
+          <div>Suspension Start</div>
+          <div><input type="date" class="em-input suspendStart" value="${emp.suspendStart || ""}"></div>
+
+          <div>Suspension End</div>
+          <div><input type="date" class="em-input suspendEnd" value="${emp.suspendEnd || ""}"></div>
+
+          <div>Created</div>
+          <div><input type="text" class="em-input createdAt" value="${emp.createdAt}" disabled></div>
+        </div>
+
+        <div class="em-actions" style="margin-top:10px; display:flex; gap:8px; justify-content:flex-end;">
+          <button type="button" class="mini btn-edit">Edit</button>
+          <button type="button" class="mini btn-save" style="display:none;">Save</button>
+          <button type="button" class="mini ghost btn-cancel" style="display:none;">Cancel</button>
+        </div>
+      </div>
+    `;
+
+    // default: inputs readonly
+    const inputs = item.querySelectorAll(".em-input");
+    inputs.forEach(inp => inp.disabled = true);
+
+    const btnEdit = item.querySelector(".btn-edit");
+    const btnSave = item.querySelector(".btn-save");
+    const btnCancel = item.querySelector(".btn-cancel");
+
+    function snapshot() {
+      return {
+        firstName: item.querySelector(".fname").value,
+        lastName: item.querySelector(".lname").value,
+        email: item.querySelector(".email").value,
+        role: item.querySelector(".role").value,
+        status: item.querySelector(".status").value,
+        suspendStart: item.querySelector(".suspendStart").value,
+        suspendEnd: item.querySelector(".suspendEnd").value
+      };
+    }
+    let original = snapshot();
+
+    function setEditing(isEditing) {
+      inputs.forEach(inp => {
+        if (inp.classList.contains("username") || inp.classList.contains("createdAt")) {
+          inp.disabled = true; // never editable
+        } else {
+          inp.disabled = !isEditing;
+        }
+      });
+      btnEdit.style.display = isEditing ? "none" : "inline-block";
+      btnSave.style.display = isEditing ? "inline-block" : "none";
+      btnCancel.style.display = isEditing ? "inline-block" : "none";
+    }
+
+    btnEdit.addEventListener("click", () => {
+      original = snapshot();
+      setEditing(true);
+    });
+
+    btnCancel.addEventListener("click", () => {
+      // restore original values
+      item.querySelector(".fname").value = original.firstName;
+      item.querySelector(".lname").value = original.lastName;
+      item.querySelector(".email").value = original.email;
+      item.querySelector(".role").value = original.role;
+      item.querySelector(".status").value = original.status;
+      item.querySelector(".suspendStart").value = original.suspendStart;
+      item.querySelector(".suspendEnd").value = original.suspendEnd;
+      setEditing(false);
+    });
+
+    btnSave.addEventListener("click", () => {
+      const idx = parseInt(item.dataset.index, 10);
+      if (Number.isNaN(idx)) return;
+
+      const updated = snapshot();
+
+      // basic validation
+      if (!updated.firstName.trim() || !updated.lastName.trim()) {
+        alert("First and Last name are required.");
+        return;
+      }
+      if (!updated.email.trim()) {
+        alert("Email is required.");
+        return;
+      }
+
+      // update demo array
+      demoEmployees[idx].firstName = updated.firstName.trim();
+      demoEmployees[idx].lastName = updated.lastName.trim();
+      demoEmployees[idx].email = updated.email.trim();
+      demoEmployees[idx].role = updated.role;
+      demoEmployees[idx].status = updated.status;
+      demoEmployees[idx].suspendStart = updated.suspendStart;
+      demoEmployees[idx].suspendEnd = updated.suspendEnd;
+
+      // re-render to refresh summary row (name/role/status)
+      renderEmployees(currentEmployeeFilter);
+      alert("User information (including suspension dates) updated in demo data. Backend will persist this in the database.");
+    });
+
+    list.appendChild(item);
+  });
+}
+
+// wire search + initial load on employees.html
+document.addEventListener("DOMContentLoaded", () => {
+  const list = document.getElementById("empList");
+  if (!list) return; // only on employees.html
+
+  const search = document.getElementById("empSearch");
+  renderEmployees();
+
+  if (search) {
+    search.addEventListener("input", () => {
+      renderEmployees(search.value || "");
+    });
+  }
+});
+
+
+  </script>
+</body>
+</html>

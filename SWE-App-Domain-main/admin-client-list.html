@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart of Accounts</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=SUSE+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #22EE77;
+            --gold: #D4AF37;
+            --blue: #002D62;
+            --offwhite: #F9F4EF;
+            --jet: #333333;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            color: var(--jet);
+            margin: 0;
+        }
+
+        /* Header */
+        .main-header {
+            background: #ffffff;        /* white header */
+            color: var(--jet);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .full-logo {
+            height: 40px;
+        }
+
+        /* Hamburger */
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: inline-flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 3px;
+            background: var(--blue);   /* dark blue lines */
+            border-radius: 999px;
+        }
+
+        /* User profile */
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        .name-role p {
+            margin: 0;
+            line-height: 1.2;
+            color: var(--jet);
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 52px;
+            right: 0;
+            background: #ffffff;
+            color: #000;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 8px;
+            min-width: 120px;
+            display: none;
+        }
+
+        .user.open .user-menu {
+            display: block;
+        }
+
+        .user-menu button {
+            width: 100%;
+            background: transparent;
+            color: #111827;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .user-menu button:hover {
+            background: #e5e7eb;
+        }
+
+        main.adminCOA-main {
+            padding: 24px;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: var(--blue);
+            margin-bottom: 16px;
+        }
+
+        /* Side navigation (hamburger menu) */
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: -240px;
+            width: 220px;
+            height: 100vh;
+            background: var(--blue);             /* lighter blue */
+            color: #ffffff;
+            padding: 20px 16px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.25);
+            transition: left 0.2s ease-out;
+            z-index: 1000;
+        }
+
+        .side-nav.open {
+            left: 0;
+        }
+
+        .side-nav h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .side-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 12px 0;
+        }
+
+        .side-nav li {
+            margin-bottom: 8px;
+        }
+
+        .side-nav a {
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            padding: 6px 4px;
+            border-radius: 4px;
+        }
+
+        .side-nav a:hover {
+            background: rgba(255,255,255,0.18);
+        }
+
+        .side-nav .add-link {
+            margin-top: 12px;
+            font-weight: 600;
+        }
+
+        /* Overlay */
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: none;
+            z-index: 900;
+        }
+
+        .nav-overlay.show {
+            display: block;
+        }
+
+        /* Client table */
+        .client-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+
+        .client-table th,
+        .client-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .client-table th {
+            background: var(--blue);
+            color: #ffffff;
+        }
+
+        .client-table tr:nth-child(even) {
+            background: #f5f7fa;
+        }
+
+        .client-link {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .client-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ====== Modal Backdrop + Card ====== */
+        .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.55); /* dark navy overlay */
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        z-index: 1000;
+        }
+
+        .modal-backdrop.is-open {
+        display: flex;
+        }
+
+        .modal-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 24px 24px 18px;
+        max-width: 420px;
+        width: 100%;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.28);
+        }
+
+        .modal-card h2 {
+        margin: 0 0 4px 0;
+        }
+
+        .modal-subtitle {
+        margin: 0 0 16px 0;
+        font-size: 0.9rem;
+        color: #6b7280;
+        }
+
+        .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px 16px;
+        margin-bottom: 12px;
+        }
+
+        .modal-card .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        }
+
+        .modal-card label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #0f172a;
+        }
+
+        .modal-card input {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #cbd5f5;
+        font-size: 0.9rem;
+        }
+
+        .modal-card input:focus {
+        outline: 2px solid #0f172a;
+        outline-offset: 1px;
+        }
+
+        .required {
+        color: #dc2626;
+        margin-left: 3px;
+        }
+
+        .modal-error {
+        min-height: 1rem;
+        font-size: 0.8rem;
+        color: #dc2626;
+        margin: 4px 0 0 0;
+        }
+
+        .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 16px;
+        }
+
+        .modal-actions .btn {
+        border: none;
+        border-radius: 999px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        }
+
+        .modal-actions .btn.secondary {
+        background: #e5e7eb;
+        color: #111827;
+        }
+
+        .modal-actions .btn.primary {
+        background: #0f172a;
+        color: #ffffff;
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Side nav + overlay -->
+    <nav class="side-nav" id="side-nav" aria-hidden="true">
+        <h3>Admin Menu</h3>
+        <ul>
+            <li><a href="./admin.html">Dashboard</a></li>
+            <li><a href="./admin-COA.html">Client Management</a></li>
+        </ul>
+        
+        <!-- Add Client link now adds a client row to the table -->
+        <a class="add-link" href="#" id="openAddClient">+ Add Client</a>
+
+
+    </nav>
+    <div class="nav-overlay" id="nav-overlay"></div>
+
+    <header class="main-header">
+        <div class="header-left">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <a href="./admin.html">
+                <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+            </a>
+        </div>
+
+        <div class="user">
+            <img src="./images/user-profile.png" alt="User Profile Logo">
+            <div class="name-role">
+                <p>Jane Doe</p>
+                <p>Administrator</p>
+            </div>
+
+            <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
+                <button id="logout-btn" role="menuitem">Log out</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="adminCOA-main">
+        <h1>Client Management</h1>
+
+        <section class="all-clients">
+            <table class="client-table">
+                <caption class="sr-only">Client Accounts</caption>
+                <thead>
+                <tr>
+                    <th scope="col">Company</th>
+                    <th scope="col">Account Manager</th>
+                </tr>
+                </thead>
+                <tbody id="clientListBody">
+                <tr>
+                    <td>
+                        <a class="client-link" href="./acme-admin.html">Acme Corporation</a>
+                    </td>
+                    <td>Jordan Lee</td>
+                </tr>
+              
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Add Client Modal -->
+    <div class="modal-backdrop" id="addClientModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="addClientTitle">
+        <h2 id="addClientTitle">Add Client</h2>
+        <p class="modal-subtitle">
+        Create a new client for the chart of accounts.
+        </p>
+
+        <form id="addClientForm" novalidate>
+        <div class="modal-grid">
+            <div class="form-group">
+            <label for="clientName">Client Name<span class="required">*</span></label>
+            <input id="clientName" name="clientName" type="text" required />
+            </div>
+
+            <div class="form-group">
+            <label for="clientManager">Account Manager<span class="required">*</span></label>
+            <input id="clientManager" name="clientManager" type="text" required />
+            </div>
+        </div>
+
+        <p id="addClientError" class="modal-error" aria-live="polite"></p>
+
+        <div class="modal-actions">
+            <button type="button" class="btn secondary" id="cancelAddClient">Cancel</button>
+            <button type="submit" class="btn primary">Save Client</button>
+        </div>
+        </form>
+    </div>
+    </div>
+
+
+
+
+    <script>
+        // Profile menu + logout (optional, same pattern as other pages)
+        (function () {
+            const user = document.querySelector(".user");
+            if (!user) return;
+            const menu = user.querySelector("#user-menu");
+            const logoutBtn = user.querySelector("#logout-btn");
+
+            user.addEventListener("click", () => {
+                user.classList.toggle("open");
+                if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+            });
+
+            document.addEventListener("click", (e) => {
+                if (!user.contains(e.target)) {
+                    user.classList.remove("open");
+                    if (menu) menu.setAttribute("aria-hidden", "true");
+                }
+            });
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    user.classList.remove("open");
+                    if (menu) menu.setAttribute("aria-hidden", "true");
+                }
+            });
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    localStorage.removeItem("sf_session");
+                    window.location.href = "login.html";
+                });
+            }
+
+            // Optional: fill name/role from sf_session
+            try {
+                const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+                if (session) {
+                    const nameEl = user.querySelector(".name-role p:first-child");
+                    const roleEl = user.querySelector(".name-role p:last-child");
+                    if (nameEl && session.name) nameEl.textContent = session.name;
+                    if (roleEl && session.role) {
+                        roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+                    }
+                }
+            } catch {}
+        })();
+    </script>
+
+    <script>
+        // Hamburger / side nav
+        (function () {
+            const toggle = document.getElementById("menu-toggle");
+            const sideNav = document.getElementById("side-nav");
+            const overlay = document.getElementById("nav-overlay");
+
+            function openNav() {
+                sideNav.classList.add("open");
+                overlay.classList.add("show");
+                sideNav.setAttribute("aria-hidden", "false");
+            }
+
+            function closeNav() {
+                sideNav.classList.remove("open");
+                overlay.classList.remove("show");
+                sideNav.setAttribute("aria-hidden", "true");
+            }
+
+            toggle.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (sideNav.classList.contains("open")) {
+                    closeNav();
+                } else {
+                    openNav();
+                }
+            });
+
+            overlay.addEventListener("click", closeNav);
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    closeNav();
+                }
+            });
+        })();
+    </script>
+
+    <script>
+    // Add Client from side-nav link (front-end only)
+    document.addEventListener("DOMContentLoaded", () => {
+        const addLink = document.getElementById("addClientLink");
+        const tbody = document.getElementById("clientListBody");
+        if (!addLink || !tbody) return;
+
+        addLink.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        // Ask for basic client info
+        const company = prompt("Enter client company name:");
+        if (!company || !company.trim()) return;
+
+        const manager = prompt("Enter account manager name:");
+        if (!manager || !manager.trim()) return;
+
+        // Create a new row in the client table
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>
+            <a class="client-link" href="./acme-admin.html">${company.trim()}</a>
+            </td>
+            <td>${manager.trim()}</td>
+        `;
+
+        tbody.appendChild(tr);
+        });
+    });
+    </script>
+
+    <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const openBtn = document.getElementById("openAddClient");
+    const modal = document.getElementById("addClientModal");
+    const form = document.getElementById("addClientForm");
+    const cancelBtn = document.getElementById("cancelAddClient");
+    const errorBox = document.getElementById("addClientError");
+    const nameInput = document.getElementById("clientName");
+    const managerInput = document.getElementById("clientManager");
+
+    // IMPORTANT: this tbody id must exist on your Client Management table
+    const clientTableBody = document.getElementById("clientListBody");
+
+    if (!openBtn || !modal || !form || !clientTableBody) return;
+
+    function openModal() {
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      errorBox.textContent = "";
+      nameInput.value = "";
+      managerInput.value = "";
+      setTimeout(() => nameInput.focus(), 50);
+    }
+
+    function closeModal() {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      errorBox.textContent = "";
+      form.reset();
+    }
+
+    openBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      openModal();
+    });
+
+    cancelBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    // Close when clicking on the dark backdrop
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // ESC key to close
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("is-open")) {
+        closeModal();
+      }
+    });
+
+    // Handle form submit: add new client row
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      errorBox.textContent = "";
+
+      const name = nameInput.value.trim();
+      const manager = managerInput.value.trim();
+
+      if (!name || !manager) {
+        errorBox.textContent = "Please fill in both Client Name and Account Manager.";
+        return;
+      }
+
+      // Create a new row in the client table
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>
+          <a class="client-link" href="./acme-admin.html">${name}</a>
+        </td>
+        <td>${manager}</td>
+      `;
+
+      clientTableBody.appendChild(tr);
+      closeModal();
+    });
+  });
+</script>
+
+
+    <script src="script.js"></script>
+</body>
+</html>

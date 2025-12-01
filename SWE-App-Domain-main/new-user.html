@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New User</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body class="newuser-body">
+  <div class="newuser-base">
+    <button type="button" id="login-header"><img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo"></button>
+
+    <div class="header">
+      <h1>New User</h1>
+    </div>
+
+    <div class="main-content">
+
+      <div class="user-info">
+
+        <div class="new-input" id="name-input">
+          <input type="text" placeholder="First Name" name="fname-input" id="fname">
+          <input type="text" placeholder="Last Name" name="lname-input" id="lname">
+        </div>
+
+        <div class="new-input" id="address">
+
+          <input type="text" placeholder="123 Main Street" name="street-input" id="street">
+          <input type="text" placeholder="City" name="city-input" id="city">
+
+          <div class="new-input" id="state-code">
+            <input type="text" placeholder="State" name="state-input" id="state">
+            <input type="text" placeholder="Zipcode" name="zipcode-input" id="zipcode">
+          </div>
+
+        </div>
+
+        <div class="new-input" id="date-of-birth">
+          <input type="date" name="birthdate-input" id="birthdate">
+        </div>
+
+      </div>
+
+      <div class="password-req">
+        <p>Minimum Requirements</p>
+        <p>Must contain a letter</p>
+        <p>Must contain a number</p>
+        <p>Must contain a special character</p>
+        <p>Must be at least 8 characters</p>
+      </div>
+
+      <form id="pw-form" action="" novalidate>
+        <div class="create-password">
+          <input type="password" placeholder="NEW PASSWORD" class="new-pass" id="new-pass">
+          <input type="password" placeholder="CONFIRM PASSWORD" id="confirm-pass">
+          
+        </div>
+
+        <div class="submit-btn" id="new-password-submit">
+          <button class="nxt-btn" id="new-password-next" type="submit">NEXT</button>
+        </div>
+      </form>
+
+
+<!--
+    <div class="submit-btn" id="new-user-submit">
+        <button class="nxt-btn" id="new-user-next" type="submit">NEXT</button>
+      </div>
+-->
+      
+      
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <script>
+  //Returning User Btn Navigation
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('new-password-next');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      window.location.assign('./security-questions.html')
+    })
+  })
+
+
+  // ======= PASSWORD VALIDATION FUNCTION =========
+  function validatePassword(pw) {
+    const startsWithLetter = /^[A-Za-z]/.test(pw);
+    const hasLetter = /[A-Za-z]/.test(pw);
+    const hasNumber = /\d/.test(pw);
+    const hasSpecial = /[^A-Za-z0-9]/.test(pw);
+    const longEnough = pw.length >= 8;
+
+    return {
+      valid: startsWithLetter && hasLetter && hasNumber && hasSpecial && longEnough,
+      startsWithLetter,
+      hasLetter,
+      hasNumber,
+      hasSpecial,
+      longEnough
+    };
+  }
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,500 @@
+     <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Journal Entry | SyncFinance</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=SUSE+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    .journal-page {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px 40px;
+    }
+
+    .journal-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 24px 24px 20px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1);
+    }
+
+    .journal-card h1 {
+      margin: 0 0 4px 0;
+    }
+
+    .journal-subtitle {
+      margin: 0 0 18px 0;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .journal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px 24px;
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5f5;
+      font-size: 0.9rem;
+    }
+
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .required {
+      color: #dc2626;
+      margin-left: 2px;
+    }
+
+    .journal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn.primary {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .error-text {
+      margin-top: 8px;
+      min-height: 1rem;
+      font-size: 0.8rem;
+      color: #dc2626;
+    }
+
+    .success-text {
+      margin-top: 8px;
+      min-height: 1rem;
+      font-size: 0.8rem;
+      color: #16a34a;
+    }
+
+    .alert-box {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      color: #4b5563;
+    }
+
+    .alert-box strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* Simple user dropdown for consistency */
+    .user {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .user-menu {
+      position: absolute;
+      right: 0;
+      top: 48px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      padding: 8px 0;
+      min-width: 150px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .user.open .user-menu {
+      display: block;
+    }
+
+    .user-menu button {
+      width: 100%;
+      padding: 8px 14px;
+      border: none;
+      background: none;
+      text-align: left;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .user-menu button:hover {
+      background: #f3f4f6;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="main-header">
+    <a href="./accountant.html">
+      <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo" />
+    </a>
+
+    <div class="user">
+      <img src="./images/user-profile.png" alt="User profile" />
+      <div class="name-role">
+        <p>Accountant User</p>
+        <p>Accountant</p>
+      </div>
+      <div id="user-menu" class="user-menu" aria-hidden="true">
+        <button id="logout-btn" type="button">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="journal-page">
+    <section class="journal-card">
+      <h1>Create Journal Entry</h1>
+      <p class="journal-subtitle">
+        Record a single debit–credit journal entry. All fields marked with <span class="required">*</span> are required.
+      </p>
+
+      <div id="noAccountsMessage" class="alert-box" style="display: none;">
+        <strong>No accounts available</strong>
+        Add accounts to the chart of accounts before creating journal entries.
+      </div>
+
+      <form id="journalForm" novalidate>
+        <div class="journal-grid">
+          <div class="form-group">
+            <label for="entryDate">Date<span class="required">*</span></label>
+            <input id="entryDate" name="entryDate" type="date" required />
+          </div>
+
+          <div class="form-group">
+            <label for="reference">Reference #</label>
+            <input id="reference" name="reference" type="text" placeholder="Optional ref or doc #" />
+          </div>
+        </div>
+
+        <h3>Debit</h3>
+        <div class="journal-grid">
+          <div class="form-group">
+            <label for="debitAccount">Account Debited<span class="required">*</span></label>
+            <select id="debitAccount" name="debitAccount" required>
+              <option value="">Select account</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="debitAmount">Debit Amount<span class="required">*</span></label>
+            <input id="debitAmount" name="debitAmount" type="number" step="0.01" min="0" required />
+          </div>
+        </div>
+
+        <h3>Credit</h3>
+        <div class="journal-grid">
+          <div class="form-group">
+            <label for="creditAccount">Account Credited<span class="required">*</span></label>
+            <select id="creditAccount" name="creditAccount" required>
+              <option value="">Select account</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="creditAmount">Credit Amount<span class="required">*</span></label>
+            <input id="creditAmount" name="creditAmount" type="number" step="0.01" min="0" required />
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 10px;">
+          <label for="description">Description / Explanation<span class="required">*</span></label>
+          <textarea id="description" name="description" required></textarea>
+        </div>
+
+        <p id="errorBox" class="error-text" aria-live="polite"></p>
+        <p id="successBox" class="success-text" aria-live="polite"></p>
+
+        <div class="journal-actions">
+          <button type="button" class="btn secondary" onclick="window.location.href='accountant.html'">
+            Cancel
+          </button>
+          <button type="submit" class="btn primary">
+            Save Journal Entry
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- SCRIPTS -->
+  <script>
+    // Profile menu + logout (same pattern as other pages)
+    (function () {
+      const user = document.querySelector(".user");
+      if (!user) return;
+      const menu = user.querySelector("#user-menu");
+      const logoutBtn = user.querySelector("#logout-btn");
+
+      user.addEventListener("click", () => {
+        user.classList.toggle("open");
+        if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!user.contains(e.target)) {
+          user.classList.remove("open");
+          if (menu) menu.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          user.classList.remove("open");
+          if (menu) menu.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          localStorage.removeItem("sf_session");
+          window.location.href = "login.html";
+        });
+      }
+
+      // Fill name/role from sf_session if present
+      try {
+        const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+        if (session) {
+          const nameEl = user.querySelector(".name-role p:first-child");
+          const roleEl = user.querySelector(".name-role p:last-child");
+          if (nameEl && session.name) nameEl.textContent = session.name;
+          if (roleEl && session.role) {
+            roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+          }
+        }
+      } catch {}
+    })();
+  </script>
+
+  <script>
+    const ACCOUNTS_KEY = "sf_demo_accounts";
+    const JOURNAL_KEY = "sf_journal_entries";
+
+    function loadAccounts() {
+      try {
+        const raw = localStorage.getItem(ACCOUNTS_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+    }
+
+    function loadJournalEntries() {
+      try {
+        const raw = localStorage.getItem(JOURNAL_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveJournalEntries(entries) {
+      localStorage.setItem(JOURNAL_KEY, JSON.stringify(entries));
+    }
+
+    function getSessionUserId() {
+      try {
+        const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+        if (!session) return "accountant";
+        return session.name || session.userId || session.username || "accountant";
+      } catch {
+        return "accountant";
+      }
+    }
+
+    function generateJournalId(entries) {
+      const base = (entries.length || 0) + 1;
+      return "JE" + String(base).padStart(4, "0");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const accounts = loadAccounts();
+      const debitSelect = document.getElementById("debitAccount");
+      const creditSelect = document.getElementById("creditAccount");
+      const noAccountsMessage = document.getElementById("noAccountsMessage");
+      const form = document.getElementById("journalForm");
+      const errorBox = document.getElementById("errorBox");
+      const successBox = document.getElementById("successBox");
+
+      // If no accounts, disable form and show message
+      if (!accounts.length) {
+        noAccountsMessage.style.display = "block";
+        form.querySelectorAll("input, select, textarea, button[type='submit']").forEach(el => {
+          el.disabled = true;
+        });
+        return;
+      }
+
+      // Populate selects with accounts
+      accounts.forEach(acct => {
+        const label = `${acct.account_number} – ${acct.account_name}`;
+        const opt1 = document.createElement("option");
+        opt1.value = acct.account_number;
+        opt1.textContent = label;
+        debitSelect.appendChild(opt1);
+
+        const opt2 = document.createElement("option");
+        opt2.value = acct.account_number;
+        opt2.textContent = label;
+        creditSelect.appendChild(opt2);
+      });
+
+      // Default date = today
+      const dateInput = document.getElementById("entryDate");
+      const today = new Date().toISOString().slice(0, 10);
+      dateInput.value = today;
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        errorBox.textContent = "";
+        successBox.textContent = "";
+
+        const entryDate = dateInput.value;
+        const reference = document.getElementById("reference").value.trim();
+        const debitAccountNo = debitSelect.value;
+        const creditAccountNo = creditSelect.value;
+        const debitAmountRaw = document.getElementById("debitAmount").value;
+        const creditAmountRaw = document.getElementById("creditAmount").value;
+        const description = document.getElementById("description").value.trim();
+
+        const debitAmount = Number(debitAmountRaw || 0);
+        const creditAmount = Number(creditAmountRaw || 0);
+
+        // Basic validation
+        if (!entryDate || !debitAccountNo || !creditAccountNo || !description) {
+          errorBox.textContent = "Please fill out all required fields.";
+          return;
+        }
+
+        if (debitAccountNo === creditAccountNo) {
+          errorBox.textContent = "Debit and credit accounts cannot be the same.";
+          return;
+        }
+
+        if (debitAmount <= 0 || creditAmount <= 0) {
+          errorBox.textContent = "Debit and credit amounts must be greater than 0.";
+          return;
+        }
+
+        if (Math.abs(debitAmount - creditAmount) > 0.0001) {
+          errorBox.textContent = "Debit amount must equal credit amount.";
+          return;
+        }
+
+        // Find accounts
+        const debitAcct = accounts.find(a => a.account_number === debitAccountNo);
+        const creditAcct = accounts.find(a => a.account_number === creditAccountNo);
+
+        if (!debitAcct || !creditAcct) {
+          errorBox.textContent = "One or both selected accounts could not be found.";
+          return;
+        }
+
+        // Load existing journal entries
+        const entries = loadJournalEntries();
+        const nowIso = new Date().toISOString();
+        const userId = getSessionUserId();
+
+        const newEntry = {
+          id: generateJournalId(entries),
+          date: entryDate,
+          timestamp: nowIso,
+          reference,
+          description,
+          debitAccountNumber: debitAcct.account_number,
+          debitAccountName: debitAcct.account_name,
+          debitAmount,
+          creditAccountNumber: creditAcct.account_number,
+          creditAccountName: creditAcct.account_name,
+          creditAmount,
+          user_id: userId
+        };
+
+        entries.push(newEntry);
+        saveJournalEntries(entries);
+
+        // Update ledger-style fields on accounts (debit, credit, balance)
+        function applyDebit(acct, amount) {
+          acct.debit = (acct.debit || 0) + amount;
+          if ((acct.normal_side || "").toLowerCase() === "debit") {
+            acct.balance = (acct.balance || 0) + amount;
+          } else {
+            acct.balance = (acct.balance || 0) - amount;
+          }
+        }
+
+        function applyCredit(acct, amount) {
+          acct.credit = (acct.credit || 0) + amount;
+          if ((acct.normal_side || "").toLowerCase() === "credit") {
+            acct.balance = (acct.balance || 0) + amount;
+          } else {
+            acct.balance = (acct.balance || 0) - amount;
+          }
+        }
+
+        applyDebit(debitAcct, debitAmount);
+        applyCredit(creditAcct, creditAmount);
+
+        saveAccounts(accounts);
+
+        successBox.textContent = "Journal entry saved and account balances updated.";
+        form.reset();
+        dateInput.value = today;
+      });
+    });
+  </script>
+</body>
+</html>
