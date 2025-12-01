@@ -83,6 +83,23 @@
     wireProfileMenu();
   }
 })();
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const link = document.getElementById("emailLink");
+  if (!link) return;
+
+  const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+  if (!session || !session.role) {
+    link.href = "admin-email.html"; // fallback
+    return;
+  }
+
+  // routing
+  if (session.role === "admin") link.href = "admin-email.html";
+  if (session.role === "manager") link.href = "manager-email.html";
+  if (session.role === "accountant") link.href = "accountant-email.html";
+});
 </script>
 
 
