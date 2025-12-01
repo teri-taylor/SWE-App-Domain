@@ -1,215 +1,487 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css"/>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Chart of Accounts | SyncFinance</title>
 
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=SUSE+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 </head>
 <body>
 
- <header class="main-header">
-    <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
-    <div class="user">
-      <img src="./images/user-profile.png" alt="User Profile Logo">
-      <div class="name-role">
-        <p>Jane Doe</p><p>Administrator</p>
+  <!-- HEADER -->
+  <header class="main-header">
+    <a href="./admin-client-list.html">
+      <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
+    </a>
+
+    <div class="header-right">
+      <button
+        type="button"
+        class="icon-btn email-btn"
+        title="Email Manager / Accountant"
+        onclick="window.location.href='admin-email.html'"
+      >
+        &#9993;
+      </button>
+
+      <div class="user">
+        <img src="./images/user-profile.png" alt="User Profile Logo">
+        <div class="name-role">
+          <p>Jane Doe</p>
+          <p>Administrator</p>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="admin-container" style="max-width:1000px;">
-  <!-- Top bar: Back (left) + actions (right) -->
-  <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; margin-bottom:12px;">
-    <a class="ghost" href="./admin-COA.html">← Back to Client List</a>
-    <div style="display:flex; gap:10px;">
-      <button id="editBtn" class="mini" type="button">Edit</button>
+
+  <main class="admin-container">
+
+    <!-- Top action row -->
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:10px;">
+      <button id="addCoaBtn" class="mini primary" type="button">Add Account</button>
+      <button id="editBtn" class="mini" type="button" disabled>Edit</button>
       <button id="deactivateBtn" class="mini danger" type="button">Deactivate</button>
     </div>
-  </div>
 
-  <section class="page-title" style="margin-top:0;">
-    <h1 id="title">Acme Corporation</h1>
-    <p class="subtitle" id="statusLine">Status: <strong>Active</strong></p>
-  </section>
+    <section class="page-title" style="margin-top:0;">
+      <h1>Client Chart of Accounts</h1>
+    </section>
 
-  <div class="card-form">
-    <form id="detailForm" onsubmit="return false;">
-      <div class="form-grid">
-        <!-- a–o mapped -->
-        <label>
-          <span>Account Name</span>
-          <input id="f_account_name" type="text" value="Acme Corporation" disabled />
-        </label>
+    <!-- Filter + Search aligned with table -->
+    <header class="coa-header">
+      <div class="coa-header-inner">
+        <div class="coa-sort-wrap">
+          <label for="coaFilter" class="coa-sort-label">
+            Filter by:
+            <select id="coaFilter">
+              <!-- options will be populated by JS -->
+            </select>
+          </label>
+        </div>
 
-        <label>
-          <span>Account Number</span>
-          <input id="f_account_number" type="text" value="1001" disabled />
-        </label>
-
-        <label class="grid-span-2">
-          <span>Account Description</span>
-          <textarea id="f_account_description" rows="2" disabled>Cash on hand and in bank accounts used for daily operations.</textarea>
-        </label>
-
-        <label>
-          <span>Normal Side</span>
-          <select id="f_normal_side" disabled>
-            <option selected>Debit</option>
-            <option>Credit</option>
-          </select>
-        </label>
-
-        <label>
-          <span>Account Category</span>
-          <input id="f_account_category" type="text" value="Asset" disabled />
-        </label>
-
-        <label>
-          <span>Account Subcategory</span>
-          <input id="f_account_subcategory" type="text" value="Current Assets" disabled />
-        </label>
-
-        <label>
-          <span>Initial Balance</span>
-          <input id="f_initial_balance" type="number" step="0.01" value="25000.00" disabled />
-        </label>
-
-        <label>
-          <span>Debit</span>
-          <input id="f_debit" type="number" step="0.01" value="1250.00" disabled />
-        </label>
-
-        <label>
-          <span>Credit</span>
-          <input id="f_credit" type="number" step="0.01" value="300.00" disabled />
-        </label>
-
-        <label>
-          <span>Balance</span>
-          <input id="f_balance" type="number" step="0.01" value="25950.00" disabled />
-        </label>
-
-        <label>
-          <span>Date/Time Added</span>
-          <!-- Use valid datetime-local format -->
-          <input id="f_date_added" type="datetime-local" value="2025-10-09T10:15" disabled />
-        </label>
-
-        <label>
-          <span>User ID</span>
-          <input id="f_user_id" type="text" value="admin123" disabled />
-        </label>
-
-        <label>
-          <span>Order</span>
-          <input id="f_order" type="text" value="01" disabled />
-        </label>
-
-        <label>
-          <span>Statement</span>
-          <select id="f_statement" disabled>
-            <option value="BS" selected>BS — Balance Sheet</option>
-            <option value="IS">IS — Income Statement</option>
-            <option value="RE">RE — Retained Earnings</option>
-          </select>
-        </label>
-
-        <label class="grid-span-2">
-          <span>Comment</span>
-          <textarea id="f_comment" rows="2" disabled>Opening balance loaded for FY25. Reviewed by J. Lee.</textarea>
-        </label>
+        <div class="search-wrap">
+          <input id="coaSearch" type="search" placeholder="Search">
+        </div>
       </div>
-    </form>
-  </div>
+    </header>
 
-  <!-- Event Log Section -->
-<section class="card-table">
-  <div class="card-table-header">
-    <h2>Event Log</h2>
-    <p class="subtitle">
-      Before and after images of all changes made to this account.
-    </p>
-  </div>
+    <!-- COA Table -->
+    <div class="table-wrap">
+      <table class="client-table coa-table">
+        <thead>
+          <tr>
+            <th id="thAcctNumber" class="sortable">
+              Acct # <span class="sort-icon" id="sortIconNumber">⇅</span>
+            </th>
+            <th>Account Name</th>
+            <th>Category</th>
+            <th id="thBalance" class="sortable">
+              Balance <span class="sort-icon" id="sortIconBalance">⇅</span>
+            </th>
+            <th>Statement</th>
+          </tr>
+        </thead>
+        <tbody id="coaBody">
+          <!-- rows populated by JS -->
+        </tbody>
+      </table>
+    </div>
 
-  <div class="table-wrapper">
-    <table id="eventLogTable">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Change Type</th>
-          <th>Before</th>
-          <th>After</th>
-          <th>Changed By (User ID)</th>
-          <th>Date / Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- JS will inject rows here -->
-      </tbody>
-    </table>
-  </div>
-</section>
-
-</main>
+  </main>
 
   <script>
-  // TEMP: sample data so the UI is complete.
-  // Backend team can replace this with real data from the DB.
-  const sampleEventLog = [
-    {
-      id: 1,
-      type: "Created",
-      before: "— (new account)",
-      after: "Name: Acme Corporation\nCategory: Asset\nBalance: 25,000.00",
-      userId: "admin123",
-      dateTime: "2025-10-09 10:15"
-    },
-    {
-      id: 2,
-      type: "Updated Name",
-      before: "Name: Acme Corp\nCategory: Asset\nBalance: 25,950.00",
-      after: "Name: Acme Corporation\nCategory: Asset\nBalance: 25,950.00",
-      userId: "mgr001",
-      dateTime: "2025-10-12 14:03"
+    /*********************************************************
+      SHARED DEMO DATA + STORAGE
+    **********************************************************/
+    const STORAGE_KEY = "sf_demo_accounts";
+
+    const defaultAccounts = [
+      {
+        account_name: "Cash",
+        account_number: "1001",
+        account_description: "Cash on hand",
+        normal_side: "Debit",
+        account_category: "Asset",
+        account_subcategory: "Current Asset",
+        initial_balance: 0,
+        debit: 0,
+        credit: 0,
+        balance: 0,
+        date_added: "2025-01-09T10:00",
+        user_id: "admin01",
+        order: "01",
+        statement: "BS",
+        comment: "",
+        status: "Active"
+      },
+      {
+        account_name: "Accounts Receivable",
+        account_number: "1100",
+        account_description: "Customer invoices owed",
+        normal_side: "Debit",
+        account_category: "Asset",
+        account_subcategory: "Current Asset",
+        initial_balance: 0,
+        debit: 0,
+        credit: 0,
+        balance: 2500,
+        date_added: "2025-01-10T09:30",
+        user_id: "admin01",
+        order: "02",
+        statement: "BS",
+        comment: "",
+        status: "Active"
+      }
+    ];
+
+    let accounts = [];
+
+    // UI state
+    let currentSearch = "";
+    let currentSortKey = null;      // "number" or "balance"
+    let currentSortDir = "asc";     // "asc" or "desc"
+    let currentFilterField = null;  // "name" | "category" | "statement" | null
+    let currentFilterValue = null;  // actual text (e.g. "Cash")
+
+    function loadAccounts() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            accounts = parsed;
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn("Error reading accounts from storage:", e);
+      }
+      // fallback: copy defaults into storage
+      accounts = defaultAccounts.map(a => ({ ...a }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
     }
-  ];
 
-  function renderEventLog(events) {
-    const tbody = document.querySelector("#eventLogTable tbody");
-    if (!tbody) return;
+    function saveAccounts() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
+    }
 
-    if (!events.length) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="6" class="empty-cell">
-            No events recorded yet for this account.
+    /*********************************************************
+      HELPERS
+    **********************************************************/
+    function formatMoney(n) {
+      return Number(n || 0).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatDateTime(s) {
+      const d = new Date(s);
+      if (isNaN(d.getTime())) return s || "";
+      return d.toLocaleString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function updateSortIcons() {
+      const iconNumber  = document.getElementById("sortIconNumber");
+      const iconBalance = document.getElementById("sortIconBalance");
+
+      // default state
+      iconNumber.textContent  = "⇅";
+      iconBalance.textContent = "⇅";
+
+      // highlight active column
+      if (currentSortKey === "number") {
+        iconNumber.textContent = currentSortDir === "asc" ? "↑" : "↓";
+      }
+
+      if (currentSortKey === "balance") {
+        iconBalance.textContent = currentSortDir === "asc" ? "↑" : "↓";
+      }
+    }
+
+    /*********************************************************
+      RENDER TABLE (search + filter + sort)
+    **********************************************************/
+    function renderCOATable() {
+      const tbody = document.getElementById("coaBody");
+      tbody.innerHTML = "";
+
+      let rows = accounts.slice();
+
+      // 1) Filter dropdown: Account Name / Category / Statement
+      if (currentFilterField && currentFilterValue) {
+        rows = rows.filter(acct => {
+          if (currentFilterField === "name") return acct.account_name === currentFilterValue;
+          if (currentFilterField === "category") return acct.account_category === currentFilterValue;
+          if (currentFilterField === "statement") return acct.statement === currentFilterValue;
+          return true;
+        });
+      }
+
+      // 2) Search filter
+      const q = currentSearch.trim().toLowerCase();
+      if (q) {
+        rows = rows.filter(acct => {
+          const haystack = `
+            ${acct.account_name}
+            ${acct.account_number}
+            ${acct.account_category}
+            ${acct.statement}
+          `.toLowerCase();
+          return haystack.includes(q);
+        });
+      }
+
+      // 3) Sorting for Account # or Balance
+      if (currentSortKey === "number") {
+        rows.sort((a, b) => {
+          const an = parseInt(a.account_number, 10) || 0;
+          const bn = parseInt(b.account_number, 10) || 0;
+          return currentSortDir === "asc" ? an - bn : bn - an;
+        });
+      } else if (currentSortKey === "balance") {
+        rows.sort((a, b) => {
+          const ab = Number(a.balance) || 0;
+          const bb = Number(b.balance) || 0;
+          return currentSortDir === "asc" ? ab - bb : bb - ab;
+        });
+      }
+
+      // 4) Render rows
+      rows.forEach(acct => {
+        const index = accounts.indexOf(acct); // keep original index for Edit/Deactivate
+
+        const tr = document.createElement("tr");
+        tr.className = "coa-row";
+        tr.dataset.index = index;
+
+        if (acct.status === "Inactive") {
+          tr.classList.add("inactive-row");
+        }
+
+        tr.innerHTML = `
+          <td>${acct.account_number}</td>
+          <td>${acct.account_name}</td>
+          <td>${acct.account_category}</td>
+          <td>${formatMoney(acct.balance)}</td>
+          <td>${acct.statement}</td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    /*********************************************************
+      POPULATE FILTER DROPDOWN
+    **********************************************************/
+    function populateFilterOptions() {
+      const select = document.getElementById("coaFilter");
+      if (!select) return;
+
+      select.innerHTML = "";
+
+      // "Clear filter" option
+      const clearOpt = document.createElement("option");
+      clearOpt.textContent = "Clear filter";
+      clearOpt.value = "clear";
+      select.appendChild(clearOpt);
+
+      const addSection = (label, field, values) => {
+        if (!values.length) return;
+
+        const titleOpt = document.createElement("option");
+        titleOpt.textContent = label;
+        titleOpt.value = "";
+        titleOpt.disabled = true;
+        select.appendChild(titleOpt);
+
+        values.forEach(v => {
+          const opt = document.createElement("option");
+          opt.textContent = v;
+          opt.value = `${field}:${v}`;
+          select.appendChild(opt);
+        });
+      };
+
+      const names = [...new Set(accounts.map(a => a.account_name))].sort();
+      const cats  = [...new Set(accounts.map(a => a.account_category))].sort();
+      const stmts = [...new Set(accounts.map(a => a.statement))].sort();
+
+      addSection("Account Name", "name", names);
+      addSection("Category", "category", cats);
+      addSection("Statement", "statement", stmts);
+    }
+
+    /*********************************************************
+      MAIN PAGE LOGIC
+    **********************************************************/
+    document.addEventListener("DOMContentLoaded", () => {
+      loadAccounts();
+      populateFilterOptions();
+      renderCOATable();
+      updateSortIcons();
+
+
+      const tbody         = document.getElementById("coaBody");
+      const search        = document.getElementById("coaSearch");
+      const editBtn       = document.getElementById("editBtn");
+      const deactivateBtn = document.getElementById("deactivateBtn");
+      const addCoaBtn     = document.getElementById("addCoaBtn");
+      const filterSelect  = document.getElementById("coaFilter");
+      const thAcct        = document.getElementById("thAcctNumber");
+      const thBalance     = document.getElementById("thBalance");
+
+      let selectedIndex = null;
+
+      // Search filter
+      search.addEventListener("input", () => {
+        currentSearch = search.value;
+        renderCOATable();
+        selectedIndex = null;
+        editBtn.disabled = true;
+      });
+
+      // Filter dropdown (Account Name / Category / Statement)
+      filterSelect.addEventListener("change", () => {
+        const val = filterSelect.value;
+
+        if (val === "clear" || val === "") {
+          currentFilterField = null;
+          currentFilterValue = null;
+        } else {
+          const [field, v] = val.split(":");
+          currentFilterField = field;
+          currentFilterValue = v;
+        }
+
+        renderCOATable();
+        selectedIndex = null;
+        editBtn.disabled = true;
+      });
+
+      // Helper for header sort
+      function setSort(key) {
+        if (currentSortKey === key) {
+          currentSortDir = currentSortDir === "asc" ? "desc" : "asc";
+        } else {
+          currentSortKey = key;
+          currentSortDir = "asc";
+        }
+
+        updateSortIcons();
+        renderCOATable();
+
+        selectedIndex = null;
+        editBtn.disabled = true;
+      }
+
+
+      // Clickable header sorting (Acct #, Balance)
+      thAcct.addEventListener("click", () => setSort("number"));
+      thBalance.addEventListener("click", () => setSort("balance"));
+
+      // Row click → select + expand inline details
+      tbody.addEventListener("click", (e) => {
+        const row = e.target.closest("tr.coa-row");
+        if (!row) return;
+
+        const index = Number(row.dataset.index);
+        const acct = accounts[index];
+        if (!acct) return;
+
+        selectedIndex = index;
+        editBtn.disabled = false; // allow editing once a row is chosen
+
+        // If already expanded, collapse
+        const next = row.nextElementSibling;
+        if (next && next.classList.contains("coa-expand-row")) {
+          next.remove();
+          row.classList.remove("is-expanded");
+          return;
+        }
+
+        // Collapse all other expansions
+        document.querySelectorAll(".coa-expand-row").forEach(r => r.remove());
+        document.querySelectorAll(".coa-row.is-expanded").forEach(r => r.classList.remove("is-expanded"));
+
+        const expand = document.createElement("tr");
+        expand.className = "coa-expand-row";
+        expand.innerHTML = `
+          <td colspan="5">
+            <div class="coa-expand-grid">
+              <div><strong>Normal side:</strong> ${acct.normal_side}</div>
+              <div><strong>Initial balance:</strong> ${formatMoney(acct.initial_balance)}</div>
+              <div><strong>Balance:</strong> ${formatMoney(acct.balance)}</div>
+              <div><strong>Date/time added:</strong> ${formatDateTime(acct.date_added)}</div>
+              <div><strong>User ID:</strong> ${acct.user_id}</div>
+              <div><strong>Order:</strong> ${acct.order}</div>
+              <div><strong>Statement:</strong> ${acct.statement}</div>
+              <div class="coa-expand-comments">
+                <strong>Comments:</strong> ${acct.comment || "—"}
+              </div>
+            </div>
           </td>
-        </tr>`;
-      return;
-    }
+        `;
 
-    tbody.innerHTML = events.map(ev => `
-      <tr>
-        <td>${ev.id}</td>
-        <td>${ev.type}</td>
-        <td><pre>${ev.before}</pre></td>
-        <td><pre>${ev.after}</pre></td>
-        <td>${ev.userId}</td>
-        <td>${ev.dateTime}</td>
-      </tr>
-    `).join("");
-  }
+        row.classList.add("is-expanded");
+        tbody.insertBefore(expand, row.nextSibling);
+      });
 
-  document.addEventListener("DOMContentLoaded", () => {
-    renderEventLog(sampleEventLog);
-  });
-</script>
+      // Edit → go to edit-account.html?id=account_number
+      editBtn.addEventListener("click", () => {
+        if (selectedIndex === null) {
+          alert("Please select an account to edit.");
+          return;
+        }
+        const acct = accounts[selectedIndex];
+        const id = encodeURIComponent(acct.account_number);
+        window.location.href = `edit-account.html?id=${id}`;
+      });
+
+      // Add Account for Chart of Accounts
+      addCoaBtn.addEventListener("click", () => {
+        window.location.href = "add-coa-account.html";
+      });
+
+      // Deactivate logic
+      deactivateBtn.addEventListener("click", () => {
+        if (selectedIndex === null) {
+          alert("Please select an account to deactivate.");
+          return;
+        }
+        const acct = accounts[selectedIndex];
+
+        if (acct.balance > 0) {
+          alert("This account cannot be deactivated because its balance is greater than 0.");
+          return;
+        }
+
+        if (!confirm(`Are you sure you want to deactivate account ${acct.account_number} - ${acct.account_name}?`)) {
+          return;
+        }
+
+        acct.status = "Inactive";
+        saveAccounts();
+        renderCOATable();
+        alert("Account deactivated.");
+      });
+    });
+  </script>
 
 </body>
+</html>
+
 
 </html>
+
