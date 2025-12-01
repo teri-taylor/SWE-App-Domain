@@ -230,6 +230,110 @@
         .client-link:hover {
             text-decoration: underline;
         }
+
+        /* ====== Modal Backdrop + Card ====== */
+        .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.55); /* dark navy overlay */
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        z-index: 1000;
+        }
+
+        .modal-backdrop.is-open {
+        display: flex;
+        }
+
+        .modal-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 24px 24px 18px;
+        max-width: 420px;
+        width: 100%;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.28);
+        }
+
+        .modal-card h2 {
+        margin: 0 0 4px 0;
+        }
+
+        .modal-subtitle {
+        margin: 0 0 16px 0;
+        font-size: 0.9rem;
+        color: #6b7280;
+        }
+
+        .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px 16px;
+        margin-bottom: 12px;
+        }
+
+        .modal-card .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        }
+
+        .modal-card label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #0f172a;
+        }
+
+        .modal-card input {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #cbd5f5;
+        font-size: 0.9rem;
+        }
+
+        .modal-card input:focus {
+        outline: 2px solid #0f172a;
+        outline-offset: 1px;
+        }
+
+        .required {
+        color: #dc2626;
+        margin-left: 3px;
+        }
+
+        .modal-error {
+        min-height: 1rem;
+        font-size: 0.8rem;
+        color: #dc2626;
+        margin: 4px 0 0 0;
+        }
+
+        .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 16px;
+        }
+
+        .modal-actions .btn {
+        border: none;
+        border-radius: 999px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        }
+
+        .modal-actions .btn.secondary {
+        background: #e5e7eb;
+        color: #111827;
+        }
+
+        .modal-actions .btn.primary {
+        background: #0f172a;
+        color: #ffffff;
+        }
+
     </style>
 </head>
 
@@ -241,8 +345,11 @@
             <li><a href="./admin.html">Dashboard</a></li>
             <li><a href="./admin-COA.html">Client Management</a></li>
         </ul>
-        <!-- Moved "Add Account" into the side nav -->
-        <a class="add-link" href="./add-account.html">+ Add Account</a>
+        
+        <!-- Add Client link now adds a client row to the table -->
+        <a class="add-link" href="#" id="openAddClient">+ Add Client</a>
+
+
     </nav>
     <div class="nav-overlay" id="nav-overlay"></div>
 
@@ -291,20 +398,45 @@
                     </td>
                     <td>Jordan Lee</td>
                 </tr>
-                <!--
-                <tr>
-                  <td><a class="client-link" href="client.html?client=Brightstone%20Analytics">Brightstone Analytics</a></td>
-                  <td>Riley Morgan</td>
-                </tr>
-                <tr>
-                  <td><a class="client-link" href="client.html?client=Evergreen%20Solutions">Evergreen Solutions</a></td>
-                  <td>Taylor Nguyen</td>
-                </tr>
-                -->
+              
                 </tbody>
             </table>
         </section>
     </main>
+
+    <!-- Add Client Modal -->
+    <div class="modal-backdrop" id="addClientModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="addClientTitle">
+        <h2 id="addClientTitle">Add Client</h2>
+        <p class="modal-subtitle">
+        Create a new client for the chart of accounts.
+        </p>
+
+        <form id="addClientForm" novalidate>
+        <div class="modal-grid">
+            <div class="form-group">
+            <label for="clientName">Client Name<span class="required">*</span></label>
+            <input id="clientName" name="clientName" type="text" required />
+            </div>
+
+            <div class="form-group">
+            <label for="clientManager">Account Manager<span class="required">*</span></label>
+            <input id="clientManager" name="clientManager" type="text" required />
+            </div>
+        </div>
+
+        <p id="addClientError" class="modal-error" aria-live="polite"></p>
+
+        <div class="modal-actions">
+            <button type="button" class="btn secondary" id="cancelAddClient">Cancel</button>
+            <button type="submit" class="btn primary">Save Client</button>
+        </div>
+        </form>
+    </div>
+    </div>
+
+
+
 
     <script>
         // Profile menu + logout (optional, same pattern as other pages)
@@ -394,6 +526,122 @@
         })();
     </script>
 
+    <script>
+    // Add Client from side-nav link (front-end only)
+    document.addEventListener("DOMContentLoaded", () => {
+        const addLink = document.getElementById("addClientLink");
+        const tbody = document.getElementById("clientListBody");
+        if (!addLink || !tbody) return;
+
+        addLink.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        // Ask for basic client info
+        const company = prompt("Enter client company name:");
+        if (!company || !company.trim()) return;
+
+        const manager = prompt("Enter account manager name:");
+        if (!manager || !manager.trim()) return;
+
+        // Create a new row in the client table
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>
+            <a class="client-link" href="./acme-admin.html">${company.trim()}</a>
+            </td>
+            <td>${manager.trim()}</td>
+        `;
+
+        tbody.appendChild(tr);
+        });
+    });
+    </script>
+
+    <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const openBtn = document.getElementById("openAddClient");
+    const modal = document.getElementById("addClientModal");
+    const form = document.getElementById("addClientForm");
+    const cancelBtn = document.getElementById("cancelAddClient");
+    const errorBox = document.getElementById("addClientError");
+    const nameInput = document.getElementById("clientName");
+    const managerInput = document.getElementById("clientManager");
+
+    // IMPORTANT: this tbody id must exist on your Client Management table
+    const clientTableBody = document.getElementById("clientListBody");
+
+    if (!openBtn || !modal || !form || !clientTableBody) return;
+
+    function openModal() {
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      errorBox.textContent = "";
+      nameInput.value = "";
+      managerInput.value = "";
+      setTimeout(() => nameInput.focus(), 50);
+    }
+
+    function closeModal() {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      errorBox.textContent = "";
+      form.reset();
+    }
+
+    openBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      openModal();
+    });
+
+    cancelBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+
+    // Close when clicking on the dark backdrop
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // ESC key to close
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("is-open")) {
+        closeModal();
+      }
+    });
+
+    // Handle form submit: add new client row
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      errorBox.textContent = "";
+
+      const name = nameInput.value.trim();
+      const manager = managerInput.value.trim();
+
+      if (!name || !manager) {
+        errorBox.textContent = "Please fill in both Client Name and Account Manager.";
+        return;
+      }
+
+      // Create a new row in the client table
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>
+          <a class="client-link" href="./acme-admin.html">${name}</a>
+        </td>
+        <td>${manager}</td>
+      `;
+
+      clientTableBody.appendChild(tr);
+      closeModal();
+    });
+  });
+</script>
+
+
     <script src="script.js"></script>
 </body>
 </html>
+
