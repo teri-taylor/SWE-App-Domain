@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Ledger | SyncFinance</title>
+
+  <!-- Base styles + manager UI styles -->
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="manager-ui.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=SUSE+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <!-- HEADER (same structure as manager page) -->
+  <header class="main-header">
+    <div class="header-left">
+      <a href="./manager.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#001f3f;">
+        <span style="font-size:20px;line-height:1;">←</span>
+        <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo" />
+      </a>
+    </div>
+
+    <div class="user">
+      <img src="./images/user-profile.png" alt="User Profile Logo" />
+      <div class="name-role">
+        <p>Mark Green</p>
+        <p>Manager</p>
+      </div>
+
+      <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
+        <button id="logout-btn" role="menuitem">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="company-layout" style="max-width:1100px;margin:30px auto;padding:0 20px;">
+    <!-- Account header + filters + stats -->
+    <section class="ledger-card">
+      <div class="gl-head">
+        <div>
+          <h1 class="gl-title" id="ledgerTitle">Account Ledger</h1>
+          <p id="ledgerMetaLine" style="margin:4px 0 0;font-size:0.9rem;color:#6b7280;">
+            Loading account details…
+          </p>
+        </div>
+
+        <div class="gl-stats">
+          <div class="stat">
+            <span>Starting Balance</span>
+            <strong id="startingBalance">$0.00</strong>
+          </div>
+          <div class="stat">
+            <span>Total Debits</span>
+            <strong id="totalDebits">$0.00</strong>
+          </div>
+          <div class="stat">
+            <span>Total Credits</span>
+            <strong id="totalCredits">$0.00</strong>
+          </div>
+          <div class="stat">
+            <span>Ending Balance</span>
+            <strong id="endingBalance">$0.00</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="gl-meta">
+        <label>
+          From date
+          <input type="date" id="filterStartDate" />
+        </label>
+        <label>
+          To date
+          <input type="date" id="filterEndDate" />
+        </label>
+        <label>
+          Search (description / amount)
+          <input
+            type="search"
+            id="filterSearch"
+            placeholder="Type to filter ledger…"
+          />
+        </label>
+      </div>
+    </section>
+
+    <!-- Ledger table -->
+    <section class="ledger-card" style="margin-top:16px;">
+      <div class="gl-table-wrap">
+        <table class="mgr-table gl-table" id="ledgerTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>PR</th>
+              <th>Debit</th>
+              <th>Credit</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerBody">
+            <!-- rows filled by JS -->
+          </tbody>
+        </table>
+      </div>
+      <p id="noEntriesMsg" class="muted" style="margin-top:10px;display:none;">
+        No ledger activity found for this account with the current filters.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    /**************************************************
+     *  Profile menu + logout (same pattern as others)
+     **************************************************/
+    (function () {
+      function wireProfileMenu() {
+        const user = document.querySelector(".user");
+        if (!user) return;
+        const menu = user.querySelector("#user-menu");
+        const logoutBtn = user.querySelector("#logout-btn");
+
+        user.addEventListener("click", () => {
+          user.classList.toggle("open");
+          if (menu) {
+            menu.setAttribute(
+              "aria-hidden",
+              String(!user.classList.contains("open"))
+            );
+          }
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!user.contains(e.target)) {
+            user.classList.remove("open");
+            if (menu) menu.setAttribute("aria-hidden", "true");
+          }
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            user.classList.remove("open");
+            if (menu) menu.setAttribute("aria-hidden", "true");
+          }
+        });
+
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            localStorage.removeItem("sf_session");
+            window.location.href = "login.html";
+          });
+        }
+
+        // Fill name/role from sf_session if present
+        try {
+          const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+          if (session) {
+            const nameEl = user.querySelector(".name-role p:first-child");
+            const roleEl = user.querySelector(".name-role p:last-child");
+            if (nameEl && session.name) nameEl.textContent = session.name;
+            if (roleEl && session.role) {
+              roleEl.textContent =
+                session.role.charAt(0).toUpperCase() + session.role.slice(1);
+            }
+          }
+        } catch {}
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", wireProfileMenu);
+      } else {
+        wireProfileMenu();
+      }
+    })();
+  </script>
+
+  <script>
+    /**************************************************
+     *  Ledger logic (front-end only)
+     *  - Reads account & journal from localStorage
+     *  - Filters by date range & search
+     *  - Shows running balance
+     **************************************************/
+    const ACCOUNTS_KEY = "sf_demo_accounts";
+    const JOURNAL_KEY = "sf_journal_entries";
+
+    function fmtMoney(n) {
+      return (+n || 0).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    }
+
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    function loadAccounts() {
+      try {
+        const raw = localStorage.getItem(ACCOUNTS_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function loadJournalEntries() {
+      try {
+        const raw = localStorage.getItem(JOURNAL_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function applyDebit(balance, amount, normalSide) {
+      if ((normalSide || "").toLowerCase() === "debit") {
+        return balance + amount;
+      }
+      return balance - amount;
+    }
+
+    function applyCredit(balance, amount, normalSide) {
+      if ((normalSide || "").toLowerCase() === "credit") {
+        return balance + amount;
+      }
+      return balance - amount;
+    }
+
+    function renderLedger() {
+      const accountNoParam = getQueryParam("account") || "";
+      const accounts = loadAccounts();
+      const entries = loadJournalEntries();
+
+      const ledgerBody = document.getElementById("ledgerBody");
+      const noEntriesMsg = document.getElementById("noEntriesMsg");
+      const titleEl = document.getElementById("ledgerTitle");
+      const metaLine = document.getElementById("ledgerMetaLine");
+
+      const startingBalanceEl = document.getElementById("startingBalance");
+      const totalDebitsEl = document.getElementById("totalDebits");
+      const totalCreditsEl = document.getElementById("totalCredits");
+      const endingBalanceEl = document.getElementById("endingBalance");
+
+      const filterStartDate = document.getElementById("filterStartDate").value;
+      const filterEndDate = document.getElementById("filterEndDate").value;
+      const searchText = document
+        .getElementById("filterSearch")
+        .value.toLowerCase()
+        .trim();
+
+      // Try to find account by account_number first, then fallback to name
+      let account =
+        accounts.find((a) => a.account_number === accountNoParam) ||
+        accounts.find(
+          (a) =>
+            a.account_name &&
+            a.account_name.toLowerCase() === accountNoParam.toLowerCase()
+        );
+
+      // If nothing matches the query param, just use the first account so the page
+      // still shows something for demo purposes.
+      if (!account && accounts.length) {
+        account = accounts[0];
+      }
+
+      if (!account) {
+        titleEl.textContent = "Account Ledger";
+        metaLine.textContent = "No account found. Add accounts to view a ledger.";
+        ledgerBody.innerHTML = "";
+        noEntriesMsg.style.display = "block";
+        startingBalanceEl.textContent = "$0.00";
+        totalDebitsEl.textContent = "$0.00";
+        totalCreditsEl.textContent = "$0.00";
+        endingBalanceEl.textContent = "$0.00";
+        return;
+      }
+
+      // Header text for the account
+      titleEl.textContent = `${account.account_number} – ${account.account_name}`;
+      metaLine.textContent = `${account.account_category || "Category N/A"} · Normal side: ${
+        account.normal_side || "N/A"
+      }`;
+
+      const normalSide = (account.normal_side || "").toLowerCase();
+      let startingBalance = Number(account.initial_balance || 0);
+
+      // Filter entries that involve this account
+      let accountEntries = entries
+        .filter(
+          (e) =>
+            e.debitAccountNumber === account.account_number ||
+            e.creditAccountNumber === account.account_number
+        )
+        .map((e) => ({
+          ...e,
+          // so we can sort by date + timestamp
+          _sortKey: (e.date || "") + "|" + (e.timestamp || ""),
+        }));
+
+      // Filter by date range
+      if (filterStartDate) {
+        accountEntries = accountEntries.filter((e) => e.date >= filterStartDate);
+      }
+      if (filterEndDate) {
+        accountEntries = accountEntries.filter((e) => e.date <= filterEndDate);
+      }
+
+      // Filter by search text (description or amount)
+      if (searchText) {
+        accountEntries = accountEntries.filter((e) => {
+          const desc = (e.description || "").toLowerCase();
+          const amounts = `${e.debitAmount || ""} ${e.creditAmount || ""}`.toLowerCase();
+          return (
+            desc.includes(searchText) || amounts.includes(searchText)
+          );
+        });
+      }
+
+      // Sort oldest → newest
+      accountEntries.sort((a, b) => (a._sortKey > b._sortKey ? 1 : -1));
+
+      if (!accountEntries.length) {
+        ledgerBody.innerHTML = "";
+        noEntriesMsg.style.display = "block";
+        startingBalanceEl.textContent = "$" + fmtMoney(startingBalance);
+        totalDebitsEl.textContent = "$0.00";
+        totalCreditsEl.textContent = "$0.00";
+        endingBalanceEl.textContent = "$" + fmtMoney(startingBalance);
+        return;
+      }
+
+      noEntriesMsg.style.display = "none";
+
+      let runningBalance = startingBalance;
+      let totalDebits = 0;
+      let totalCredits = 0;
+
+      const rowsHtml = accountEntries
+        .map((e) => {
+          const isDebitSide = e.debitAccountNumber === account.account_number;
+          const debitAmt = isDebitSide ? Number(e.debitAmount || 0) : 0;
+          const creditAmt = !isDebitSide ? Number(e.creditAmount || 0) : 0;
+
+          if (debitAmt) {
+            runningBalance = applyDebit(runningBalance, debitAmt, normalSide);
+            totalDebits += debitAmt;
+          }
+          if (creditAmt) {
+            runningBalance = applyCredit(runningBalance, creditAmt, normalSide);
+            totalCredits += creditAmt;
+          }
+
+          const dateStr = e.date || "";
+          const desc = e.description || "";
+          const pr = e.id || "";
+
+          return `
+            <tr>
+              <td>${dateStr}</td>
+              <td>${desc}</td>
+              <td>
+                ${
+                  pr
+                    ? `<a href="journal.html?entryId=${encodeURIComponent(
+                        pr
+                      )}" title="View journal entry ${pr}">${pr}</a>`
+                    : ""
+                }
+              </td>
+              <td class="right">${debitAmt ? fmtMoney(debitAmt) : ""}</td>
+              <td class="right">${creditAmt ? fmtMoney(creditAmt) : ""}</td>
+              <td class="right">${fmtMoney(runningBalance)}</td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      ledgerBody.innerHTML = rowsHtml;
+
+      startingBalanceEl.textContent = "$" + fmtMoney(startingBalance);
+      totalDebitsEl.textContent = "$" + fmtMoney(totalDebits);
+      totalCreditsEl.textContent = "$" + fmtMoney(totalCredits);
+      endingBalanceEl.textContent = "$" + fmtMoney(runningBalance);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Initial render
+      renderLedger();
+
+      // Re-render when filters change
+      document
+        .getElementById("filterStartDate")
+        .addEventListener("change", renderLedger);
+      document
+        .getElementById("filterEndDate")
+        .addEventListener("change", renderLedger);
+      document
+        .getElementById("filterSearch")
+        .addEventListener("input", renderLedger);
+    });
+  </script>
+</body>
+</html>
