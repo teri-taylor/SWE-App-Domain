@@ -11,7 +11,7 @@
             --green: #22EE77;
             --gold: #D4AF37;
             --blue: #002D62;
-            --offwhite: #f5f7fb;;
+            --offwhite: #f5f7fb;
             --jet: #333333;
             font-family: "Segoe UI", Roboto, Arial, sans-serif;
         }
@@ -24,13 +24,13 @@
 
         /* Header */
         .main-header {
-            background: white;        /* changed */
-            color: var(--jet);          /* text now dark */
+            background: white;        /* KEEPING HEADER WHITE */
+            color: var(--jet);
             padding: 16px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #e5e7eb;  /* subtle divider */
+            border-bottom: 1px solid #e5e7eb;
         }
         .header-left {
             display: flex;
@@ -57,7 +57,7 @@
             display: block;
             width: 22px;
             height: 3px;
-            background: var(--blue);   /* CHANGED to dark blue */
+            background: var(--blue);   /* dark blue lines */
             border-radius: 999px;
         }
 
@@ -112,18 +112,14 @@
             background: #e5e7eb;
         }
 
-        main {
+        main.mgr-main {
             padding: 24px;
-        }
-
-        h2 {
-            color: var(--blue);
-            margin-bottom: 4px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
         }
 
         .muted {
             color: #666;
-            margin-bottom: 16px;
         }
 
         /* Side navigation (hamburger menu) */
@@ -133,7 +129,7 @@
             left: -240px;
             width: 220px;
             height: 100vh;
-            background: #002D62;             /* LIGHTER BLUE */
+            background: #002D62;
             color: #ffffff;
             padding: 20px 16px;
             box-shadow: 2px 0 8px rgba(0,0,0,0.25);
@@ -174,7 +170,7 @@
             background: rgba(255,255,255,0.12);
         }
 
-        /* Overlay darken when menu open (optional) */
+        /* Overlay for nav */
         .nav-overlay {
             position: fixed;
             inset: 0;
@@ -187,7 +183,202 @@
             display: block;
         }
 
-        /* Accounts table */
+        /* ---- NEW: Manager dashboard layout ---- */
+
+        .mgr-top-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .mgr-top-row h1 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: var(--blue);
+        }
+
+        .mgr-top-row p {
+            margin: 4px 0 0;
+            font-size: 0.9rem;
+        }
+
+        .mgr-quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .mgr-pill-btn {
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            padding: 8px 14px;
+            font-size: 0.9rem;
+            background: #ffffff;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mgr-pill-btn:hover {
+            background: #f3f4f6;
+        }
+
+        /* Ratios grid */
+
+        .mgr-section-title {
+            font-size: 1rem;
+            margin: 0 0 6px;
+            color: var(--blue);
+        }
+
+        .mgr-ratio-note {
+            margin: 0 0 10px;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .mgr-ratio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .mgr-ratio-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            padding: 10px 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            font-size: 0.9rem;
+        }
+
+        .mgr-ratio-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .mgr-ratio-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .mgr-ratio-tag {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .mgr-ratio-good {
+            background: #ecfdf3;
+            color: #166534;
+            border-color: #bbf7d0;
+        }
+
+        .mgr-ratio-warn {
+            background: #fffbeb;
+            color: #92400e;
+            border-color: #fed7aa;
+        }
+
+        .mgr-ratio-bad {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .mgr-ratio-footnote {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        /* Lower cards */
+
+        .mgr-lower-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr);
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .mgr-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            padding: 12px 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            font-size: 0.9rem;
+        }
+
+        .mgr-card h2 {
+            margin: 0 0 6px;
+            font-size: 1rem;
+            color: var(--blue);
+        }
+
+        .mgr-message-list {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .mgr-message-item {
+            padding: 6px 8px;
+            border-radius: 10px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .mgr-message-meta {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .mgr-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            border: 1px solid #e5e7eb;
+            background: #f3f4f6;
+            margin-left: 6px;
+        }
+
+        .mgr-badge-primary {
+            background: #e0ecff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+
+        .mgr-empty-text {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-top: 6px;
+        }
+
+        /* Accounts table (unchanged from before) */
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -244,6 +435,12 @@
             background: #fee2e2;
             color: #b91c1c;
         }
+
+        @media (max-width: 900px) {
+            .mgr-lower-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -254,6 +451,7 @@
     <ul>
         <li><a href="journal.html">Journal Entries</a></li>
         <li><a href="financial-reports.html">Financial Reports</a></li>
+        <li><a href="account-logs.html">Account Event Logs</a></li>
     </ul>
 </nav>
 <div class="nav-overlay" id="nav-overlay"></div>
@@ -281,28 +479,137 @@
     </div>
 </header>
 
-<main>
-    <h2>Customer Accounts</h2>
-    <p class="muted">Select an account to view its ledger and activity.</p>
+<main class="mgr-main">
+    <!-- Top row: title + quick links -->
+    <section class="mgr-top-row">
+        <div>
+            <h1>Manager dashboard</h1>
+            <p class="muted">Review key ratios and messages, then drill into reports or account activity.</p>
+        </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Account #</th>
-            <th>Customer Name</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th class="right">Current Balance</th>
-        </tr>
-        </thead>
-        <tbody id="accounts-body">
-        <!-- Filled by JavaScript -->
-        </tbody>
-    </table>
+        <nav class="mgr-quick-links" aria-label="Manager quick actions">
+            <button type="button" class="mgr-pill-btn" onclick="window.location.href='journal.html'">
+                📄 <span>Journal entries</span>
+            </button>
+            <button type="button" class="mgr-pill-btn" onclick="window.location.href='financial-reports.html'">
+                📊 <span>Financial reports</span>
+            </button>
+            <button type="button" class="mgr-pill-btn" onclick="window.location.href='account-logs.html'">
+                🕒 <span>Account event logs</span>
+            </button>
+        </nav>
+    </section>
+
+    <!-- Ratios summary -->
+    <section aria-labelledby="mgrRatiosHeading">
+        <h2 id="mgrRatiosHeading" class="mgr-section-title">Key financial ratios (mock)</h2>
+        <p class="mgr-ratio-note">
+            These values use example data from the solved problem. In a real deployment, they would be calculated
+            from the company&rsquo;s actual trial balance and financial statements.
+        </p>
+
+        <div class="mgr-ratio-grid">
+            <article class="mgr-ratio-card">
+                <div class="mgr-ratio-label">Debt ratio</div>
+                <div class="mgr-ratio-value">
+                    <span>0.45</span>
+                    <span class="mgr-ratio-tag mgr-ratio-good">Green</span>
+                </div>
+                <p class="mgr-ratio-footnote">Below 0.60 &mdash; leverage is in a comfortable range.</p>
+            </article>
+
+            <article class="mgr-ratio-card">
+                <div class="mgr-ratio-label">Current ratio</div>
+                <div class="mgr-ratio-value">
+                    <span>1.25</span>
+                    <span class="mgr-ratio-tag mgr-ratio-warn">Yellow</span>
+                </div>
+                <p class="mgr-ratio-footnote">Target ≥ 1.50 &mdash; liquidity is a bit tight.</p>
+            </article>
+
+            <article class="mgr-ratio-card">
+                <div class="mgr-ratio-label">Quick ratio</div>
+                <div class="mgr-ratio-value">
+                    <span>0.95</span>
+                    <span class="mgr-ratio-tag mgr-ratio-warn">Yellow</span>
+                </div>
+                <p class="mgr-ratio-footnote">Near 1.0 &mdash; just enough near-cash assets.</p>
+            </article>
+
+            <article class="mgr-ratio-card">
+                <div class="mgr-ratio-label">Profit margin</div>
+                <div class="mgr-ratio-value">
+                    <span>12%</span>
+                    <span class="mgr-ratio-tag mgr-ratio-good">Green</span>
+                </div>
+                <p class="mgr-ratio-footnote">Healthy margin provides buffer for surprises.</p>
+            </article>
+
+            <article class="mgr-ratio-card">
+                <div class="mgr-ratio-label">Return on assets (ROA)</div>
+                <div class="mgr-ratio-value">
+                    <span>7%</span>
+                    <span class="mgr-ratio-tag mgr-ratio-good">Green</span>
+                </div>
+                <p class="mgr-ratio-footnote">Solid earnings relative to total assets.</p>
+            </article>
+
+            <article class="mgr-ratio-card">
+                <div class="mgr-ratio-label">Days to collect receivables</div>
+                <div class="mgr-ratio-value">
+                    <span>52 days</span>
+                    <span class="mgr-ratio-tag mgr-ratio-bad">Red</span>
+                </div>
+                <p class="mgr-ratio-footnote">Customers are paying slower than ideal &mdash; review credit policy.</p>
+            </article>
+        </div>
+    </section>
+
+    <!-- Lower grid: messages + customer accounts card -->
+    <section class="mgr-lower-grid" aria-label="Messages and customer accounts">
+        <!-- Important messages -->
+        <article class="mgr-card">
+            <h2>Important messages</h2>
+            <p class="muted">
+                This section highlights items the manager should review, such as journal entries waiting for approval.
+            </p>
+
+            <ul class="mgr-message-list" id="mgrMessages"></ul>
+            <p class="mgr-empty-text" id="mgrMessagesEmpty" style="display:none;">
+                No messages at the moment. You&rsquo;ll see notifications here when new adjusting entries or
+                reports need your attention.
+            </p>
+        </article>
+
+        <!-- Customer accounts card wrapping your existing table -->
+        <article class="mgr-card">
+            <h2>Customer Accounts</h2>
+            <p class="muted" style="font-size:0.85rem; margin-bottom:8px;">
+                Select an account to view its ledger and activity.
+            </p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Account #</th>
+                        <th>Customer Name</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th class="right">Current Balance</th>
+                    </tr>
+                    </thead>
+                    <tbody id="accounts-body">
+                    <!-- Filled by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </section>
 </main>
 
 <script>
-    // ===== Profile menu & session (same pattern you already use) =====
+    // ===== Profile menu & session =====
     (function () {
         function wireProfileMenu() {
             const user = document.querySelector(".user");
@@ -398,13 +705,10 @@
 </script>
 
 <script>
-    // ===== Customer accounts list =====
-    // For now using sample data; later you can replace with fetch('/accounts') or whatever the admin page uses.
+    // ===== Customer accounts list (same as before) =====
     const sampleAccounts = [
         { id: "C-1001", name: "Acme Corporation", type: "Business", status: "ACTIVE", balance: 12500.50 },
-        { id: "C-1002", name: "Brightside Retail", type: "Business", status: "ACTIVE", balance: 8420.00 },
-        { id: "C-1003", name: "Emma Johnson", type: "Individual", status: "INACTIVE", balance: 0.00 },
-        { id: "C-1004", name: "Greenfield Supplies", type: "Business", status: "ACTIVE", balance: 23150.75 }
+       
     ];
 
     function fmtMoney(n) {
@@ -438,16 +742,70 @@
 
     function openAccount(accountId) {
         // Later this can go to your ledger page for that account
-        // e.g., ledger.html?account=C-1001
         window.location.href = `ledger.html?account=${encodeURIComponent(accountId)}`;
     }
 
-    // If you have a real API, you can swap this function to call fetch('/api/accounts') instead.
     renderAccounts(sampleAccounts);
+</script>
+
+<script>
+    // ===== Important messages (very light logic using localStorage journal entries) =====
+    (function () {
+        const JOURNAL_KEY = "sf_journal_entries";
+
+        function loadJournalEntries() {
+            try {
+                const raw = localStorage.getItem(JOURNAL_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch {
+                return [];
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const entries = loadJournalEntries();
+            const listEl = document.getElementById("mgrMessages");
+            const emptyEl = document.getElementById("mgrMessagesEmpty");
+            if (!listEl || !emptyEl) return;
+
+            listEl.innerHTML = "";
+
+            if (!entries.length) {
+                emptyEl.style.display = "block";
+                return;
+            }
+
+            emptyEl.style.display = "none";
+
+            const pendingCount = entries.length; // front-end only: treat all as "needing review"
+
+            const li1 = document.createElement("li");
+            li1.className = "mgr-message-item";
+            li1.innerHTML = `
+                <div>
+                  <strong>${pendingCount}</strong> adjusting journal entries stored.
+                  <span class="mgr-badge mgr-badge-primary">Review</span>
+                </div>
+                <div class="mgr-message-meta">
+                  Use the Journal Entries page to approve or reject items before finalizing reports.
+                </div>
+            `;
+            listEl.appendChild(li1);
+
+            const li2 = document.createElement("li");
+            li2.className = "mgr-message-item";
+            li2.innerHTML = `
+                <div>Month-end closing window coming up.</div>
+                <div class="mgr-message-meta">
+                  Generate the trial balance, income statement, balance sheet, and retained earnings statement
+                  for the selected period.
+                </div>
+            `;
+            listEl.appendChild(li2);
+        });
+    })();
 </script>
 
 </body>
 </html>
-
-
-
