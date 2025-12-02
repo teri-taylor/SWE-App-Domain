@@ -1,115 +1,515 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accountant</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accountant | SyncFinance</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* Page shell */
+    .acct-shell {
+      max-width: 1200px;
+      margin: 24px auto 40px;
+      padding: 0 16px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .acct-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .acct-welcome h1 {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+
+    .acct-welcome p {
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    /* Quick links */
+    .acct-quick-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .pill-btn {
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      background: #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-btn:hover {
+      background: #f3f4f6;
+    }
+
+    /* Ratios grid */
+    .ratio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .ratio-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+      font-size: 0.9rem;
+    }
+
+    .ratio-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+
+    .ratio-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .ratio-tag {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .ratio-good {
+      background: #ecfdf3;
+      color: #166534;
+      border-color: #bbf7d0;
+    }
+
+    .ratio-warn {
+      background: #fffbeb;
+      color: #92400e;
+      border-color: #fed7aa;
+    }
+
+    .ratio-bad {
+      background: #fef2f2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    .ratio-footnote {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    /* Lower grid */
+    .acct-lower-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 16px;
+    }
+
+    .acct-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      padding: 12px 14px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+      font-size: 0.9rem;
+    }
+
+    .acct-card h2 {
+      margin: 0 0 6px;
+      font-size: 1rem;
+    }
+
+    .acct-card p {
+      margin: 4px 0;
+    }
+
+    .message-list {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .message-item {
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .message-meta {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      border: 1px solid #e5e7eb;
+      background: #f3f4f6;
+      margin-left: 6px;
+    }
+
+    .badge-primary {
+      background: #e0ecff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .recent-list {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .recent-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .recent-main {
+      font-size: 0.85rem;
+    }
+
+    .recent-meta {
+      font-size: 0.75rem;
+      color: #6b7280;
+      text-align: right;
+    }
+
+    .empty-text {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .acct-lower-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <header class="main-header">
+  <!-- HEADER (keeps your existing style.css look; no blue override here) -->
+  <header class="main-header">
     <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
 
     <div class="user">
-        <img src="./images/user-profile.png" alt="User Profile Logo">
-        <div class="name-role">
+      <img src="./images/user-profile.png" alt="User Profile Logo">
+      <div class="name-role">
         <p>Alex Taylor</p>
         <p>Accountant</p>
-        </div>
+      </div>
 
-       
-        <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
+      <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
         <button id="logout-btn" role="menuitem">Log out</button>
-        </div>
-      
+      </div>
     </div>
-    </header>
+  </header>
 
+  <!-- MAIN DASHBOARD -->
+  <main class="acct-shell">
+    <!-- Welcome + quick links -->
+    <section class="acct-top-row">
+      <div class="acct-welcome">
+        <h1>Accountant dashboard</h1>
+        <p>Review today’s key ratios, messages, and shortcuts to your core tasks.</p>
+      </div>
 
-<script>
-   
-(function () {
-  function wireProfileMenu() {
-    const user = document.querySelector(".user");
-    if (!user) return; 
+      <nav class="acct-quick-links" aria-label="Quick actions">
+        <button class="pill-btn" type="button" onclick="window.location.href='journal-entry.html'">
+           <span>New journal entry</span>
+        </button>
+        <button class="pill-btn" type="button" onclick="window.location.href='journal.html'">
+           <span>All journal entries</span>
+        </button>
+        <button class="pill-btn" type="button" onclick="window.location.href='ledger.html'">
+           <span>General ledger</span>
+        </button>
+        <button class="pill-btn" type="button" onclick="window.location.href='financial-reports.html'">
+           <span>Financial reports</span>
+        </button>
+      </nav>
+    </section>
 
-    const menu = user.querySelector("#user-menu");
-    const logoutBtn = user.querySelector("#logout-btn");
+    <!-- Ratios summary (mock data for Sprint 5 UI) -->
+    <section aria-labelledby="ratioHeading">
+      <h2 id="ratioHeading" style="font-size:1rem; margin:0 0 6px;">Key financial ratios </h2>
+      <p style="margin:0 0 10px; font-size:0.85rem; color:#6b7280;">
+        Ratios below use example numbers from the solved problem. In a real system these would
+        be calculated from the client’s actual data.
+      </p>
 
-    user.addEventListener("click", () => {
-      user.classList.toggle("open");
-      if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
-    });
+      <div class="ratio-grid">
+        <!-- Debt ratio -->
+        <article class="ratio-card">
+          <div class="ratio-label">Debt ratio</div>
+          <div class="ratio-value">
+            <span>0.45</span>
+            <span class="ratio-tag ratio-good">Healthy</span>
+          </div>
+          <p class="ratio-footnote">Target: &lt; 0.60 — company is not overly leveraged.</p>
+        </article>
 
-    document.addEventListener("click", (e) => {
-      if (!user.contains(e.target)) {
-        user.classList.remove("open");
-        if (menu) menu.setAttribute("aria-hidden", "true");
+        <!-- Current ratio -->
+        <article class="ratio-card">
+          <div class="ratio-label">Current ratio</div>
+          <div class="ratio-value">
+            <span>1.25</span>
+            <span class="ratio-tag ratio-warn">Watch</span>
+          </div>
+          <p class="ratio-footnote">Target: ≥ 1.50 — short-term liquidity is a bit tight.</p>
+        </article>
+
+        <!-- Quick ratio -->
+        <article class="ratio-card">
+          <div class="ratio-label">Quick ratio</div>
+          <div class="ratio-value">
+            <span>0.95</span>
+            <span class="ratio-tag ratio-warn">Borderline</span>
+          </div>
+          <p class="ratio-footnote">Target: around 1.0 — just enough near-cash assets.</p>
+        </article>
+
+        <!-- Profit margin -->
+        <article class="ratio-card">
+          <div class="ratio-label">Profit margin</div>
+          <div class="ratio-value">
+            <span>12%</span>
+            <span class="ratio-tag ratio-good">Strong</span>
+          </div>
+          <p class="ratio-footnote">Higher margin provides a buffer for unexpected costs.</p>
+        </article>
+
+        <!-- Return on assets -->
+        <article class="ratio-card">
+          <div class="ratio-label">Return on assets (ROA)</div>
+          <div class="ratio-value">
+            <span>7%</span>
+            <span class="ratio-tag ratio-good">On track</span>
+          </div>
+          <p class="ratio-footnote">Indicates solid earnings relative to total assets.</p>
+        </article>
+
+        <!-- Example “red” ratio -->
+        <article class="ratio-card">
+          <div class="ratio-label">Accounts receivable days</div>
+          <div class="ratio-value">
+            <span>52 days</span>
+            <span class="ratio-tag ratio-bad">Slow</span>
+          </div>
+          <p class="ratio-footnote">Clients are taking longer than ideal to pay invoices.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Lower grid: messages + recent activity -->
+    <section class="acct-lower-grid" aria-label="Messages and activity">
+      <!-- Important messages -->
+      <article class="acct-card">
+        <h2>Important messages</h2>
+        <p>
+          These are summary notes for the accountant. In a real system they would be driven
+          by journal entry status, upcoming report deadlines, or exceptions.
+        </p>
+
+        <ul class="message-list" id="importantMessages">
+          <!-- Filled by JS with simple, mock info derived from journal entries count -->
+        </ul>
+
+        <p class="empty-text" id="importantEmpty" style="display:none;">
+          No messages at the moment. Check back after entering or updating journal entries.
+        </p>
+      </article>
+
+      <!-- Recent activity (very light mock) -->
+      <article class="acct-card">
+        <h2>Recent activity </h2>
+        <ul class="recent-list" id="recentActivity">
+          <!-- JS will drop in a few static “recent” items for the demo -->
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    // Profile menu + logout (same as before)
+    (function () {
+      function wireProfileMenu() {
+        const user = document.querySelector(".user");
+        if (!user) return;
+
+        const menu = user.querySelector("#user-menu");
+        const logoutBtn = user.querySelector("#logout-btn");
+
+        user.addEventListener("click", () => {
+          user.classList.toggle("open");
+          if (menu) menu.setAttribute(
+            "aria-hidden",
+            String(!user.classList.contains("open"))
+          );
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!user.contains(e.target)) {
+            user.classList.remove("open");
+            if (menu) menu.setAttribute("aria-hidden", "true");
+          }
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            user.classList.remove("open");
+            if (menu) menu.setAttribute("aria-hidden", "true");
+          }
+        });
+
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            localStorage.removeItem("sf_session");
+            window.location.href = "login.html";
+          });
+        }
+
+        try {
+          const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+          if (session) {
+            const nameEl = user.querySelector(".name-role p:first-child");
+            const roleEl = user.querySelector(".name-role p:last-child");
+            if (nameEl && session.name) nameEl.textContent = session.name;
+            if (roleEl && session.role) {
+              roleEl.textContent =
+                session.role.charAt(0).toUpperCase() + session.role.slice(1);
+            }
+          }
+        } catch {}
       }
-    });
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        user.classList.remove("open");
-        if (menu) menu.setAttribute("aria-hidden", "true");
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", wireProfileMenu);
+      } else {
+        wireProfileMenu();
       }
-    });
+    })();
 
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); 
-        localStorage.removeItem("sf_session");
-        window.location.href = "login.html";
-      });
-    }
+    // Simple dashboard wiring for "Important messages" + "Recent activity"
+    document.addEventListener("DOMContentLoaded", () => {
+      const JOURNAL_KEY = "sf_journal_entries";
 
-    
-    try {
-      const session = JSON.parse(localStorage.getItem("sf_session") || "null");
-      if (session) {
-        const nameEl = user.querySelector(".name-role p:first-child");
-        const roleEl = user.querySelector(".name-role p:last-child");
-        if (nameEl && session.name) nameEl.textContent = session.name;
-        if (roleEl && session.role) {
-          roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+      function loadJournalEntries() {
+        try {
+          const raw = localStorage.getItem(JOURNAL_KEY);
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
         }
       }
-    } catch {}
-  }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", wireProfileMenu);
-  } else {
-    wireProfileMenu();
-  }
-})();
+      const entries = loadJournalEntries();
+      const messagesEl = document.getElementById("importantMessages");
+      const emptyMsgEl = document.getElementById("importantEmpty");
+      const recentEl = document.getElementById("recentActivity");
 
+      messagesEl.innerHTML = "";
+      recentEl.innerHTML = "";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const link = document.getElementById("emailLink");
-  if (!link) return;
+      // --- Important messages (very light logic using count only) ---
+      if (!entries.length) {
+        emptyMsgEl.style.display = "block";
+      } else {
+        emptyMsgEl.style.display = "none";
 
-  const session = JSON.parse(localStorage.getItem("sf_session") || "null");
-  if (!session || !session.role) {
-    link.href = "admin-email.html"; // fallback
-    return;
-  }
+        const li1 = document.createElement("li");
+        li1.className = "message-item";
+        li1.innerHTML = `
+          <div><strong>${entries.length}</strong> journal entries stored for this client.</div>
+          <div class="message-meta">Review the journal list before running financial reports.</div>
+        `;
+        messagesEl.appendChild(li1);
 
-  // routing
-  if (session.role === "admin") link.href = "admin-email.html";
-  if (session.role === "manager") link.href = "manager-email.html";
-  if (session.role === "accountant") link.href = "accountant-email.html";
-});
-</script>
+        const li2 = document.createElement("li");
+        li2.className = "message-item";
+        li2.innerHTML = `
+          <div>
+            Month-end approaching soon
+            <span class="badge badge-primary">Reminder</span>
+          </div>
+          <div class="message-meta">Run the trial balance and adjusting entries before closing.</div>
+        `;
+        messagesEl.appendChild(li2);
+      }
 
+      // --- Recent activity (mock items just to make the UI feel alive) ---
+      const mockRecent = [
+        {
+          label: "Posted journal entry JE0003",
+          meta: "Today • Debit Cash / Credit Service Revenue"
+        },
+        {
+          label: "Reviewed journal list for ACME Corp",
+          meta: "Yesterday • No imbalances found"
+        },
+        {
+          label: "Generated sample income statement",
+          meta: "This week • For internal review only"
+        }
+      ];
 
+      mockRecent.forEach(item => {
+        const li = document.createElement("li");
+        li.className = "recent-item";
+        li.innerHTML = `
+          <div class="recent-main">${item.label}</div>
+          <div class="recent-meta">${item.meta}</div>
+        `;
+        recentEl.appendChild(li);
+      });
+    });
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
