@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Journal Entries | SyncFinance</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=SUSE+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    .journal-list-page {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px 40px;
+    }
+
+    .journal-list-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 24px 24px 18px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1);
+    }
+
+    .journal-list-card h1 {
+      margin: 0 0 4px 0;
+    }
+
+    .journal-list-subtitle {
+      margin: 0 0 18px 0;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .filters-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .filters-top,
+    .filters-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 200px;
+      flex: 1 1 220px;
+    }
+
+    .filter-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid #cbd5f5;
+      font-size: 0.9rem;
+    }
+
+    .status-pills {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .status-pill {
+      border-radius: 999px;
+      border: 1px solid #cbd5f5;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      background: #f9fafb;
+      color: #111827;
+    }
+
+    .status-pill.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn.primary {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .table-wrap {
+      margin-top: 6px;
+      overflow-x: auto;
+    }
+
+    .journal-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .journal-table thead {
+      background: #f9fafb;
+    }
+
+    .journal-table th,
+    .journal-table td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: top;
+    }
+
+    .journal-table th {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #6b7280;
+    }
+
+    .journal-table tbody tr:nth-child(even) {
+      background: #f9fafb;
+    }
+
+    .journal-table tbody tr:hover {
+      background: #eef2ff;
+    }
+
+    .amount-cell {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #eef2ff;
+      color: #1e293b;
+    }
+
+    .pill span {
+      opacity: 0.8;
+    }
+
+    .status-tag {
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      display: inline-block;
+      text-transform: capitalize;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-approved {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .empty-state {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .highlight {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    /* user dropdown (same style as other pages) */
+    .user {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .user-menu {
+      position: absolute;
+      right: 0;
+      top: 48px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      padding: 8px 0;
+      min-width: 150px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .user.open .user-menu {
+      display: block;
+    }
+
+    .user-menu button {
+      width: 100%;
+      padding: 8px 14px;
+      border: none;
+      background: none;
+      text-align: left;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .user-menu button:hover {
+      background: #f3f4f6;
+    }
+
+    .summary-row {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="main-header">
+    <!-- Change href if you want this to go somewhere else -->
+    <a href="./accountant.html">
+      <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo" />
+    </a>
+
+    <div class="user">
+      <img src="./images/user-profile.png" alt="User profile" />
+      <div class="name-role">
+        <p>Accountant User</p>
+        <p>Accountant</p>
+      </div>
+      <div id="user-menu" class="user-menu" aria-hidden="true">
+        <button id="logout-btn" type="button">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="journal-list-page">
+    <section class="journal-list-card">
+      <h1>Journal Entries</h1>
+      <p class="journal-list-subtitle">
+        View all journal entries across accounts and clients. Filter by account,
+        client, status, date, or search by account name, amount, or date.
+      </p>
+
+      <div class="filters-row">
+        <!-- Top row: account/client & status -->
+        <div class="filters-top">
+          <div class="filter-group">
+            <label for="accountFilter">Filter by account name</label>
+            <input
+              id="accountFilter"
+              type="text"
+              placeholder="e.g. Cash, Accounts Receivable"
+              list="accountOptions"
+            />
+            <datalist id="accountOptions"></datalist>
+          </div>
+
+          <div class="filter-group">
+            <label for="clientFilter">Filter by client name</label>
+            <input
+              id="clientFilter"
+              type="text"
+              placeholder="e.g. Acme Corp"
+              list="clientOptions"
+            />
+            <datalist id="clientOptions"></datalist>
+          </div>
+
+          <div class="filter-group">
+            <label>Status</label>
+            <div class="status-pills" id="statusPills">
+              <button type="button" class="status-pill active" data-status="all">
+                All
+              </button>
+              <button type="button" class="status-pill" data-status="pending">
+                Pending
+              </button>
+              <button type="button" class="status-pill" data-status="approved">
+                Approved
+              </button>
+              <button type="button" class="status-pill" data-status="rejected">
+                Rejected
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom row: dates + search + clear -->
+        <div class="filters-bottom">
+          <div class="filter-group">
+            <label for="dateFrom">From date</label>
+            <input id="dateFrom" type="date" />
+          </div>
+
+          <div class="filter-group">
+            <label for="dateTo">To date</label>
+            <input id="dateTo" type="date" />
+          </div>
+
+          <div class="filter-group">
+            <label for="searchInput">Search by account, amount, or date</label>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Try 'Cash', '500', or '2025-03-15'"
+            />
+          </div>
+
+          <div class="filter-actions">
+            <button type="button" class="btn secondary" id="clearFiltersBtn">
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-row" id="summaryRow"></div>
+
+      <div class="table-wrap">
+        <table class="journal-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Reference</th>
+              <th>Description</th>
+              <th>Client</th>
+              <th>Debit</th>
+              <th>Debit Amt</th>
+              <th>Credit</th>
+              <th>Credit Amt</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Entered By</th>
+            </tr>
+          </thead>
+          <tbody id="journalTableBody"></tbody>
+        </table>
+      </div>
+
+      <p id="emptyState" class="empty-state" style="display: none;">
+        No journal entries match the current filters.
+      </p>
+    </section>
+  </main>
+
+  <!-- SCRIPTS -->
+  <script>
+    // Profile menu + logout (same pattern as your other pages)
+    (function () {
+      const user = document.querySelector(".user");
+      if (!user) return;
+      const menu = user.querySelector("#user-menu");
+      const logoutBtn = user.querySelector("#logout-btn");
+
+      user.addEventListener("click", () => {
+        user.classList.toggle("open");
+        if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!user.contains(e.target)) {
+          user.classList.remove("open");
+          if (menu) menu.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          user.classList.remove("open");
+          if (menu) menu.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          localStorage.removeItem("sf_session");
+          window.location.href = "login.html";
+        });
+      }
+
+      // Fill name/role from sf_session if present
+      try {
+        const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+        if (session) {
+          const nameEl = user.querySelector(".name-role p:first-child");
+          const roleEl = user.querySelector(".name-role p:last-child");
+          if (nameEl && session.name) nameEl.textContent = session.name;
+          if (roleEl && session.role) {
+            roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+          }
+        }
+      } catch {}
+    })();
+  </script>
+
+  <script>
+    const JOURNAL_KEY = "sf_journal_entries";
+    const CLIENTS_KEY = "sf_clients";
+
+    function loadJournalEntries() {
+      try {
+        const raw = localStorage.getItem(JOURNAL_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function loadClients() {
+      try {
+        const raw = localStorage.getItem(CLIENTS_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    // Try to derive client name for an entry.
+    function getEntryClientName(entry, clients) {
+      if (entry.clientName) {
+        return entry.clientName;
+      }
+      if (entry.clientId && Array.isArray(clients)) {
+        const found = clients.find((c) => c.id === entry.clientId);
+        if (found && found.name) return found.name;
+      }
+      return "";
+    }
+
+    function normalizeDateString(dateStr) {
+      // Assume YYYY-MM-DD from the form. If missing/bad, return empty.
+      if (!dateStr) return "";
+      return dateStr;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const accountFilterInput = document.getElementById("accountFilter");
+      const clientFilterInput = document.getElementById("clientFilter");
+      const journalTableBody = document.getElementById("journalTableBody");
+      const emptyState = document.getElementById("emptyState");
+      const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+      const accountOptions = document.getElementById("accountOptions");
+      const clientOptions = document.getElementById("clientOptions");
+      const summaryRow = document.getElementById("summaryRow");
+      const statusPills = document.getElementById("statusPills");
+      const dateFromInput = document.getElementById("dateFrom");
+      const dateToInput = document.getElementById("dateTo");
+      const searchInput = document.getElementById("searchInput");
+
+      const allEntriesRaw = loadJournalEntries();
+      const clients = loadClients();
+
+      // Sort by date desc, then timestamp desc
+      const allEntries = [...allEntriesRaw].sort((a, b) => {
+        const da = (a.date || "") + (a.timestamp || "");
+        const db = (b.date || "") + (b.timestamp || "");
+        return db.localeCompare(da);
+      });
+
+      // Build datalists for account + client filter inputs
+      const accountNameSet = new Set();
+      const clientNameSet = new Set();
+
+      allEntries.forEach((entry) => {
+        if (entry.debitAccountName) accountNameSet.add(entry.debitAccountName);
+        if (entry.creditAccountName) accountNameSet.add(entry.creditAccountName);
+        const clientName = getEntryClientName(entry, clients);
+        if (clientName) clientNameSet.add(clientName);
+      });
+
+      accountNameSet.forEach((name) => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        accountOptions.appendChild(opt);
+      });
+
+      clientNameSet.forEach((name) => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        clientOptions.appendChild(opt);
+      });
+
+      let currentStatusFilter = "all";
+
+      function render(entries) {
+        journalTableBody.innerHTML = "";
+
+        if (!entries.length) {
+          emptyState.style.display = "block";
+        } else {
+          emptyState.style.display = "none";
+        }
+
+        entries.forEach((entry) => {
+          const tr = document.createElement("tr");
+          const clientName = getEntryClientName(entry, clients);
+          const enteredBy = entry.user_id || "";
+          const typeLabel = entry.entryType || entry.type || ""; // e.g., "adjusting", "standard"
+          const status = entry.status || ""; // "pending", "approved", "rejected"
+
+          let statusClass = "";
+          if (status === "pending") statusClass = "status-pending";
+          else if (status === "approved") statusClass = "status-approved";
+          else if (status === "rejected") statusClass = "status-rejected";
+
+          const debitAmt =
+            entry.debitAmount != null && !isNaN(entry.debitAmount)
+              ? Number(entry.debitAmount).toFixed(2)
+              : "";
+          const creditAmt =
+            entry.creditAmount != null && !isNaN(entry.creditAmount)
+              ? Number(entry.creditAmount).toFixed(2)
+              : "";
+
+          tr.innerHTML = `
+            <td>${entry.date || ""}</td>
+            <td>${entry.reference || ""}</td>
+            <td>${entry.description || ""}</td>
+            <td>${clientName ? `<span class="pill"><span>${clientName}</span></span>` : ""}</td>
+            <td class="highlight">${entry.debitAccountName || ""}</td>
+            <td class="amount-cell">${debitAmt}</td>
+            <td class="highlight">${entry.creditAccountName || ""}</td>
+            <td class="amount-cell">${creditAmt}</td>
+            <td>${typeLabel || ""}</td>
+            <td>${status ? `<span class="status-tag ${statusClass}">${status}</span>` : ""}</td>
+            <td>${enteredBy}</td>
+          `;
+
+          journalTableBody.appendChild(tr);
+        });
+
+        // Summary
+        const total = allEntries.length;
+        const shown = entries.length;
+        if (!total) {
+          summaryRow.textContent = "No journal entries have been recorded yet.";
+        } else if (shown === total) {
+          summaryRow.textContent = `Showing all ${total} journal entries.`;
+        } else {
+          summaryRow.textContent = `Showing ${shown} of ${total} journal entries (filtered).`;
+        }
+      }
+
+      function applyFilters() {
+        const accountFilter = (accountFilterInput.value || "").toLowerCase().trim();
+        const clientFilter = (clientFilterInput.value || "").toLowerCase().trim();
+        const dateFrom = normalizeDateString(dateFromInput.value);
+        const dateTo = normalizeDateString(dateToInput.value);
+        const searchValue = (searchInput.value || "").toLowerCase().trim();
+
+        const filtered = allEntries.filter((entry) => {
+          let accountMatch = true;
+          let clientMatch = true;
+          let statusMatch = true;
+          let dateMatch = true;
+          let searchMatch = true;
+
+          // Account filter
+          if (accountFilter) {
+            const debitName = (entry.debitAccountName || "").toLowerCase();
+            const creditName = (entry.creditAccountName || "").toLowerCase();
+            accountMatch =
+              debitName.includes(accountFilter) || creditName.includes(accountFilter);
+          }
+
+          // Client filter
+          if (clientFilter) {
+            const clientName = getEntryClientName(entry, clients).toLowerCase();
+            clientMatch = clientName.includes(clientFilter);
+          }
+
+          // Status filter (pending/approved/rejected or all)
+          const status = (entry.status || "").toLowerCase();
+          if (currentStatusFilter !== "all") {
+            statusMatch = status === currentStatusFilter;
+          }
+
+          // Date range filter
+          const entryDate = normalizeDateString(entry.date || "");
+          if (dateFrom && entryDate && entryDate < dateFrom) {
+            dateMatch = false;
+          }
+          if (dateTo && entryDate && entryDate > dateTo) {
+            dateMatch = false;
+          }
+
+          // Search filter (account name, amount, or date)
+          if (searchValue) {
+            const debitName = (entry.debitAccountName || "").toLowerCase();
+            const creditName = (entry.creditAccountName || "").toLowerCase();
+            const dateStr = (entry.date || "").toLowerCase();
+            const debitAmtStr = entry.debitAmount != null ? String(entry.debitAmount) : "";
+            const creditAmtStr = entry.creditAmount != null ? String(entry.creditAmount) : "";
+
+            const combined = [
+              debitName,
+              creditName,
+              dateStr,
+              debitAmtStr,
+              creditAmtStr
+            ].join(" ").toLowerCase();
+
+            searchMatch = combined.includes(searchValue);
+          }
+
+          return (
+            accountMatch &&
+            clientMatch &&
+            statusMatch &&
+            dateMatch &&
+            searchMatch
+          );
+        });
+
+        render(filtered);
+      }
+
+      // Status pill clicks
+      statusPills.addEventListener("click", (e) => {
+        const btn = e.target.closest(".status-pill");
+        if (!btn) return;
+        const status = btn.getAttribute("data-status");
+        if (!status) return;
+
+        currentStatusFilter = status;
+
+        // Toggle active class
+        statusPills.querySelectorAll(".status-pill").forEach((pill) => {
+          pill.classList.toggle("active", pill === btn);
+        });
+
+        applyFilters();
+      });
+
+      accountFilterInput.addEventListener("input", applyFilters);
+      clientFilterInput.addEventListener("input", applyFilters);
+      dateFromInput.addEventListener("change", applyFilters);
+      dateToInput.addEventListener("change", applyFilters);
+      searchInput.addEventListener("input", applyFilters);
+
+      clearFiltersBtn.addEventListener("click", () => {
+        accountFilterInput.value = "";
+        clientFilterInput.value = "";
+        dateFromInput.value = "";
+        dateToInput.value = "";
+        searchInput.value = "";
+        currentStatusFilter = "all";
+
+        // reset pills
+        statusPills.querySelectorAll(".status-pill").forEach((pill) => {
+          pill.classList.toggle("active", pill.getAttribute("data-status") === "all");
+        });
+
+        render(allEntries);
+      });
+
+      // Initial render
+      render(allEntries);
+    });
+  </script>
+</body>
+</html>
