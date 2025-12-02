@@ -3,155 +3,702 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Administration</title>
+  <title>Administrator | SyncFinance</title>
   <link rel="stylesheet" href="style.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
-</head>
-<body class="admin-body">
 
+  <style>
+    :root {
+      --green: #22EE77;
+      --gold: #D4AF37;
+      --blue: #002D62;
+      --offwhite: #f5f7fb;
+      --jet: #333333;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body.admin-body {
+      background: white;
+      color: var(--jet);
+      margin: 0;
+    }
+
+    /* Header: keep white */
+    .main-header {
+      background: white;
+      color: var(--jet);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .full-logo {
+      height: 40px;
+    }
+
+    .email-icon img {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .user img {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+    }
+
+    .name-role p {
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .user-menu {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      background: #ffffff;
+      color: #000;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      padding: 8px;
+      min-width: 120px;
+      display: none;
+    }
+
+    .user.open .user-menu {
+      display: block;
+    }
+
+    .user-menu button {
+      width: 100%;
+      background: transparent;
+      color: #111827;
+      border: none;
+      padding: 6px 8px;
+      border-radius: 6px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .user-menu button:hover {
+      background: #e5e7eb;
+    }
+
+    main.admin-container {
+      max-width: 1200px;
+      margin: 24px auto 40px;
+      padding: 0 16px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .page-title h1 {
+      margin: 0 0 4px;
+      font-size: 1.4rem;
+      color: var(--blue);
+    }
+
+    .page-title p {
+      margin: 0 0 12px;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    /* Quick links row */
+
+    .admin-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .admin-quick-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .pill-btn {
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      background: #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-btn:hover {
+      background: #f3f4f6;
+    }
+
+    /* Ratios */
+
+    .ratio-section-title {
+      font-size: 1rem;
+      margin: 0 0 6px;
+      color: var(--blue);
+    }
+
+    .ratio-note {
+      margin: 0 0 10px;
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .ratio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .ratio-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+      font-size: 0.9rem;
+    }
+
+    .ratio-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+
+    .ratio-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .ratio-tag {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .ratio-good {
+      background: #ecfdf3;
+      color: #166534;
+      border-color: #bbf7d0;
+    }
+
+    .ratio-warn {
+      background: #fffbeb;
+      color: #92400e;
+      border-color: #fed7aa;
+    }
+
+    .ratio-bad {
+      background: #fef2f2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    .ratio-footnote {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    /* Lower grid: messages + hub */
+
+    .admin-lower-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr);
+      gap: 16px;
+    }
+
+    .admin-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      padding: 12px 14px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+      font-size: 0.9rem;
+    }
+
+    .admin-card h2 {
+      margin: 0 0 6px;
+      font-size: 1rem;
+      color: var(--blue);
+    }
+
+    .muted {
+      color: #6b7280;
+    }
+
+    .message-list {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .message-item {
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .message-meta {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      border: 1px solid #e5e7eb;
+      background: #f3f4f6;
+      margin-left: 6px;
+    }
+
+    .badge-primary {
+      background: #e0ecff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .empty-text {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+
+    /* Admin hub cards */
+
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .hub-card {
+      display: block;
+      text-decoration: none;
+      background: #f9fafb;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      color: #111827;
+      transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+      font-size: 0.9rem;
+    }
+
+    .hub-card h3 {
+      margin: 0 0 4px;
+      font-size: 0.95rem;
+    }
+
+    .hub-card p {
+      margin: 0 0 6px;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    .hub-cta {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--blue);
+    }
+
+    .hub-card:hover {
+      background: #eef2ff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 900px) {
+      .admin-lower-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body class="admin-body">
   <header class="main-header">
     <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo">
-    
+
     <div class="header-right">
-      <a class="email-icon" id="emailLink" href="./admin-email.html">
+      <a class="email-icon" id="emailLink" href="admin-email.html">
         <img src="./images/email-icon.png" alt="Email">
       </a>
-    
-    <div class="user">
-      <img src="./images/user-profile.png" alt="User Profile Logo">
-      <div class="name-role">
-        <p>Jane Doe</p>
-        <p>Administrator</p>
+
+      <div class="user">
+        <img src="./images/user-profile.png" alt="User Profile Logo">
+        <div class="name-role">
+          <p>Jane Doe</p>
+          <p>Administrator</p>
+        </div>
+
+        <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
+          <button id="logout-btn" role="menuitem">Log out</button>
+        </div>
       </div>
-      
-      <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
-        <button id="logout-btn" role="menuitem">Log out</button>
-      </div>
-      
     </div>
-    </div>
-    
   </header>
 
   <main class="admin-container">
-    <section class="page-title">
-        <h1>Administrator Home</h1>
-      </section>
+    <!-- Top row: title + quick links -->
+    <section class="page-title admin-top-row">
+      <div>
+        <h1>Administrator dashboard</h1>
+        <p>Manage users, security, and view high-level financial health.</p>
+      </div>
 
-    <section class="hub">
-
-      <a class="hub-card" href="./admin-COA.html">
-        <h2>Client Chart of Accounts</h2>
-        <p>View and manage client accounts.</p>
-        <span class="hub-cta">Open</span>
-      </a>
-
-      <a class="hub-card" href="./employees.html">
-        <h2>Employee Manager</h2>
-        <p>Browse employees, roles, and access permissions.</p>
-        <span class="hub-cta">Open</span>
-      </a>
-
-      <a class="hub-card" href="./password-report.html">
-        <h2>Expired Passwords</h2>
-        
-        <span class="hub-cta">Open</span>
-      </a>
-
-      <a class="hub-card" href="./account-logs.html">
-        <h2>Account Event Logs</h2>
-        <p>View account creation and edit history including before/after changes.</p>
-        <span class="hub-cta">Open</span>
-      </a>
-
-
+      <nav class="admin-quick-links" aria-label="Administrator quick actions">
+        <button class="pill-btn" type="button" onclick="window.location.href='add-user.html'">
+          👤➕ <span>New user</span>
+        </button>
+        <button class="pill-btn" type="button" onclick="window.location.href='employees.html'">
+          🧑‍💼 <span>Employee manager</span>
+        </button>
+        <button class="pill-btn" type="button" onclick="window.location.href='password-report.html'">
+          🔐 <span>Password report</span>
+        </button>
+        <button class="pill-btn" type="button" onclick="window.location.href='security-questions.html'">
+          🛡️ <span>Security questions</span>
+        </button>
+        <button class="pill-btn" type="button" onclick="window.location.href='account-logs.html'">
+          🕒 <span>Account event logs</span>
+        </button>
+      </nav>
     </section>
 
+    <!-- Ratios section -->
+    <section aria-labelledby="adminRatiosHeading">
+      <h2 id="adminRatiosHeading" class="ratio-section-title">Key financial ratios (mock)</h2>
+      <p class="ratio-note">
+        The ratios below use example data from the solved problem. In production these would be calculated from the
+        client&rsquo;s actual financial statements.
+      </p>
 
+      <div class="ratio-grid">
+        <article class="ratio-card">
+          <div class="ratio-label">Debt ratio</div>
+          <div class="ratio-value">
+            <span>0.45</span>
+            <span class="ratio-tag ratio-good">Green</span>
+          </div>
+          <p class="ratio-footnote">Leverage is in a comfortable range (below 0.60).</p>
+        </article>
 
+        <article class="ratio-card">
+          <div class="ratio-label">Current ratio</div>
+          <div class="ratio-value">
+            <span>1.25</span>
+            <span class="ratio-tag ratio-warn">Yellow</span>
+          </div>
+          <p class="ratio-footnote">Short-term liquidity is a little tight (target ≥ 1.50).</p>
+        </article>
+
+        <article class="ratio-card">
+          <div class="ratio-label">Quick ratio</div>
+          <div class="ratio-value">
+            <span>0.95</span>
+            <span class="ratio-tag ratio-warn">Yellow</span>
+          </div>
+          <p class="ratio-footnote">Barely enough near-cash assets; monitor closely.</p>
+        </article>
+
+        <article class="ratio-card">
+          <div class="ratio-label">Profit margin</div>
+          <div class="ratio-value">
+            <span>12%</span>
+            <span class="ratio-tag ratio-good">Green</span>
+          </div>
+          <p class="ratio-footnote">Healthy margin provides room for unexpected costs.</p>
+        </article>
+
+        <article class="ratio-card">
+          <div class="ratio-label">Return on assets (ROA)</div>
+          <div class="ratio-value">
+            <span>7%</span>
+            <span class="ratio-tag ratio-good">Green</span>
+          </div>
+          <p class="ratio-footnote">Solid earnings relative to total assets.</p>
+        </article>
+
+        <article class="ratio-card">
+          <div class="ratio-label">Days to collect receivables</div>
+          <div class="ratio-value">
+            <span>52 days</span>
+            <span class="ratio-tag ratio-bad">Red</span>
+          </div>
+          <p class="ratio-footnote">Customers are paying slower than ideal; may need policy review.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Lower grid: system messages + admin hub -->
+    <section class="admin-lower-grid" aria-label="System messages and admin hub">
+      <!-- System messages -->
+      <article class="admin-card">
+        <h2>System messages</h2>
+        <p class="muted">
+          High-level notes for the administrator. In a full system these would be driven by user activity, logins,
+          password resets, and client data.
+        </p>
+
+        <ul class="message-list" id="adminMessages"></ul>
+        <p class="empty-text" id="adminMessagesEmpty" style="display:none;">
+          No messages at the moment. You&rsquo;ll see alerts here as users are added, locked, or when security
+          reports need review.
+        </p>
+      </article>
+
+      <!-- Admin hub -->
+      <article class="admin-card">
+        <h2>Administration hub</h2>
+        <p class="muted" style="font-size:0.85rem;">
+          Jump straight to common administration tasks.
+        </p>
+
+        <div class="hub-grid">
+          <a class="hub-card" href="admin-client-list.html">
+            <h3>Client accounts</h3>
+            <p>View and manage the client chart of accounts.</p>
+            <span class="hub-cta">Open</span>
+          </a>
+
+          <a class="hub-card" href="employees.html">
+            <h3>Employee manager</h3>
+            <p>Browse employees, roles, and access permissions.</p>
+            <span class="hub-cta">Open</span>
+          </a>
+
+          <a class="hub-card" href="add-user.html">
+            <h3>Add new user</h3>
+            <p>Create administrator, manager, or accountant accounts.</p>
+            <span class="hub-cta">Open</span>
+          </a>
+
+          <a class="hub-card" href="password-report.html">
+            <h3>Password report</h3>
+            <p>View password status and reset history.</p>
+            <span class="hub-cta">Open</span>
+          </a>
+
+          <a class="hub-card" href="security-questions.html">
+            <h3>Security questions</h3>
+            <p>Configure and review users&rsquo; security questions.</p>
+            <span class="hub-cta">Open</span>
+          </a>
+
+          <a class="hub-card" href="account-logs.html">
+            <h3>Account event logs</h3>
+            <p>View account creation and edit history with before/after snapshots.</p>
+            <span class="hub-cta">Open</span>
+          </a>
+        </div>
+      </article>
+    </section>
   </main>
 
-  <script src="script.js">
-    
-(function () {
-  function wireProfileMenu() {
-    const user = document.querySelector(".user");
-    if (!user) return;
+  <script>
+    // Profile menu + logout + session name/role
+    (function () {
+      function wireProfileMenu() {
+        const user = document.querySelector(".user");
+        if (!user) return;
 
-    const menu = user.querySelector("#user-menu");
-    const logoutBtn = user.querySelector("#logout-btn");
+        const menu = user.querySelector("#user-menu");
+        const logoutBtn = user.querySelector("#logout-btn");
 
+        user.addEventListener("click", () => {
+          user.classList.toggle("open");
+          if (menu) {
+            menu.setAttribute(
+              "aria-hidden",
+              String(!user.classList.contains("open"))
+            );
+          }
+        });
 
-    user.addEventListener("click", () => {
-      user.classList.toggle("open");
-      if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
-    });
+        document.addEventListener("click", (e) => {
+          if (!user.contains(e.target)) {
+            user.classList.remove("open");
+            if (menu) menu.setAttribute("aria-hidden", "true");
+          }
+        });
 
-  
-    document.addEventListener("click", (e) => {
-      if (!user.contains(e.target)) {
-        user.classList.remove("open");
-        if (menu) menu.setAttribute("aria-hidden", "true");
-      }
-    });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            user.classList.remove("open");
+            if (menu) menu.setAttribute("aria-hidden", "true");
+          }
+        });
 
-   
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        user.classList.remove("open");
-        if (menu) menu.setAttribute("aria-hidden", "true");
-      }
-    });
-
-
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); 
-        localStorage.removeItem("sf_session");
-        window.location.href = "login.html";
-      });
-    }
-
-  
-    try {
-      const session = JSON.parse(localStorage.getItem("sf_session") || "null");
-      if (session) {
-        const nameEl = user.querySelector(".name-role p:first-child");
-        const roleEl = user.querySelector(".name-role p:last-child");
-        if (nameEl && session.name) nameEl.textContent = session.name;
-        if (roleEl && session.role) {
-          roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            localStorage.removeItem("sf_session");
+            window.location.href = "login.html";
+          });
         }
+
+        // Fill name + role from sf_session if present
+        try {
+          const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+          if (session) {
+            const nameEl = user.querySelector(".name-role p:first-child");
+            const roleEl = user.querySelector(".name-role p:last-child");
+            if (nameEl && session.name) nameEl.textContent = session.name;
+            if (roleEl && session.role) {
+              roleEl.textContent =
+                session.role.charAt(0).toUpperCase() + session.role.slice(1);
+            }
+          }
+        } catch {}
       }
-    } catch {}
-  }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", wireProfileMenu);
-  } else {
-    wireProfileMenu();
-  }
-})();
-
-document.addEventListener("DOMContentLoaded", () => {
-  const link = document.getElementById("emailLink");
-  if (!link) return;
-
-  const session = JSON.parse(localStorage.getItem("sf_session") || "null");
-  if (!session || !session.role) {
-    link.href = "admin-email.html"; // fallback
-    return;
-  }
-
-  // routing
-  if (session.role === "admin") link.href = "admin-email.html";
-  if (session.role === "manager") link.href = "manager-email.html";
-  if (session.role === "accountant") link.href = "accountant-email.html";
-});
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", wireProfileMenu);
+      } else {
+        wireProfileMenu();
+      }
+    })();
   </script>
 
+  <script>
+    // System messages (light logic using localStorage if present)
+    (function () {
+      const USERS_KEY = "sf_users";
+      const CLIENTS_KEY = "sf_clients";
 
+      function safeLoadArray(key) {
+        try {
+          const raw = localStorage.getItem(key);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const users = safeLoadArray(USERS_KEY);
+        const clients = safeLoadArray(CLIENTS_KEY);
+
+        const listEl = document.getElementById("adminMessages");
+        const emptyEl = document.getElementById("adminMessagesEmpty");
+        if (!listEl || !emptyEl) return;
+
+        listEl.innerHTML = "";
+
+        // Always show at least one generic message
+        const baseMsg = document.createElement("li");
+        baseMsg.className = "message-item";
+        baseMsg.innerHTML = `
+          <div>
+            Review user access and security at least once per reporting period.
+            <span class="badge badge-primary">Security</span>
+          </div>
+          <div class="message-meta">
+            Confirm roles are appropriate (Admin, Manager, Accountant) and deactivate unused accounts.
+          </div>
+        `;
+        listEl.appendChild(baseMsg);
+
+        let addedAny = true;
+
+        if (users.length) {
+          const li = document.createElement("li");
+          li.className = "message-item";
+          li.innerHTML = `
+            <div><strong>${users.length}</strong> user accounts currently stored.</div>
+            <div class="message-meta">
+              Use the Employee Manager and Add User pages to keep access up to date.
+            </div>
+          `;
+          listEl.appendChild(li);
+        }
+
+        if (clients.length) {
+          const li = document.createElement("li");
+          li.className = "message-item";
+          li.innerHTML = `
+            <div><strong>${clients.length}</strong> client records are in the system.</div>
+            <div class="message-meta">
+              Use the Client Accounts hub to review charts of accounts and account event logs.
+            </div>
+          `;
+          listEl.appendChild(li);
+        }
+
+        if (!addedAny && !users.length && !clients.length) {
+          emptyEl.style.display = "block";
+        } else {
+          emptyEl.style.display = "none";
+        }
+      });
+    })();
+  </script>
+
+  <script>
+    // Email link routing based on sf_session.role
+    document.addEventListener("DOMContentLoaded", () => {
+      const link = document.getElementById("emailLink");
+      if (!link) return;
+
+      try {
+        const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+        if (!session || !session.role) {
+          link.href = "admin-email.html";
+          return;
+        }
+
+        if (session.role === "admin") link.href = "admin-email.html";
+        if (session.role === "manager") link.href = "manager-email.html";
+        if (session.role === "accountant") link.href = "accountant-email.html";
+      } catch {
+        link.href = "admin-email.html";
+      }
+    });
+  </script>
 </body>
 </html>
