@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manager Journal Review | SyncFinance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="manager-ui.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=SUSE+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    .review-page {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 20px 40px;
+    }
+
+    .review-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 22px 24px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.12);
+    }
+
+    .review-card h1 {
+      margin: 0 0 4px;
+    }
+
+    .subtitle {
+      margin: 0 0 16px;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 180px;
+      flex: 1 1 200px;
+    }
+
+    .filter-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #cbd5f5;
+      font-size: 0.9rem;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 7px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn.primary {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .btn.approve {
+      background: #16a34a;
+      color: #ffffff;
+    }
+
+    .btn.reject {
+      background: #b91c1c;
+      color: #ffffff;
+    }
+
+    .entry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .entry-card {
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      background: #f9fafb;
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .entry-header-left {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+    }
+
+    .badge.ref {
+      background: #eef2ff;
+      color: #1e293b;
+    }
+
+    .badge.status {
+      text-transform: capitalize;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-approved {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .entry-main {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 800px) {
+      .entry-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .entry-description {
+      color: #111827;
+    }
+
+    .entry-accounts {
+      font-family: "SUSE Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+        Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.85rem;
+    }
+
+    .entry-accounts div {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .entry-accounts div span:first-child {
+      max-width: 70%;
+    }
+
+    .entry-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 8px;
+      margin-top: 8px;
+      border-top: 1px dashed #e5e7eb;
+      padding-top: 8px;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    .comment-box {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      padding: 6px 8px;
+      resize: vertical;
+      min-height: 46px;
+      font-size: 0.85rem;
+    }
+
+    .error-text {
+      font-size: 0.78rem;
+      color: #b91c1c;
+      margin-top: 3px;
+    }
+
+    .actions-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .summary-row {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    /* White header override for this page */
+    .main-header {
+      background-color: #ffffff !important;
+      color: #0f172a;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .name-role p {
+      color: #0f172a !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="main-header">
+    <a
+      href="./manager.html"
+      style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;"
+    >
+      <span style="font-size: 20px; line-height: 1;">←</span>
+      <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo" />
+    </a>
+
+    <div class="user">
+      <img src="./images/user-profile.png" alt="User Profile Logo" />
+      <div class="name-role">
+        <p>Mark Green</p>
+        <p>Manager</p>
+      </div>
+      <div class="user-menu" id="user-menu" aria-hidden="true">
+        <button id="logout-btn" type="button">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="review-page">
+    <section class="review-card">
+      <h1>Review Journal Entries</h1>
+      <p class="subtitle">
+        Approve or reject pending adjusting and standard entries. Rejected entries require a comment.
+      </p>
+
+      <!-- Filters -->
+      <div class="filters-row">
+        <div class="filter-group">
+          <label for="statusFilter">Status</label>
+          <select id="statusFilter">
+            <option value="pending">Pending only</option>
+            <option value="all">All statuses</option>
+            <option value="approved">Approved only</option>
+            <option value="rejected">Rejected only</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="typeFilter">Entry type</label>
+          <select id="typeFilter">
+            <option value="all">All types</option>
+            <option value="adjusting">Adjusting entries</option>
+            <option value="standard">Standard entries</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="searchFilter">Search (account / client / ref)</label>
+          <input
+            type="search"
+            id="searchFilter"
+            placeholder="Cash, Acme, JE-1002…"
+          />
+        </div>
+
+        <div class="filter-group" style="max-width: 150px;">
+          <button type="button" class="btn secondary" id="clearFiltersBtn">
+            Clear filters
+          </button>
+        </div>
+      </div>
+
+      <div id="summaryRow" class="summary-row"></div>
+
+      <!-- Entries -->
+      <div id="entryList" class="entry-list"></div>
+
+      <p id="emptyState" class="summary-row" style="display: none;">
+        No journal entries match the current filters.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    /*************** profile menu + logout ***************/
+    (function () {
+      const user = document.querySelector(".user");
+      if (!user) return;
+      const menu = user.querySelector("#user-menu");
+      const logoutBtn = user.querySelector("#logout-btn");
+
+      user.addEventListener("click", () => {
+        user.classList.toggle("open");
+        if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!user.contains(e.target)) {
+          user.classList.remove("open");
+          if (menu) menu.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          user.classList.remove("open");
+          if (menu) menu.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          localStorage.removeItem("sf_session");
+          window.location.href = "login.html";
+        });
+      }
+
+      // Optional: pull manager name from session
+      try {
+        const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+        if (session) {
+          const nameEl = user.querySelector(".name-role p:first-child");
+          const roleEl = user.querySelector(".name-role p:last-child");
+          if (nameEl && session.name) nameEl.textContent = session.name;
+          if (roleEl && session.role) {
+            roleEl.textContent =
+              session.role.charAt(0).toUpperCase() + session.role.slice(1);
+          }
+        }
+      } catch {}
+    })();
+  </script>
+
+  <script>
+    /*************** manager review logic (front-end only) ***************/
+    const JOURNAL_KEY = "sf_journal_entries";
+
+    function loadEntries() {
+      try {
+        const raw = localStorage.getItem(JOURNAL_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveEntries(entries) {
+      localStorage.setItem(JOURNAL_KEY, JSON.stringify(entries));
+    }
+
+    function fmtMoney(n) {
+      return (+n || 0).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const entryList = document.getElementById("entryList");
+      const emptyState = document.getElementById("emptyState");
+      const summaryRow = document.getElementById("summaryRow");
+
+      const statusFilter = document.getElementById("statusFilter");
+      const typeFilter = document.getElementById("typeFilter");
+      const searchFilter = document.getElementById("searchFilter");
+      const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+
+      let allEntries = loadEntries();
+
+      function applyFilters() {
+        const statusVal = statusFilter.value;
+        const typeVal = typeFilter.value;
+        const searchVal = (searchFilter.value || "").toLowerCase().trim();
+
+        const filtered = allEntries.filter((e) => {
+          const status = (e.status || "").toLowerCase();
+          const type = (e.entryType || e.type || "").toLowerCase();
+
+          let statusOk = true;
+          let typeOk = true;
+          let searchOk = true;
+
+          if (statusVal !== "all") {
+            statusOk = status === statusVal;
+          }
+
+          if (typeVal !== "all") {
+            typeOk = type === typeVal;
+          }
+
+          if (searchVal) {
+            const clientName = (e.clientName || "").toLowerCase();
+            const ref = (e.id || e.reference || "").toLowerCase();
+            const debitName = (e.debitAccountName || "").toLowerCase();
+            const creditName = (e.creditAccountName || "").toLowerCase();
+            const combined = [clientName, ref, debitName, creditName].join(" ");
+            searchOk = combined.includes(searchVal);
+          }
+
+          return statusOk && typeOk && searchOk;
+        });
+
+        renderList(filtered);
+      }
+
+      function renderList(entries) {
+        entryList.innerHTML = "";
+
+        if (!entries.length) {
+          emptyState.style.display = "block";
+          summaryRow.textContent = "No entries available for review.";
+          return;
+        }
+
+        emptyState.style.display = "none";
+
+        const total = allEntries.length;
+        const shown = entries.length;
+
+        summaryRow.textContent =
+          shown === total
+            ? `Showing all ${total} journal entries.`
+            : `Showing ${shown} of ${total} journal entries (filtered).`;
+
+        entries.forEach((e) => {
+          const card = document.createElement("article");
+          card.className = "entry-card";
+
+          const status = (e.status || "pending").toLowerCase();
+          let statusClass = "status-pending";
+          if (status === "approved") statusClass = "status-approved";
+          if (status === "rejected") statusClass = "status-rejected";
+
+          const clientName = e.clientName || "";
+          const typeLabel = e.entryType || e.type || "standard";
+
+          card.innerHTML = `
+            <div class="entry-header">
+              <div class="entry-header-left">
+                <strong>${e.date || ""}</strong>
+                <span class="badge ref">${e.id || e.reference || "No ref"}</span>
+                <span class="badge status ${statusClass}">${status}</span>
+                ${
+                  clientName
+                    ? `<span class="badge" style="background:#eef2ff;color:#1e293b;">${clientName}</span>`
+                    : ""
+                }
+              </div>
+              <div>
+                <span style="font-size:0.8rem;color:#6b7280;">Type: ${typeLabel}</span>
+              </div>
+            </div>
+
+            <div class="entry-main">
+              <div class="entry-description">
+                <strong>Description</strong>
+                <p style="margin:4px 0 0;">${e.description || ""}</p>
+              </div>
+              <div class="entry-accounts">
+                <strong>Accounts</strong>
+                <div>
+                  <span>Debit: ${e.debitAccountName || ""}</span>
+                  <span>${e.debitAmount != null ? fmtMoney(e.debitAmount) : ""}</span>
+                </div>
+                <div>
+                  <span>Credit: ${e.creditAccountName || ""}</span>
+                  <span>${e.creditAmount != null ? fmtMoney(e.creditAmount) : ""}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="entry-footer">
+              <div style="flex:1 1 60%; min-width:220px;">
+                <label style="display:block; margin-bottom:2px;">Manager comment (required if rejecting)</label>
+                <textarea class="comment-box" data-id="${
+                  e.id || e.reference || ""
+                }">${e.managerComment || ""}</textarea>
+                <div class="error-text" data-error-for="${e.id || e.reference || ""}" style="display:none;">
+                  Comment is required when rejecting an entry.
+                </div>
+              </div>
+
+              <div class="actions-row">
+                <button type="button" class="btn approve" data-approve="${
+                  e.id || e.reference || ""
+                }">Approve</button>
+                <button type="button" class="btn reject" data-reject="${
+                  e.id || e.reference || ""
+                }">Reject</button>
+              </div>
+            </div>
+          `;
+
+          entryList.appendChild(card);
+        });
+      }
+
+      function updateStatus(id, newStatus) {
+        const idx = allEntries.findIndex((e) => (e.id || e.reference) === id);
+        if (idx === -1) return;
+
+        const entry = allEntries[idx];
+        const textarea = document.querySelector(
+          `.comment-box[data-id="${CSS.escape(id)}"]`
+        );
+        const errorEl = document.querySelector(
+          `.error-text[data-error-for="${CSS.escape(id)}"]`
+        );
+
+        const comment = textarea ? textarea.value.trim() : "";
+
+        if (newStatus === "rejected" && !comment) {
+          if (errorEl) errorEl.style.display = "block";
+          return;
+        }
+        if (errorEl) errorEl.style.display = "none";
+
+        entry.status = newStatus;
+        entry.managerComment = comment;
+        allEntries[idx] = entry;
+        saveEntries(allEntries);
+        applyFilters();
+      }
+
+      // Event listeners
+      statusFilter.addEventListener("change", applyFilters);
+      typeFilter.addEventListener("change", applyFilters);
+      searchFilter.addEventListener("input", applyFilters);
+      clearFiltersBtn.addEventListener("click", () => {
+        statusFilter.value = "pending";
+        typeFilter.value = "all";
+        searchFilter.value = "";
+        applyFilters();
+      });
+
+      entryList.addEventListener("click", (e) => {
+        const approveBtn = e.target.closest("[data-approve]");
+        const rejectBtn = e.target.closest("[data-reject]");
+
+        if (approveBtn) {
+          const id = approveBtn.getAttribute("data-approve");
+          updateStatus(id, "approved");
+        }
+
+        if (rejectBtn) {
+          const id = rejectBtn.getAttribute("data-reject");
+          updateStatus(id, "rejected");
+        }
+      });
+
+      // Initial render, default to pending-only
+      applyFilters();
+    });
+  </script>
+</body>
+</html>
