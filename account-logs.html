@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Event Logs | SyncFinance</title>
+
+  <!-- Base styles + Manager UI extensions -->
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="manager-ui.css" />
+
+  <style>
+    :root {
+      --green: #22EE77;
+      --gold: #D4AF37;
+      --blue: #002D62;
+      --offwhite: #f5f7fb;
+      --jet: #333333;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background: white;
+      color: var(--jet);
+      margin: 0;
+    }
+
+    /* Header (kept white, not blue) */
+    .main-header {
+      background: white;
+      color: var(--jet);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .full-logo {
+      height: 40px;
+    }
+
+    /* Hamburger */
+    .menu-toggle {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .menu-toggle span {
+      display: block;
+      width: 22px;
+      height: 3px;
+      background: var(--blue); /* dark blue lines, matches manager */
+      border-radius: 999px;
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      position: relative;
+    }
+    .user img {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+    }
+    .name-role p {
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .user-menu {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      background: #ffffff;
+      color: #000;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      padding: 8px;
+      min-width: 120px;
+      display: none;
+    }
+    .user.open .user-menu {
+      display: block;
+    }
+    .user-menu button {
+      width: 100%;
+      background: transparent;
+      color: #111827;
+      border: none;
+      padding: 6px 8px;
+      border-radius: 6px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .user-menu button:hover {
+      background: #e5e7eb;
+    }
+
+    main {
+      padding: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .page-title h1 {
+      margin: 0 0 4px;
+      color: var(--blue);
+    }
+    .page-title p {
+      margin: 0 0 16px;
+      color: #666;
+    }
+
+    /* Side navigation (same pattern as manager.html) */
+    .side-nav {
+      position: fixed;
+      top: 0;
+      left: -240px;
+      width: 220px;
+      height: 100vh;
+      background: #002D62;
+      color: #ffffff;
+      padding: 20px 16px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.25);
+      transition: left 0.2s ease-out;
+      z-index: 1000;
+    }
+    .side-nav.open {
+      left: 0;
+    }
+    .side-nav h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+    .side-nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .side-nav li {
+      margin-bottom: 8px;
+    }
+    .side-nav a {
+      color: #e5e7eb;
+      text-decoration: none;
+      font-size: 14px;
+      display: block;
+      padding: 6px 4px;
+      border-radius: 4px;
+    }
+    .side-nav a:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    .nav-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: none;
+      z-index: 900;
+    }
+    .nav-overlay.show {
+      display: block;
+    }
+
+    /* Filters row for logs */
+    .events-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .events-filters label {
+      font-size: 13px;
+      color: #4b5563;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .events-filters select,
+    .events-filters input[type="search"] {
+      border: 1px solid #dbe3f3;
+      border-radius: 8px;
+      padding: 6px 8px;
+      font: inherit;
+      min-width: 160px;
+    }
+
+    .empty-state {
+      color: #6b7280;
+      font-size: 14px;
+      padding: 8px 0;
+    }
+
+    /* Use manager-ui.css classes:
+       .events-card, .event-list, .event-row, .event-meta, .event-box, .event-box pre */
+  </style>
+</head>
+<body>
+  <!-- Side nav + overlay -->
+  <nav class="side-nav" id="side-nav" aria-hidden="true">
+    <h3>Manager Menu</h3>
+    <ul>
+      <li><a href="journal.html">Journal Entries</a></li>
+      <li><a href="financial-reports.html">Financial Reports</a></li>
+      <li><a href="account-logs.html">Account Event Logs</a></li>
+    </ul>
+  </nav>
+  <div class="nav-overlay" id="nav-overlay"></div>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <img src="./images/full-logo.png" alt="SyncFinance Logo" class="full-logo" />
+    </div>
+
+    <div class="user">
+      <img src="./images/user-profile.png" alt="User Profile Logo" />
+      <div class="name-role">
+        <p>Mark Green</p>
+        <p>Manager</p>
+      </div>
+
+      <div class="user-menu" id="user-menu" aria-hidden="true" role="menu">
+        <button id="logout-btn" role="menuitem">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card events-card">
+      <div class="page-title">
+        <h1>Account Event Logs</h1>
+        <p>View a history of changes made to the chart of accounts.</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="events-filters">
+        <label>
+          Account
+          <select id="filter-account">
+            <option value="">All accounts</option>
+          </select>
+        </label>
+
+        <label>
+          Event type
+          <select id="filter-type">
+            <option value="">All types</option>
+            <option value="create">Account created</option>
+            <option value="update">Account updated</option>
+          </select>
+        </label>
+
+        <label>
+          User
+          <select id="filter-user">
+            <option value="">All users</option>
+          </select>
+        </label>
+
+        <label>
+          Search (account, user, details)
+          <input type="search" id="filter-search" placeholder="Search text…" />
+        </label>
+      </div>
+
+      <div id="empty-state" class="empty-state" style="display:none;">
+        No event logs match the selected filters.
+      </div>
+
+      <div id="event-list" class="event-list">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ===== Keys =====
+    const LOGS_KEY = "sf_account_logs";
+
+    function loadLogs() {
+      try {
+        const raw = localStorage.getItem(LOGS_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function fmtDateTime(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return iso;
+      return d.toLocaleString();
+    }
+
+    function fmtType(type) {
+      if (type === "create") return "Account created";
+      if (type === "update") return "Account updated";
+      return type || "Event";
+    }
+
+    function stringify(obj) {
+      if (obj == null) return "(none)";
+      try {
+        return JSON.stringify(obj, null, 2);
+      } catch {
+        return String(obj);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const logs = loadLogs().sort((a, b) => {
+        // newest first
+        return (new Date(b.timestamp || 0)) - (new Date(a.timestamp || 0));
+      });
+
+      const accountSelect = document.getElementById("filter-account");
+      const typeSelect = document.getElementById("filter-type");
+      const userSelect = document.getElementById("filter-user");
+      const searchInput = document.getElementById("filter-search");
+      const listEl = document.getElementById("event-list");
+      const emptyState = document.getElementById("empty-state");
+
+      // Populate account filter (unique account_number + name)
+      const accountMap = new Map();
+      logs.forEach(log => {
+        if (log.account_number) {
+          const key = log.account_number;
+          const label = log.account_name
+            ? `${log.account_number} – ${log.account_name}`
+            : log.account_number;
+          accountMap.set(key, label);
+        }
+      });
+      for (const [value, label] of accountMap.entries()) {
+        const opt = document.createElement("option");
+        opt.value = value;
+        opt.textContent = label;
+        accountSelect.appendChild(opt);
+      }
+
+      // Populate user filter (unique user_id)
+      const users = Array.from(
+        new Set(logs.map(l => l.user_id).filter(Boolean))
+      );
+      users.forEach(u => {
+        const opt = document.createElement("option");
+        opt.value = u;
+        opt.textContent = u;
+        userSelect.appendChild(opt);
+      });
+
+      function applyFilters() {
+        const acctVal = accountSelect.value;
+        const typeVal = typeSelect.value;
+        const userVal = userSelect.value;
+        const searchVal = searchInput.value.trim().toLowerCase();
+
+        const filtered = logs.filter(log => {
+          if (acctVal && log.account_number !== acctVal) return false;
+          if (typeVal && (log.type || "").toLowerCase() !== typeVal.toLowerCase()) return false;
+          if (userVal && log.user_id !== userVal) return false;
+
+          if (searchVal) {
+            const haystack = [
+              log.account_number,
+              log.account_name,
+              log.user_id,
+              log.type,
+              stringify(log.before),
+              stringify(log.after)
+            ]
+              .join(" ")
+              .toLowerCase();
+            if (!haystack.includes(searchVal)) return false;
+          }
+
+          return true;
+        });
+
+        renderLogs(filtered);
+      }
+
+      function renderLogs(items) {
+        if (!items.length) {
+          listEl.innerHTML = "";
+          emptyState.style.display = "block";
+          return;
+        }
+
+        emptyState.style.display = "none";
+        listEl.innerHTML = items
+          .map(log => {
+            const when = fmtDateTime(log.timestamp);
+            const typeLabel = fmtType(log.type);
+            const accountLabel = log.account_name
+              ? `${log.account_number} – ${log.account_name}`
+              : (log.account_number || "Unknown account");
+            const user = log.user_id || "Unknown user";
+
+            return `
+              <article class="event-row">
+                <div class="event-meta">
+                  <strong>${typeLabel}</strong>
+                  <span> • ${accountLabel}</span>
+                  <span> • ${user}</span>
+                  <span> • ${when}</span>
+                </div>
+                <div class="event-box">
+                  <div>
+                    <strong>Before</strong>
+                    <pre>${stringify(log.before)}</pre>
+                  </div>
+                  <div>
+                    <strong>After</strong>
+                    <pre>${stringify(log.after)}</pre>
+                  </div>
+                </div>
+              </article>
+            `;
+          })
+          .join("");
+      }
+
+      accountSelect.addEventListener("change", applyFilters);
+      typeSelect.addEventListener("change", applyFilters);
+      userSelect.addEventListener("change", applyFilters);
+      searchInput.addEventListener("input", applyFilters);
+
+      // Initial render
+      renderLogs(logs);
+    });
+  </script>
+
+  <script>
+    // ===== Profile menu & session (same pattern as manager.html) =====
+    (function () {
+      function wireProfileMenu() {
+        const user = document.querySelector(".user");
+        if (!user) return;
+        const menu = user.querySelector("#user-menu");
+        const logoutBtn = user.querySelector("#logout-btn");
+
+        user.addEventListener("click", () => {
+          user.classList.toggle("open");
+          if (menu) menu.setAttribute("aria-hidden", String(!user.classList.contains("open")));
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!user.contains(e.target)) {
+            user.classList.remove("open");
+            if (menu) menu.setAttribute("aria-hidden", "true");
+          }
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            user.classList.remove("open");
+            if (menu) menu.setAttribute("aria-hidden", "true");
+          }
+        });
+
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            localStorage.removeItem("sf_session");
+            window.location.href = "login.html";
+          });
+        }
+
+        // Fill name + role from sf_session if present
+        try {
+          const session = JSON.parse(localStorage.getItem("sf_session") || "null");
+          if (session) {
+            const nameEl = user.querySelector(".name-role p:first-child");
+            const roleEl = user.querySelector(".name-role p:last-child");
+            if (nameEl && session.name) nameEl.textContent = session.name;
+            if (roleEl && session.role) {
+              roleEl.textContent = session.role.charAt(0).toUpperCase() + session.role.slice(1);
+            }
+          }
+        } catch {}
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", wireProfileMenu);
+      } else {
+        wireProfileMenu();
+      }
+    })();
+  </script>
+
+  <script>
+    // ===== Hamburger / side nav =====
+    (function () {
+      const toggle = document.getElementById("menu-toggle");
+      const sideNav = document.getElementById("side-nav");
+      const overlay = document.getElementById("nav-overlay");
+
+      function openNav() {
+        sideNav.classList.add("open");
+        overlay.classList.add("show");
+        sideNav.setAttribute("aria-hidden", "false");
+      }
+
+      function closeNav() {
+        sideNav.classList.remove("open");
+        overlay.classList.remove("show");
+        sideNav.setAttribute("aria-hidden", "true");
+      }
+
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (sideNav.classList.contains("open")) {
+          closeNav();
+        } else {
+          openNav();
+        }
+      });
+
+      overlay.addEventListener("click", closeNav);
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeNav();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
